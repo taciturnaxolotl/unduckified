@@ -2,9 +2,9 @@ import { bangs } from "./bang";
 import "./global.css";
 
 function noSearchDefaultPageRender() {
-  const app = document.querySelector<HTMLDivElement>("#app");
-  if (!app) throw new Error("App element not found");
-  app.innerHTML = `
+	const app = document.querySelector<HTMLDivElement>("#app");
+	if (!app) throw new Error("App element not found");
+	app.innerHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
       <div class="content-container">
         <h1>┐( ˘_˘ )┌</h1>
@@ -27,60 +27,60 @@ function noSearchDefaultPageRender() {
     </div>
   `;
 
-  const copyButton = app.querySelector<HTMLButtonElement>(".copy-button");
-  if (!copyButton) throw new Error("Copy button not found");
-  const copyIcon = copyButton.querySelector("img");
-  if (!copyIcon) throw new Error("Copy icon not found");
-  const urlInput = app.querySelector<HTMLInputElement>(".url-input");
-  if (!urlInput) throw new Error("URL input not found");
+	const copyButton = app.querySelector<HTMLButtonElement>(".copy-button");
+	if (!copyButton) throw new Error("Copy button not found");
+	const copyIcon = copyButton.querySelector("img");
+	if (!copyIcon) throw new Error("Copy icon not found");
+	const urlInput = app.querySelector<HTMLInputElement>(".url-input");
+	if (!urlInput) throw new Error("URL input not found");
 
-  urlInput.value = `${window.location.protocol}//${window.location.host}?q=%s`;
+	urlInput.value = `${window.location.protocol}//${window.location.host}?q=%s`;
 
-  copyButton.addEventListener("click", async () => {
-    await navigator.clipboard.writeText(urlInput.value);
-    copyIcon.src = "/clipboard-check.svg";
+	copyButton.addEventListener("click", async () => {
+		await navigator.clipboard.writeText(urlInput.value);
+		copyIcon.src = "/clipboard-check.svg";
 
-    setTimeout(() => {
-      copyIcon.src = "/clipboard.svg";
-    }, 2000);
-  });
+		setTimeout(() => {
+			copyIcon.src = "/clipboard.svg";
+		}, 2000);
+	});
 }
 
 const LS_DEFAULT_BANG = localStorage.getItem("default-bang") ?? "g";
 const defaultBang = bangs.find((b) => b.t === LS_DEFAULT_BANG);
 
 function getBangredirectUrl() {
-  const url = new URL(window.location.href);
-  const query = url.searchParams.get("q")?.trim() ?? "";
-  if (!query) {
-    noSearchDefaultPageRender();
-    return null;
-  }
+	const url = new URL(window.location.href);
+	const query = url.searchParams.get("q")?.trim() ?? "";
+	if (!query) {
+		noSearchDefaultPageRender();
+		return null;
+	}
 
-  const match = query.match(/!(\S+)/i);
+	const match = query.match(/!(\S+)/i);
 
-  const bangCandidate = match?.[1]?.toLowerCase();
-  const selectedBang = bangs.find((b) => b.t === bangCandidate) ?? defaultBang;
+	const bangCandidate = match?.[1]?.toLowerCase();
+	const selectedBang = bangs.find((b) => b.t === bangCandidate) ?? defaultBang;
 
-  // Remove the first bang from the query
-  const cleanQuery = query.replace(/!\S+\s*/i, "").trim();
+	// Remove the first bang from the query
+	const cleanQuery = query.replace(/!\S+\s*/i, "").trim();
 
-  // Format of the url is:
-  // https://www.google.com/search?q={{{s}}}
-  const searchUrl = selectedBang?.u.replace(
-    "{{{s}}}",
-    // Replace %2F with / to fix formats like "!ghr+t3dotgg/unduck"
-    encodeURIComponent(cleanQuery).replace(/%2F/g, "/")
-  );
-  if (!searchUrl) return null;
+	// Format of the url is:
+	// https://www.google.com/search?q={{{s}}}
+	const searchUrl = selectedBang?.u.replace(
+		"{{{s}}}",
+		// Replace %2F with / to fix formats like "!ghr+t3dotgg/unduck"
+		encodeURIComponent(cleanQuery).replace(/%2F/g, "/"),
+	);
+	if (!searchUrl) return null;
 
-  return searchUrl;
+	return searchUrl;
 }
 
 function doRedirect() {
-  const searchUrl = getBangredirectUrl();
-  if (!searchUrl) return;
-  window.location.replace(searchUrl);
+	const searchUrl = getBangredirectUrl();
+	if (!searchUrl) return;
+	window.location.replace(searchUrl);
 }
 
 doRedirect();
