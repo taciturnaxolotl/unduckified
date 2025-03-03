@@ -36,6 +36,7 @@
 	--bg-color-secondary: #f5f5f5;
 	--bg-color-hover: #f0f0f0;
 	--bg-color-active: #e5e5e5;
+	--bg-color-danger: #e9808a;
 	--border-color: #ddd;
 }
 
@@ -48,6 +49,7 @@
 		--bg-color-secondary: #1e1e1e;
 		--bg-color-hover: #2a2a2a;
 		--bg-color-active: #333;
+		--bg-color-danger: #f15f6d;
 		--border-color: #444;
 	}
 }
@@ -58,9 +60,8 @@
 	box-sizing: border-box;
 	outline: none;
 }
-
 *:focus {
-	border: 2px solid var(--text-color-secondary);
+	outline: 2px solid var(--text-color-secondary);
 }
 
 html,
@@ -306,4 +307,69 @@ input {
 
 .flash-red {
 	animation: flash-red 0.3s ease-in-out;
+}
+/* Settings section spacing */
+.settings-section {
+	margin-bottom: 1rem;
+}
+
+/* Toggle switch styles */
+.switch {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 8px 0;
+}
+
+.switch input {
+	width: 40px;
+	height: 20px;
+	appearance: none;
+	background-color: var(--bg-color-secondary);
+	border-radius: 20px;
+	position: relative;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.switch input:checked {
+	background-color: var(--text-color);
+}
+
+.switch input:before {
+	content: "";
+	width: 16px;
+	height: 16px;
+	background-color: var(--text-color);
+	position: absolute;
+	border-radius: 50%;
+	top: 2px;
+	left: 2px;
+	transition:
+		left 0.3s,
+		background-color 0.3s;
+}
+
+.switch input:checked:before {
+	background-color: var(--bg-color-secondary);
+	left: 22px;
+}
+
+/* Clear history button */
+.clear-history {
+	margin-top: 8px;
+	padding: 8px 16px;
+	background-color: var(--bg-color-danger);
+	color: var(--text-color);
+	border-radius: 4px;
+	transition: all 0.2s;
+}
+
+.clear-history:hover {
+	background-color: var(--bg-color-hover);
+}
+
+.clear-history:active {
+	background-color: var(--bg-color-active);
+	transform: scale(0.98);
 }

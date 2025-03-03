@@ -26,8 +26,8 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 - [x] Settings (for things like disabling search history and changing default bang)
 - [x] Search counter
 - [x] [OpenSearch](https://developer.mozilla.org/en-US/docs/Web/XML/Guides/OpenSearch) support
+- [x] Search History (clearable, all local, and disabled by default ofc)
 - [ ] ~Search suggestions~ (as far as I can tell this essentially impossible to do natively with either firefox or chrome; please correct me if I'm wrong though. In this case I would very much love to be wrong)
-- [ ] Search History (clearable ofc and all local)
 
 and then some more really ambitious stuff like:
 
@@ -45,10 +45,12 @@ and then some more really ambitious stuff like:
 ### Light Mode
 
 ![Light Mode](.github/images/light.webp)
+![Light Mode with Search History](.github/images/light-history.webp)
 
 ### Dark Mode 💪
 
 ![Dark Mode](.github/images/dark.webp)
+![Dark Mode with Search History](.github/images/dark-history.webp)
 
 </details>
 

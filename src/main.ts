@@ -1,6 +1,39 @@
 import { bangs } from "./bang";
 import "./global.css";
 
+function addToSearchHistory(
+	query: string,
+	bang: { bang: string; name: string; url: string },
+) {
+	const history = getSearchHistory();
+	history.unshift({
+		query,
+		bang: bang.bang,
+		name: bang.name,
+		timestamp: Date.now(),
+	});
+	// Keep only last 500 searches
+	history.splice(500);
+	localStorage.setItem("search-history", JSON.stringify(history));
+}
+
+function getSearchHistory(): Array<{
+	query: string;
+	bang: string;
+	name: string;
+	timestamp: number;
+}> {
+	try {
+		return JSON.parse(localStorage.getItem("search-history") || "[]");
+	} catch {
+		return [];
+	}
+}
+
+function clearSearchHistory() {
+	localStorage.setItem("search-history", "[]");
+}
+
 function getFocusableElements(
 	root: HTMLElement = document.body,
 ): HTMLElement[] {
@@ -24,6 +57,8 @@ function setOutsideElementsTabindex(modal: HTMLElement, tabindex: number) {
 
 function noSearchDefaultPageRender() {
 	const searchCount = localStorage.getItem("search-count") || "0";
+	const historyEnabled = localStorage.getItem("history-enabled") === "true";
+	const searchHistory = getSearchHistory();
 	const app = document.querySelector<HTMLDivElement>("#app");
 	if (!app) throw new Error("App element not found");
 	app.innerHTML = `
@@ -50,6 +85,31 @@ function noSearchDefaultPageRender() {
 										<img src="/clipboard.svg" alt="Copy" />
 								</button>
 						</div>
+						${
+							historyEnabled
+								? `
+									<h2 style="margin-top: 24px;">Recent Searches</h2>
+									<div style="max-height: 200px; overflow-y: auto; text-align: left;">
+									${
+										searchHistory.length === 0
+											? `<div style="padding: 8px; text-align: center;">No search history</div>`
+											: searchHistory
+													.map(
+														(search) => `
+															<div style="padding: 8px; border-bottom: 1px solid var(--border-color);">
+																	<a href="?q=!${search.bang} ${search.query}">${search.name}: ${search.query}</a>
+																	<span style="float: right; color: var(--text-color-secondary);">
+																			${new Date(search.timestamp).toLocaleString()}
+																	</span>
+															</div>
+													`,
+													)
+													.join("")
+									}
+									</div>
+								`
+								: ""
+						}
 				</div>
 				<footer class="footer">
 						made with ♥ by <a href="https://github.com/taciturnaxolotl" target="_blank">Kieran Klukas</a> as <a href="https://github.com/taciturnaxolotl/unduck" target="_blank">open source</a> software
@@ -58,10 +118,21 @@ function noSearchDefaultPageRender() {
           <div class="modal-content">
             <button class="close-modal">&times;</button>
             <h2>Settings</h2>
-            <div>
+            <div class="settings-section">
               <label for="default-bang" id="bang-description">${bangs.find((b) => b.t === LS_DEFAULT_BANG)?.s || "Unknown bang"}</label>
               <div class="bang-select-container">
                 <input type="text" id="default-bang" class="bang-select" value="${LS_DEFAULT_BANG}">
+              </div>
+            </div>
+            <div class="settings-section">
+              <h3>Search History (${searchHistory.length}/500)</h3>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="switch">
+                  <label for="history-toggle">Enable Search History</label>
+                  <input type="checkbox" id="history-toggle" ${historyEnabled ? "checked" : ""}>
+                  <span class="slider round"></span>
+                </label>
+                <button class="clear-history">Clear History</button>
               </div>
             </div>
           </div>
@@ -89,6 +160,10 @@ function noSearchDefaultPageRender() {
 	const description =
 		app.querySelector<HTMLParagraphElement>("#bang-description");
 	if (!description) throw new Error("Bang description not found");
+	const historyToggle = app.querySelector<HTMLInputElement>("#history-toggle");
+	if (!historyToggle) throw new Error("History toggle not found");
+	const clearHistory = app.querySelector<HTMLButtonElement>(".clear-history");
+	if (!clearHistory) throw new Error("Clear history button not found");
 
 	urlInput.value = `${window.location.protocol}//${window.location.host}?q=%s`;
 
@@ -105,15 +180,47 @@ function noSearchDefaultPageRender() {
 		"(prefers-reduced-motion: reduce)",
 	).matches;
 	if (!prefersReducedMotion) {
-		const audio = new Audio("/heavier-tick-sprite.mp3");
+		const spinAudio = new Audio("/heavier-tick-sprite.mp3");
+		const toggleOffAudio = new Audio("/toggle-button-off.mp3");
+		const toggleOnAudio = new Audio("/toggle-button-on.mp3");
+		const clickAudio = new Audio("/click-button.mp3");
+		const warningAudio = new Audio("/double-button.mp3");
 
 		settingsButton.addEventListener("mouseenter", () => {
-			audio.play();
+			spinAudio.play();
 		});
 
 		settingsButton.addEventListener("mouseleave", () => {
-			audio.pause();
-			audio.currentTime = 0;
+			spinAudio.pause();
+			spinAudio.currentTime = 0;
+		});
+
+		historyToggle.addEventListener("change", () => {
+			if (historyToggle.checked) {
+				toggleOffAudio.pause();
+				toggleOffAudio.currentTime = 0;
+				toggleOnAudio.currentTime = 0;
+				toggleOnAudio.play();
+			} else {
+				toggleOnAudio.pause();
+				toggleOnAudio.currentTime = 0;
+				toggleOffAudio.currentTime = 0;
+				toggleOffAudio.play();
+			}
+		});
+
+		clearHistory.addEventListener("click", () => {
+			warningAudio.play();
+		});
+
+		defaultBangSelect.addEventListener("bangError", () => {
+			warningAudio.currentTime = 0;
+			warningAudio.play();
+		});
+
+		defaultBangSelect.addEventListener("bangSuccess", () => {
+			clickAudio.currentTime = 0;
+			clickAudio.play();
 		});
 	}
 
@@ -144,6 +251,9 @@ function noSearchDefaultPageRender() {
 			defaultBangSelect.value = LS_DEFAULT_BANG; // Reset to previous value
 			defaultBangSelect.classList.add("shake", "flash-red");
 
+			// Dispatch error event
+			defaultBangSelect.dispatchEvent(new CustomEvent("bangError"));
+
 			// Remove animation classes after animation completes
 			setTimeout(() => {
 				defaultBangSelect.classList.remove("shake", "flash-red");
@@ -152,8 +262,26 @@ function noSearchDefaultPageRender() {
 			return;
 		}
 
+		defaultBangSelect.dispatchEvent(new CustomEvent("bangSuccess"));
+
 		localStorage.setItem("default-bang", newDefaultBang);
 		description.innerText = bang.s;
+	});
+
+	// Enable/disable search history
+	historyToggle.addEventListener("change", (event) => {
+		localStorage.setItem(
+			"history-enabled",
+			(event.target as HTMLInputElement).checked.toString(),
+		);
+	});
+	clearHistory.addEventListener("click", () => {
+		clearSearchHistory();
+		if (!prefersReducedMotion)
+			setTimeout(() => {
+				window.location.reload();
+			}, 375);
+		else window.location.reload();
 	});
 }
 
@@ -179,6 +307,15 @@ function getBangredirectUrl() {
 		? bangs.find((b) => b.t === match[1].toLowerCase())
 		: defaultBang;
 	const cleanQuery = match ? query.replace(/!\S+\s*/i, "").trim() : query;
+
+	// Add search to history
+	if (localStorage.getItem("history-enabled") === "true") {
+		addToSearchHistory(cleanQuery, {
+			bang: selectedBang?.t || "",
+			name: selectedBang?.s || "",
+			url: selectedBang?.u || "",
+		});
+	}
 
 	return selectedBang?.u.replace(
 		"{{{s}}}",
