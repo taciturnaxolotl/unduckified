@@ -8,25 +8,26 @@
 DuckDuckGo's bang redirects are too slow. Add the following URL as a custom search engine to your browser. Enables all of DuckDuckGo's bangs to work, but much faster.
 
 ```
-https://unduck.link?q=%s
+https://s.dunkirk.sh?q=%s
 ```
 
 ## How is it that much faster?
 
 DuckDuckGo does their redirects server side. Their DNS is...not always great. Result is that it often takes ages.
 
-I solved this by doing all of the work client side. Once you've went to https://unduck.link once, the JS is all cache'd and will never need to be downloaded again. Your device does the redirects, not me.
+I solved this by doing all of the work client side. Once you've went to https://s.dunkirk.sh once, the JS is all cache'd and will never need to be downloaded again. Your device does the redirects, not me or any other server.
 
 ## How is this different from Theo's version again?
 
 This is primarily my personal fork to experiment with PWAs but I do have a few ideas that I would love to add to this.
 
 - [x] Bangs
-- [x] Search counter
-- [ ] Search suggestions
-- [ ] Search History (clearable ofc and all local)
 - [x] Dark Mode
 - [x] Settings (for things like disabling search history and changing default bang)
+- [x] Search counter
+- [x] [OpenSearch](https://developer.mozilla.org/en-US/docs/Web/XML/Guides/OpenSearch) support
+- [ ] ~Search suggestions~ (as far as I can tell this essentially impossible to do natively with either firefox or chrome; please correct me if I'm wrong though. In this case I would very much love to be wrong)
+- [ ] Search History (clearable ofc and all local)
 
 and then some more really ambitious stuff like:
 
