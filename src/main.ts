@@ -253,16 +253,24 @@ function noSearchDefaultPageRender() {
 
 	closeModal.addEventListener("click", () => {
 		closeModal.dispatchEvent(new Event("closed"));
-		modal.style.display = "none";
-		setOutsideElementsTabindex(modal, 0);
 	});
 
 	window.addEventListener("click", (event) => {
 		if (event.target === modal) {
 			closeModal.dispatchEvent(new Event("closed"));
-			modal.style.display = "none";
-			setOutsideElementsTabindex(modal, 0);
 		}
+	});
+
+	closeModal.addEventListener("closed", () => {
+		modal.style.display = "none";
+		setOutsideElementsTabindex(modal, 0);
+
+		if (historyToggle.checked !== historyEnabled)
+			if (!prefersReducedMotion)
+				setTimeout(() => {
+					window.location.reload();
+				}, 300);
+			else window.location.reload();
 	});
 
 	// Save default bang
