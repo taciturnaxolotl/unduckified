@@ -1,5 +1,7 @@
 # Unduck
 
+![dark and light modes of the app](.github/images/both.webp)
+
 > [!IMPORTANT]
 > This is a fork of [t3dotgg/unduck](https://github.com/t3dotgg/unduck) and I am not the original creator of this project. Do go checkout Theo's hosted version at [unduck.link](https://unduck.link) for the original experience which is a bit simpler then this mess of mine :)
 
@@ -21,7 +23,7 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 
 - [x] Bangs
 - [ ] Search History (clearable ofc and all local)
-- [ ] Dark Mode
+- [x] Dark Mode
 - [ ] Settings (for things like disabling search history and changing default bang)
 
 and then some more really ambitious stuff like:
@@ -31,6 +33,21 @@ and then some more really ambitious stuff like:
 
 - [ ] Omptimistic UI chat wrapper (basically [t3.chat](https://t3.chat) but entirely on your own machine and completely free and unlimited and oss)
 - [ ] Meta search engine as the default bang (so you can search Google, Bing, Yahoo, etc. all at once) this one is inspired by [mat-1/metasearch2](https://github.com/mat-1/metasearch2) but without the middleman server.
+
+## Screenshots
+
+<details>
+    <summary>Spoiler Alert: It's just a search string you can copy</summary>
+
+### Light Mode
+
+![Light Mode](.github/images/light.webp)
+
+### Dark Mode 💪
+
+![Dark Mode](.github/images/dark.webp)
+
+</details>
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/taciturnaxolotl/carriage/master/.github/images/line-break.svg" />
