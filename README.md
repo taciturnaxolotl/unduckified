@@ -22,6 +22,8 @@ I solved this by doing all of the work client side. Once you've went to https://
 
 This is primarily my personal fork to experiment with PWAs but I do have a few ideas that I would love to add to this.
 
+<img align="right" width="140" height="140" src="https://raw.githubusercontent.com/taciturnaxolotl/unduck/main/public/goose.gif" alt="goose walking animation"/>
+
 - [x] Bangs
 - [x] Dark Mode
 - [x] Settings (for things like disabling search history and changing default bang)
@@ -119,7 +121,7 @@ gantt
 </details>
 
 <p align="center">
-	<img src="https://raw.githubusercontent.com/taciturnaxolotl/carriage/master/.github/images/line-break.svg" />
+	<img src="https://raw.githubusercontent.com/taciturnaxolotl/carriage/main/.github/images/line-break.svg" />
 </p>
 
 <p align="center">
@@ -127,5 +129,5 @@ gantt
 </p>
 
 <p align="center">
-	<a href="https://github.com/taciturnaxolotl/unduck/blob/master/LICENSE.md"><img src="https://img.shields.io/static/v1.svg?style=for-the-badge&label=License&message=MIT&logoColor=d9e0ee&colorA=363a4f&colorB=b7bdf8"/></a>
+	<a href="https://github.com/taciturnaxolotl/unduck/blob/main/LICENSE.md"><img src="https://img.shields.io/static/v1.svg?style=for-the-badge&label=License&message=MIT&logoColor=d9e0ee&colorA=363a4f&colorB=b7bdf8"/></a>
 </p>
