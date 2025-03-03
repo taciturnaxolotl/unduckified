@@ -112,11 +112,13 @@ gantt
 
 ![Light Mode](.github/images/light.webp)
 ![Light Mode with Search History](.github/images/light-history.webp)
+![Light Mode 404](.github/images/light-404.webp)
 
 ### Dark Mode 💪
 
 ![Dark Mode](.github/images/dark.webp)
 ![Dark Mode with Search History](.github/images/dark-history.webp)
+![Dark Mode 404](.github/images/dark-404.webp)
 
 </details>
 
