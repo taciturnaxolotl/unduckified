@@ -122,14 +122,13 @@ textarea {
 	margin-top: 16px;
 }
 
-/* Add this new style */
 .content-container {
 	max-width: 37rem;
 	text-align: center;
 	padding: 0 8px;
+	text-wrap: pretty;
 }
 
-/* Update url-input width to be 100% since container will control max width */
 input {
 	padding: 8px 12px;
 	border: 1px solid var(--border-color);
@@ -212,7 +211,6 @@ input {
 	color: var(--text-color-hover);
 }
 
-/* Add styles for the settings button */
 .settings-button {
 	padding: 8px;
 	color: var(--text-color-secondary);
@@ -305,9 +303,8 @@ input {
 	font-size: 1.2em;
 }
 
-/* Update the bang-select class to account for the icon */
 .bang-select {
-	padding-right: 30px; /* Make room for the icon */
+	padding-right: 30px;
 }
 
 @keyframes shake {
@@ -340,12 +337,11 @@ input {
 .flash-red {
 	animation: flash-red 0.3s ease-in-out;
 }
-/* Settings section spacing */
+
 .settings-section {
 	margin-bottom: 1rem;
 }
 
-/* Toggle switch styles */
 .switch {
 	display: flex;
 	align-items: center;
@@ -387,7 +383,6 @@ input {
 	left: 22px;
 }
 
-/* Clear history button */
 .clear-history {
 	margin-top: 8px;
 	padding: 8px 16px;
