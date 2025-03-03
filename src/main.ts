@@ -427,6 +427,15 @@ const LS_DEFAULT_BANG =
 	storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.DEFAULT_BANG) ?? "ddg";
 const defaultBang = bangs[LS_DEFAULT_BANG];
 
+function ensureProtocol(url: string, defaultProtocol = "https://") {
+	try {
+		const parsedUrl = new URL(url);
+		return parsedUrl.href; // If valid, return as is
+	} catch (e) {
+		return `${defaultProtocol}${url}`;
+	}
+}
+
 function getBangredirectUrl() {
 	const url = new URL(window.location.href);
 	const query = url.searchParams.get("q")?.trim() ?? "";
@@ -447,6 +456,11 @@ function getBangredirectUrl() {
 	const cleanQuery = match
 		? query.replace(/!\S+\s*|^(\S+!|!\S+)$/i, "").trim()
 		: query;
+
+	// Redirect to base domain if cleanQuery is empty
+	if (!cleanQuery && selectedBang?.d) {
+		return ensureProtocol(selectedBang.d);
+	}
 
 	if (storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED) === "true") {
 		addToSearchHistory(cleanQuery, {
