@@ -56,6 +56,7 @@ h5,
 h6 {
   font-weight: 600;
   line-height: 1.2;
+  padding: .75rem;
 }
 
 a {
@@ -87,7 +88,7 @@ textarea {
 
 /* Add this new style */
 .content-container {
-  max-width: 36rem;
+  max-width: 37rem;
   text-align: center;
   padding: 0 8px;
 }

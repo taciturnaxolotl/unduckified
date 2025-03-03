@@ -2,18 +2,19 @@ import { bangs } from "./bang";
 import "./global.css";
 
 function noSearchDefaultPageRender() {
-  const app = document.querySelector<HTMLDivElement>("#app")!;
+  const app = document.querySelector<HTMLDivElement>("#app");
+  if (!app) throw new Error("App element not found");
   app.innerHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
       <div class="content-container">
-        <h1>Und*ck</h1>
+        <h1>┐( ˘_˘ )┌</h1>
         <p>DuckDuckGo's bang redirects are too slow. Add the following URL as a custom search engine to your browser. Enables <a href="https://duckduckgo.com/bang.html" target="_blank">all of DuckDuckGo's bangs.</a></p>
-        <div class="url-container"> 
-          <input 
-            type="text" 
+        <div class="url-container">
+          <input
+            type="text"
             class="url-input"
             value="https://unduck.link?q=%s"
-            readonly 
+            readonly
           />
           <button class="copy-button">
             <img src="/clipboard.svg" alt="Copy" />
@@ -21,18 +22,19 @@ function noSearchDefaultPageRender() {
         </div>
       </div>
       <footer class="footer">
-        <a href="https://t3.chat" target="_blank">t3.chat</a>
-        •
-        <a href="https://x.com/theo" target="_blank">theo</a>
-        •
-        <a href="https://github.com/t3dotgg/unduck" target="_blank">github</a>
+        made with ♥ by <a href="https://github.com/taciturnaxolotl" target="_blank">Kieran Klukas</a> as <a href="https://github.com/taciturnaxolotl/unduck" target="_blank">open source</a> software
       </footer>
     </div>
   `;
 
-  const copyButton = app.querySelector<HTMLButtonElement>(".copy-button")!;
-  const copyIcon = copyButton.querySelector("img")!;
-  const urlInput = app.querySelector<HTMLInputElement>(".url-input")!;
+  const copyButton = app.querySelector<HTMLButtonElement>(".copy-button");
+  if (!copyButton) throw new Error("Copy button not found");
+  const copyIcon = copyButton.querySelector("img");
+  if (!copyIcon) throw new Error("Copy icon not found");
+  const urlInput = app.querySelector<HTMLInputElement>(".url-input");
+  if (!urlInput) throw new Error("URL input not found");
+
+  urlInput.value = `${window.location.protocol}//${window.location.host}?q=%s`;
 
   copyButton.addEventListener("click", async () => {
     await navigator.clipboard.writeText(urlInput.value);
