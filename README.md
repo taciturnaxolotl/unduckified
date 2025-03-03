@@ -37,6 +37,7 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 - [x] local font file to avoid google fonts
 - [x] redirects to the base page of a bang if there is no query (e.g. `!g` will take you to google.com and `!yt` will take you to youtube.com)
 - [x] Suffix bangs (e.g. `ghr! taciturnaxolotl/unduck` will take you to this github repo)
+- [x] Quick settings (e.g. `!settings` or `!` will take you to the settings page)
 - [ ] ~Search suggestions~ (as far as I can tell this essentially impossible to do natively with either firefox or chrome; please correct me if I'm wrong though. In this case I would very much love to be wrong)
 
 and then some more really ambitious stuff like:

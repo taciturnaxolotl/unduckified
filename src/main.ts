@@ -402,7 +402,7 @@ function getBangredirectUrl() {
 
 	switch (url.pathname.replace(/\/$/, "")) {
 		case "": {
-			if (!query) {
+			if (!query || query === "!" || query === "!settings") {
 				noSearchDefaultPageRender();
 				return null;
 			}
