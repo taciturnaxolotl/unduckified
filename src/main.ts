@@ -23,15 +23,19 @@ function setOutsideElementsTabindex(modal: HTMLElement, tabindex: number) {
 }
 
 function noSearchDefaultPageRender() {
+	const searchCount = localStorage.getItem("search-count") || "0";
 	const app = document.querySelector<HTMLDivElement>("#app");
 	if (!app) throw new Error("App element not found");
 	app.innerHTML = `
 		<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
-				<header style="position: absolute; top: 1rem; right: 1rem;">
-						<button class="settings-button">
-								<img src="/gear.svg" alt="Settings" class="settings" />
-						</button>
-				</header>
+    		<header style="position: absolute; top: 1rem; width: 100%;">
+   			<div style="display: flex; justify-content: space-between; padding: 0 1rem;">
+            <span>${searchCount} ${searchCount === "1" ? "search" : "searches"}</span>
+    				<button class="settings-button">
+    						<img src="/gear.svg" alt="Settings" class="settings" />
+    				</button>
+   			</div>
+    		</header>
 				<div class="content-container">
 						<h1>┐( ˘_˘ )┌</h1>
 						<p>DuckDuckGo's bang redirects are too slow. Add the following URL as a custom search engine to your browser. Enables <a href="https://duckduckgo.com/bang.html" target="_blank">all of DuckDuckGo's bangs.</a></p>
@@ -163,6 +167,12 @@ function getBangredirectUrl() {
 		noSearchDefaultPageRender();
 		return null;
 	}
+
+	// increment search count
+	const count = (
+		Number.parseInt(localStorage.getItem("search-count") || "0") + 1
+	).toString();
+	localStorage.setItem("search-count", count);
 
 	const match = query.match(/!(\S+)/i);
 	const selectedBang = match

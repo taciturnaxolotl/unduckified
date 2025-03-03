@@ -22,6 +22,8 @@ I solved this by doing all of the work client side. Once you've went to https://
 This is primarily my personal fork to experiment with PWAs but I do have a few ideas that I would love to add to this.
 
 - [x] Bangs
+- [x] Search counter
+- [ ] Search suggestions
 - [ ] Search History (clearable ofc and all local)
 - [x] Dark Mode
 - [x] Settings (for things like disabling search history and changing default bang)
