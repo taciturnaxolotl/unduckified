@@ -95,6 +95,12 @@ a {
 a:hover {
 	color: var(--text-color-hover);
 }
+footer a {
+	color: var(--text-color) !important;
+}
+footer a:hover {
+	color: var(--text-color-hover) !important;
+}
 
 button {
 	font: inherit;
