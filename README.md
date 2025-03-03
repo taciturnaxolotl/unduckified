@@ -29,6 +29,7 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 - [x] [OpenSearch](https://developer.mozilla.org/en-US/docs/Web/XML/Guides/OpenSearch) support
 - [x] Search History (clearable, all local, and disabled by default ofc)
 - [x] Fancy sounds (disabled if you have `prefers-reduced-motion` set; sounds only account for 201.3 KB of the 707 KB total size)
+- [x] Cute little text animations
 - [ ] ~Search suggestions~ (as far as I can tell this essentially impossible to do natively with either firefox or chrome; please correct me if I'm wrong though. In this case I would very much love to be wrong)
 
 and then some more really ambitious stuff like:

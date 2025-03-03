@@ -116,7 +116,7 @@ const createTemplate = (data: {
 			</div>
 		</header>
 		<div class="content-container">
-			<h1>┐( ˘_˘ )┌</h1>
+			<h1 id="cutie">┐( ˘_˘ )┌</h1>
 			<p>DuckDuckGo's bang redirects are too slow. Add the following URL as a custom search engine to your browser. Enables <a href="https://duckduckgo.com/bang.html" target="_blank">all of DuckDuckGo's bangs.</a></p>
 			<div class="url-container">
 				<input
@@ -209,6 +209,7 @@ function noSearchDefaultPageRender() {
 
 	const elements = {
 		app,
+		cutie: app.querySelector<HTMLHeadingElement>("#cutie"),
 		copyInput: app.querySelector<HTMLInputElement>(".url-input"),
 		copyButton: app.querySelector<HTMLButtonElement>(".copy-button"),
 		copyIcon: app.querySelector<HTMLImageElement>(".copy-button img"),
@@ -239,6 +240,43 @@ function noSearchDefaultPageRender() {
 	).matches;
 
 	if (!prefersReducedMotion) {
+		// Add mouse tracking behavior
+		document.addEventListener("click", (e) => {
+			const x = e.clientX;
+			const y = e.clientY;
+			const centerX = window.innerWidth / 2;
+			const centerY = window.innerHeight / 2;
+			const differenceX = x - centerX;
+			const differenceY = y - centerY;
+
+			// Left-facing cuties
+			const leftCuties = ["╰（°□°╰）", "(◕‿◕´)", "(・ω・´)"];
+
+			// Right-facing cuties
+			const rightCuties = ["(╯°□°）╯", "(｀◕‿◕)", "(｀・ω・)"];
+
+			// Up-facing cuties
+			const upCuties = ["(↑°□°)↑", "(´◕‿◕)↑", "↑(´・ω・)↑"];
+
+			// Down-facing cuties
+			const downCuties = ["(↓°□°)↓", "(´◕‿◕)↓", "↓(´・ω・)↓"];
+
+			if (
+				Math.abs(differenceX) > Math.abs(differenceY) &&
+				Math.abs(differenceX) > 100
+			) {
+				validatedElements.cutie.textContent =
+					differenceX < 0
+						? leftCuties[Math.floor(Math.random() * leftCuties.length)]
+						: rightCuties[Math.floor(Math.random() * rightCuties.length)];
+			} else if (Math.abs(differenceY) > 100) {
+				validatedElements.cutie.textContent =
+					differenceY < 0
+						? upCuties[Math.floor(Math.random() * upCuties.length)]
+						: downCuties[Math.floor(Math.random() * downCuties.length)];
+			}
+		});
+
 		const audio = {
 			spin: createAudio("/heavier-tick-sprite.mp3"),
 			toggleOff: createAudio("/toggle-button-off.mp3"),
