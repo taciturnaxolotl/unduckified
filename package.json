@@ -11,11 +11,11 @@
 	},
 	"devDependencies": {
 		"typescript": "~5.7.2",
-		"vite": "^6.1.0"
-	},
-	"dependencies": {
-		"@fontsource/inter": "^5.2.5",
+		"vite": "^6.1.0",
 		"@types/bun": "^1.2.4",
 		"vite-plugin-pwa": "^0.21.1"
+	},
+	"dependencies": {
+		"@fontsource/inter": "^5.2.5"
 	}
 }
