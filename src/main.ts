@@ -1,5 +1,4 @@
 import { bangs } from "./bang";
-import "./global.css";
 
 function noSearchDefaultPageRender() {
 	const app = document.querySelector<HTMLDivElement>("#app");
