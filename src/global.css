@@ -283,6 +283,7 @@ input {
 	padding: 8px;
 	margin-top: 10px;
 	border-radius: 4px;
+	padding-right: 30px;
 }
 
 .bang-select-container {
@@ -295,14 +296,10 @@ input {
 	content: "↵";
 	position: absolute;
 	right: 10px;
-	top: 33%;
+	top: 15%;
 	color: var(--text-color-secondary);
 	pointer-events: none;
 	font-size: 1.2em;
-}
-
-.bang-select {
-	padding-right: 30px;
 }
 
 @keyframes shake {

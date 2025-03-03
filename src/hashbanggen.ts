@@ -12,7 +12,26 @@ const hashbang: {
 		t: string;
 		u: string;
 	};
-} = {};
+} = {
+	t3: {
+		c: "AI",
+		d: "www.t3.chat",
+		r: 0,
+		s: "T3 Chat",
+		sc: "AI",
+		t: "t3",
+		u: "https://www.t3.chat/new?q={{{s}}}",
+	},
+	m2: {
+		c: "Online Services",
+		d: "meta.dunkirk.sh",
+		r: 0,
+		s: "metasearch2",
+		sc: "Search",
+		t: "m2",
+		u: "https://meta.dunkirk.sh/search?q={{{s}}}",
+	},
+};
 for (const bang of rawBangs) {
 	hashbang[bang.t] = bang;
 }

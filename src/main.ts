@@ -1,12 +1,20 @@
 import { bangs } from "./hashbang.ts";
+import {
+	addToSearchHistory,
+	clearSearchHistory,
+	createAudio,
+	getSearchHistory,
+	storage,
+} from "./libs.ts";
 
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
 import "@fontsource/inter/latin-600.css";
 import "@fontsource/inter/latin-700.css";
 import "./global.css";
+import notFoundPageRender from "./404.ts";
 
-const CONSTANTS = {
+export const CONSTANTS = {
 	MAX_HISTORY: 500,
 	ANIMATION_DURATION: 375,
 	LOCAL_STORAGE_KEYS: {
@@ -15,69 +23,26 @@ const CONSTANTS = {
 		HISTORY_ENABLED: "history-enabled",
 		DEFAULT_BANG: "default-bang",
 	},
+	CUTIES: {
+		NOTFOUND: [
+			"(╯︵╰,)",
+			"(｡•́︿•̀｡)",
+			"(⊙_☉)",
+			"(╯°□°）╯︵ ┻━┻",
+			"(ಥ﹏ಥ)",
+			"(✿◕‿◕✿)",
+			"(╥﹏╥)",
+			"(｡•́︿•̀｡)",
+			"(✧ω✧)",
+			"(•́_•̀)",
+			"(╯°□°）╯︵ ┻━┻",
+		],
+		LEFT: ["╰（°□°╰）", "(◕‿◕´)", "(・ω・´)"],
+		RIGHT: ["(╯°□°）╯", "(｀◕‿◕)", "(｀・ω・)"],
+		UP: ["(↑°□°)↑", "(´◕‿◕)↑", "↑(´・ω・)↑"],
+		DOWN: ["(↓°□°)↓", "(´◕‿◕)↓", "↓(´・ω・)↓"],
+	},
 };
-
-const storage = {
-	get: (key: string) => localStorage.getItem(key),
-	set: (key: string, value: string) => localStorage.setItem(key, value),
-	remove: (key: string) => localStorage.removeItem(key),
-};
-
-const memoizedGetSearchHistory = (() => {
-	let cache: Array<{
-		query: string;
-		bang: string;
-		name: string;
-		timestamp: number;
-	}> | null = null;
-	return () => {
-		if (!cache) {
-			cache = JSON.parse(
-				storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY) || "[]",
-			);
-		}
-		return cache;
-	};
-})();
-
-function addToSearchHistory(
-	query: string,
-	bang: { bang: string; name: string; url: string },
-) {
-	const history = memoizedGetSearchHistory();
-	if (!history) return;
-
-	history.unshift({
-		query,
-		bang: bang.bang,
-		name: bang.name,
-		timestamp: Date.now(),
-	});
-	history.splice(CONSTANTS.MAX_HISTORY);
-	storage.set(
-		CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY,
-		JSON.stringify(history),
-	);
-}
-
-function getSearchHistory(): Array<{
-	query: string;
-	bang: string;
-	name: string;
-	timestamp: number;
-}> {
-	try {
-		return JSON.parse(
-			storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY) || "[]",
-		);
-	} catch {
-		return [];
-	}
-}
-
-function clearSearchHistory() {
-	storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY, "[]");
-}
 
 function getFocusableElements(
 	root: HTMLElement = document.body,
@@ -190,12 +155,6 @@ const createTemplate = (data: {
 	</div>
 `;
 
-const createAudio = (src: string) => {
-	const audio = new Audio();
-	audio.src = src;
-	return audio;
-};
-
 function noSearchDefaultPageRender() {
 	const searchCount =
 		storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT) || "0";
@@ -254,31 +213,27 @@ function noSearchDefaultPageRender() {
 			const differenceX = x - centerX;
 			const differenceY = y - centerY;
 
-			// Left-facing cuties
-			const leftCuties = ["╰（°□°╰）", "(◕‿◕´)", "(・ω・´)"];
-
-			// Right-facing cuties
-			const rightCuties = ["(╯°□°）╯", "(｀◕‿◕)", "(｀・ω・)"];
-
-			// Up-facing cuties
-			const upCuties = ["(↑°□°)↑", "(´◕‿◕)↑", "↑(´・ω・)↑"];
-
-			// Down-facing cuties
-			const downCuties = ["(↓°□°)↓", "(´◕‿◕)↓", "↓(´・ω・)↓"];
-
 			if (
 				Math.abs(differenceX) > Math.abs(differenceY) &&
 				Math.abs(differenceX) > 100
 			) {
 				validatedElements.cutie.textContent =
 					differenceX < 0
-						? leftCuties[Math.floor(Math.random() * leftCuties.length)]
-						: rightCuties[Math.floor(Math.random() * rightCuties.length)];
+						? CONSTANTS.CUTIES.LEFT[
+								Math.floor(Math.random() * CONSTANTS.CUTIES.LEFT.length)
+							]
+						: CONSTANTS.CUTIES.RIGHT[
+								Math.floor(Math.random() * CONSTANTS.CUTIES.RIGHT.length)
+							];
 			} else if (Math.abs(differenceY) > 100) {
 				validatedElements.cutie.textContent =
 					differenceY < 0
-						? upCuties[Math.floor(Math.random() * upCuties.length)]
-						: downCuties[Math.floor(Math.random() * downCuties.length)];
+						? CONSTANTS.CUTIES.UP[
+								Math.floor(Math.random() * CONSTANTS.CUTIES.UP.length)
+							]
+						: CONSTANTS.CUTIES.DOWN[
+								Math.floor(Math.random() * CONSTANTS.CUTIES.DOWN.length)
+							];
 			}
 		});
 
@@ -444,41 +399,51 @@ function ensureProtocol(url: string, defaultProtocol = "https://") {
 function getBangredirectUrl() {
 	const url = new URL(window.location.href);
 	const query = url.searchParams.get("q")?.trim() ?? "";
-	if (!query) {
-		noSearchDefaultPageRender();
-		return null;
+
+	switch (url.pathname.replace(/\/$/, "")) {
+		case "": {
+			if (!query) {
+				noSearchDefaultPageRender();
+				return null;
+			}
+
+			const count = (
+				Number.parseInt(
+					storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT) || "0",
+				) + 1
+			).toString();
+			storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT, count);
+
+			const match = query.toLowerCase().match(/^!(\S+)|!(\S+)$/i);
+			const selectedBang = match ? bangs[match[1] || match[2]] : defaultBang;
+			const cleanQuery = match
+				? query.replace(/!\S+\s*|^(\S+!|!\S+)$/i, "").trim()
+				: query;
+
+			// Redirect to base domain if cleanQuery is empty
+			if (!cleanQuery && selectedBang?.d) {
+				return ensureProtocol(selectedBang.d);
+			}
+
+			if (
+				storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED) === "true"
+			) {
+				addToSearchHistory(cleanQuery, {
+					bang: selectedBang?.t || "",
+					name: selectedBang?.s || "",
+					url: selectedBang?.u || "",
+				});
+			}
+
+			return selectedBang?.u.replace(
+				"{{{s}}}",
+				encodeURIComponent(cleanQuery).replace(/%2F/g, "/"),
+			);
+		}
+		default:
+			notFoundPageRender();
+			return null;
 	}
-
-	const count = (
-		Number.parseInt(
-			storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT) || "0",
-		) + 1
-	).toString();
-	storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT, count);
-
-	const match = query.toLowerCase().match(/^!(\S+)|!(\S+)$/i);
-	const selectedBang = match ? bangs[match[1] || match[2]] : defaultBang;
-	const cleanQuery = match
-		? query.replace(/!\S+\s*|^(\S+!|!\S+)$/i, "").trim()
-		: query;
-
-	// Redirect to base domain if cleanQuery is empty
-	if (!cleanQuery && selectedBang?.d) {
-		return ensureProtocol(selectedBang.d);
-	}
-
-	if (storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED) === "true") {
-		addToSearchHistory(cleanQuery, {
-			bang: selectedBang?.t || "",
-			name: selectedBang?.s || "",
-			url: selectedBang?.u || "",
-		});
-	}
-
-	return selectedBang?.u.replace(
-		"{{{s}}}",
-		encodeURIComponent(cleanQuery).replace(/%2F/g, "/"),
-	);
 }
 
 function doRedirect() {
