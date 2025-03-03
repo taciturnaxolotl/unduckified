@@ -442,11 +442,13 @@ function getBangredirectUrl() {
 	).toString();
 	storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT, count);
 
-	const match = query.match(/!(\S+)/i);
+	const match = query.match(/^!(\S+)|!(\S+)$/i);
 	const selectedBang = match
 		? bangs.find((b) => b.t === match[1].toLowerCase())
 		: defaultBang;
-	const cleanQuery = match ? query.replace(/!\S+\s*/i, "").trim() : query;
+	const cleanQuery = match
+		? query.replace(/!\S+\s*|^(\S+!|!\S+)$/i, "").trim()
+		: query;
 
 	if (storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED) === "true") {
 		addToSearchHistory(cleanQuery, {
