@@ -1,4 +1,4 @@
-import { bangs } from "./bang";
+import { bangs } from "./hashbang.ts";
 import "./global.css";
 
 const CONSTANTS = {
@@ -163,7 +163,7 @@ const createTemplate = (data: {
 					<button class="close-modal">&times;</button>
 					<h2>Settings</h2>
 					<div class="settings-section">
-							<label for="default-bang" id="bang-description">${bangs.find((b) => b.t === data.LS_DEFAULT_BANG)?.s || "Unknown bang"}</label>
+							<label for="default-bang" id="bang-description">${bangs[data.LS_DEFAULT_BANG].s || "Unknown bang"}</label>
 							<div class="bang-select-container">
 									<input type="text" id="default-bang" class="bang-select" value="${data.LS_DEFAULT_BANG}">
 							</div>
@@ -382,7 +382,7 @@ function noSearchDefaultPageRender() {
 
 	validatedElements.defaultBangSelect.addEventListener("change", (event) => {
 		const newDefaultBang = (event.target as HTMLSelectElement).value;
-		const bang = bangs.find((b) => b.t === newDefaultBang);
+		const bang = bangs[newDefaultBang];
 
 		if (!bang) {
 			validatedElements.defaultBangSelect.value = LS_DEFAULT_BANG;
@@ -425,7 +425,7 @@ function noSearchDefaultPageRender() {
 
 const LS_DEFAULT_BANG =
 	storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.DEFAULT_BANG) ?? "ddg";
-const defaultBang = bangs.find((b) => b.t === LS_DEFAULT_BANG);
+const defaultBang = bangs[LS_DEFAULT_BANG];
 
 function getBangredirectUrl() {
 	const url = new URL(window.location.href);
@@ -442,10 +442,8 @@ function getBangredirectUrl() {
 	).toString();
 	storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT, count);
 
-	const match = query.match(/^!(\S+)|!(\S+)$/i);
-	const selectedBang = match
-		? bangs.find((b) => b.t === match[1].toLowerCase())
-		: defaultBang;
+	const match = query.toLowerCase().match(/^!(\S+)|!(\S+)$/i);
+	const selectedBang = match ? bangs[match[1] || match[2]] : defaultBang;
 	const cleanQuery = match
 		? query.replace(/!\S+\s*|^(\S+!|!\S+)$/i, "").trim()
 		: query;

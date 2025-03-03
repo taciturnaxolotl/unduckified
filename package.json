@@ -6,13 +6,15 @@
 	"scripts": {
 		"dev": "bunx --bun vite",
 		"build": "bunx --bun vite build",
-		"preview": "bunx --bun vite preview"
+		"preview": "bunx --bun vite preview",
+		"hash": "bun run src/hashbanggen.ts"
 	},
 	"devDependencies": {
 		"typescript": "~5.7.2",
 		"vite": "^6.1.0"
 	},
 	"dependencies": {
+		"@types/bun": "^1.2.4",
 		"vite-plugin-pwa": "^0.21.1"
 	}
 }
