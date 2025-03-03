@@ -3,6 +3,6 @@
   <ShortName>Unduck</ShortName>
   <Description>Fast DuckDuckGo bang redirects</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://unduck.link/search.svg</Image>
-  <Url type="text/html" template="https://unduck.link/?q={searchTerms}"/>
+  <Image width="16" height="16" type="image/x-icon">https://s.dunkirk.sh/search.svg</Image>
+  <Url type="text/html" template="https://s.dunkirk.sh/?q={searchTerms}"/>
 </OpenSearchDescription>
