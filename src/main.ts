@@ -1,4 +1,5 @@
 import { bangs } from "./bang";
+import "./global.css";
 
 function getFocusableElements(
 	root: HTMLElement = document.body,
