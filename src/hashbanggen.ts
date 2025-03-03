@@ -1,9 +1,6 @@
-import { bangs } from "./bang.ts";
+import rawBangs from "./bangs.json" with { type: "json" };
 
-/* Developer script that converts ./bang.ts' array to hashmap.
- *   In your terminal of choice enter: cd src && bun .\hashbanggen.ts && cd ../
- *   If you should happen to enjoy PowerShell: cd src; bun .\hashbanggen.ts; cd ../
- * */
+// Developer script that converts ./bang.ts' array to hashmap.
 
 const hashbang: {
 	[key: string]: {
@@ -16,7 +13,7 @@ const hashbang: {
 		u: string;
 	};
 } = {};
-for (const bang of bangs) {
+for (const bang of rawBangs) {
 	hashbang[bang.t] = bang;
 }
 

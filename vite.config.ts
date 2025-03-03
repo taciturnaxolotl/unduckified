@@ -7,6 +7,7 @@ export default defineConfig({
 			registerType: "autoUpdate",
 			workbox: {
 				globPatterns: ["**/*.{js,css,html}", "assets/inter*.woff2"],
+				maximumFileSizeToCacheInBytes: 3 * 1048576,
 			},
 		}),
 	],

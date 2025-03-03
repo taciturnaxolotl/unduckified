@@ -1,0 +1,45 @@
+name: Daily fetch bangs.json from DDG
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  fetch-bangs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Download bangs.json
+        run: |
+          curl -o bangs.json https://duckduckgo.com/bang.js
+
+      - name: Verify file
+        run: |
+          if [ ! -s bangs.json ]; then
+            echo "Downloaded file is empty"
+            exit 1
+          fi
+          if ! jq empty bangs.json; then
+            echo "Downloaded file is not valid JSON"
+            exit 1
+          fi
+
+      - name: Replace bangs.json
+        run: |
+          mkdir -p src
+          mv bangs.json src/bangs.json
+
+      - name: 🥔 hash
+        run: bun run hash
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add src/bangs.json
+          git commit -m "chore: update bangs.json" || exit 0
+          git push

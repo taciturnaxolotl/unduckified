@@ -7,7 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": ["src/bang.ts"]
+		"ignore": ["src/bangs.json"]
 	},
 	"formatter": {
 		"enabled": true,
