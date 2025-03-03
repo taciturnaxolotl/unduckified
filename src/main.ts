@@ -141,6 +141,8 @@ function noSearchDefaultPageRender() {
 		</div>
 	`;
 
+	const copyInput = app.querySelector<HTMLInputElement>(".url-input");
+	if (!copyInput) throw new Error("Copy input not found");
 	const copyButton = app.querySelector<HTMLButtonElement>(".copy-button");
 	if (!copyButton) throw new Error("Copy button not found");
 	const copyIcon = copyButton.querySelector("img");
@@ -167,15 +169,6 @@ function noSearchDefaultPageRender() {
 
 	urlInput.value = `${window.location.protocol}//${window.location.host}?q=%s`;
 
-	copyButton.addEventListener("click", async () => {
-		await navigator.clipboard.writeText(urlInput.value);
-		copyIcon.src = "/clipboard-check.svg";
-
-		setTimeout(() => {
-			copyIcon.src = "/clipboard.svg";
-		}, 2000);
-	});
-
 	const prefersReducedMotion = window.matchMedia(
 		"(prefers-reduced-motion: reduce)",
 	).matches;
@@ -185,6 +178,12 @@ function noSearchDefaultPageRender() {
 		const toggleOnAudio = new Audio("/toggle-button-on.mp3");
 		const clickAudio = new Audio("/click-button.mp3");
 		const warningAudio = new Audio("/double-button.mp3");
+		const copyAudio = new Audio("/foot-switch.mp3");
+
+		copyButton.addEventListener("click", () => {
+			copyAudio.currentTime = 0;
+			copyAudio.play();
+		});
 
 		settingsButton.addEventListener("mouseenter", () => {
 			spinAudio.play();
@@ -222,20 +221,45 @@ function noSearchDefaultPageRender() {
 			clickAudio.currentTime = 0;
 			clickAudio.play();
 		});
+
+		closeModal.addEventListener("closed", () => {
+			settingsButton.classList.remove("rotate");
+			spinAudio.playbackRate = 0.7;
+			spinAudio.currentTime = 0;
+			spinAudio.play();
+			spinAudio.onended = () => {
+				spinAudio.playbackRate = 1;
+			};
+		});
 	}
 
+	copyButton.addEventListener("click", async () => {
+		await navigator.clipboard.writeText(urlInput.value);
+		copyIcon.src = "/clipboard-check.svg";
+
+		if (!prefersReducedMotion) copyInput.classList.add("flash-white");
+
+		setTimeout(() => {
+			copyInput.classList.remove("flash-white");
+			copyIcon.src = "/clipboard.svg";
+		}, 375);
+	});
+
 	settingsButton.addEventListener("click", () => {
+		settingsButton.classList.add("rotate");
 		modal.style.display = "block";
 		setOutsideElementsTabindex(modal, -1);
 	});
 
 	closeModal.addEventListener("click", () => {
+		closeModal.dispatchEvent(new Event("closed"));
 		modal.style.display = "none";
 		setOutsideElementsTabindex(modal, 0);
 	});
 
 	window.addEventListener("click", (event) => {
 		if (event.target === modal) {
+			closeModal.dispatchEvent(new Event("closed"));
 			modal.style.display = "none";
 			setOutsideElementsTabindex(modal, 0);
 		}

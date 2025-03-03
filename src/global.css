@@ -133,6 +133,31 @@ input {
 	color: var(--text-color);
 }
 
+.flash-white {
+	outline: 2px solid var(--text-color-secondary);
+	background: color-mix(in srgb, var(--text-color) 75%, var(--bg-color));
+	opacity: 0.2;
+	animation: flash 0.275s forwards;
+}
+
+@keyframes flash {
+	0% {
+		opacity: 0.2;
+		outline: 2px solid var(--text-color-secondary);
+		background: color-mix(in srgb, var(--text-color) 55%, var(--bg-color));
+	}
+	50% {
+		opacity: 1;
+		outline: 2px solid var(--text-color-hover);
+		background: color-mix(in srgb, var(--text-color) 75%, var(--bg-color));
+	}
+	100% {
+		opacity: 0.2;
+		outline: 2px solid var(--text-color-secondary);
+		background: color-mix(in srgb, var(--text-color) 55%, var(--bg-color));
+	}
+}
+
 .copy-button {
 	padding: 8px;
 	color: var(--text-color-secondary);
@@ -200,7 +225,8 @@ input {
 	background: var(--bg-color-active);
 }
 
-.settings-button:hover img {
+.settings-button:hover img,
+.settings-button.rotate img {
 	transform: rotate(180deg);
 	transition: transform 0.6s ease;
 }
@@ -213,7 +239,7 @@ input {
 	transition: transform 0.6s ease;
 }
 
-.settings-button:not(:hover) .settings {
+.settings-button:not(:hover):not(.rotate) .settings {
 	transform: rotate(0deg);
 }
 
