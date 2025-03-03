@@ -24,7 +24,7 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 - [x] Bangs
 - [ ] Search History (clearable ofc and all local)
 - [x] Dark Mode
-- [ ] Settings (for things like disabling search history and changing default bang)
+- [x] Settings (for things like disabling search history and changing default bang)
 
 and then some more really ambitious stuff like:
 
