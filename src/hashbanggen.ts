@@ -31,6 +31,15 @@ const hashbang: {
 		t: "m2",
 		u: "https://meta.dunkirk.sh/search?q={{{s}}}",
 	},
+	tiktok: {
+		c: "Multimedia",
+		sc: "Video",
+		d: "www.tiktok.com",
+		r: 0,
+		s: "TikTok",
+		t: "tiktok",
+		u: "https://www.tiktok.com/search?q={{{s}}}",
+	},
 };
 for (const bang of rawBangs) {
 	hashbang[bang.t] = bang;
