@@ -1,4 +1,4 @@
-# Unduck
+# Unduckified
 
 ![dark and light modes of the app](.github/images/both.webp)
 
@@ -22,7 +22,7 @@ I solved this by doing all of the work client side. Once you've went to https://
 
 This is primarily my personal fork to experiment with PWAs but I do have a few ideas that I would love to add to this.
 
-<img align="right" width="140" height="140" src="https://raw.githubusercontent.com/taciturnaxolotl/unduck/main/public/goose.gif" alt="goose walking animation"/>
+<img align="right" width="140" height="140" src="https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/public/goose.gif" alt="goose walking animation"/>
 
 - [x] Bangs
 - [x] Dark Mode
@@ -32,11 +32,11 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 - [x] Search History (clearable, all local, and disabled by default ofc)
 - [x] Fancy sounds (disabled if you have `prefers-reduced-motion` set; sounds only account for `198.5 KB` of the `717.4 KB` total size)
 - [x] Cute little text animations
-- [x] Auto updating bangs file! (I'm using a [GitHub Action](https://github.com/taciturnaxolotl/unduck/actions/workflows/update-bangs.yaml) to update the bangs file every 24 hours)
+- [x] Auto updating bangs file! (I'm using a [GitHub Action](https://github.com/taciturnaxolotl/unduckified/actions/workflows/update-bangs.yaml) to update the bangs file every 24 hours)
 - [x] Hashmapped bangs for faster searching
 - [x] local font file to avoid google fonts
 - [x] redirects to the base page of a bang if there is no query (e.g. `!g` will take you to google.com and `!yt` will take you to youtube.com)
-- [x] Suffix bangs (e.g. `ghr! taciturnaxolotl/unduck` will take you to this github repo)
+- [x] Suffix bangs (e.g. `ghr! taciturnaxolotl/unduckified` will take you to this github repo)
 - [x] Quick settings (e.g. `!settings` or `!` will take you to the settings page)
 - [ ] ~Search suggestions~ (as far as I can tell this essentially impossible to do natively with either firefox or chrome; please correct me if I'm wrong though. In this case I would very much love to be wrong)
 
@@ -132,5 +132,5 @@ gantt
 </p>
 
 <p align="center">
-	<a href="https://github.com/taciturnaxolotl/unduck/blob/main/LICENSE.md"><img src="https://img.shields.io/static/v1.svg?style=for-the-badge&label=License&message=MIT&logoColor=d9e0ee&colorA=363a4f&colorB=b7bdf8"/></a>
+	<a href="https://github.com/taciturnaxolotl/unduckified/blob/main/LICENSE.md"><img src="https://img.shields.io/static/v1.svg?style=for-the-badge&label=License&message=MIT&logoColor=d9e0ee&colorA=363a4f&colorB=b7bdf8"/></a>
 </p>
