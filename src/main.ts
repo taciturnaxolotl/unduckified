@@ -402,7 +402,10 @@ function noSearchDefaultPageRender() {
 	});
 
 	validatedElements.defaultBangSelect.addEventListener("change", (event) => {
-		const newDefaultBang = (event.target as HTMLSelectElement).value;
+		const newDefaultBang = (event.target as HTMLSelectElement).value.replace(
+			/^!+/,
+			"",
+		);
 		const bang = customBangs[newDefaultBang] || bangs[newDefaultBang];
 
 		if (!bang) {
@@ -445,7 +448,9 @@ function noSearchDefaultPageRender() {
 
 	validatedElements.addBang.addEventListener("click", () => {
 		const name = validatedElements.bangName.value.trim();
-		const shortcut = validatedElements.bangShortcut.value.trim();
+		const shortcut = validatedElements.bangShortcut.value
+			.trim()
+			.replace(/^!+/, "");
 		const searchUrl = validatedElements.bangSearchUrl.value.trim();
 		const baseUrl = validatedElements.bangBaseUrl.value.trim();
 
