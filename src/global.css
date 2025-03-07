@@ -128,6 +128,7 @@ textarea {
 }
 
 input {
+	margin: 2px 0px !important;
 	padding: 8px 12px;
 	border: 1px solid var(--border-color);
 	border-radius: 4px;
@@ -260,11 +261,13 @@ input {
 	position: relative;
 	background-color: var(--bg-color);
 	border: 1px solid var(--border-color);
-	margin: 15% auto;
+	margin: 5% auto; /* Reduced from 15% to 5% to give more space */
 	padding: 20px;
 	border-radius: 8px;
 	width: 80%;
 	max-width: 500px;
+	max-height: 80vh; /* 80% of viewport height */
+	overflow-y: auto; /* Makes content scrollable */
 }
 
 .close-modal {
@@ -296,7 +299,7 @@ input {
 	content: "↵";
 	position: absolute;
 	right: 10px;
-	top: 15%;
+	top: 18%;
 	color: var(--text-color-secondary);
 	pointer-events: none;
 	font-size: 1.2em;
@@ -378,7 +381,8 @@ input {
 	left: 22px;
 }
 
-.clear-history {
+.clear-history,
+.remove-bang {
 	margin-top: 8px;
 	padding: 8px 16px;
 	background-color: var(--bg-color-danger);
@@ -387,11 +391,78 @@ input {
 	transition: all 0.2s;
 }
 
-.clear-history:hover {
+.remove-bang {
+	padding: 4px 6px;
+}
+
+.clear-history:hover,
+.remove-bang:hover {
 	background-color: var(--bg-color-hover);
 }
 
-.clear-history:active {
+.clear-history:active,
+.remove-bang:active {
 	background-color: var(--bg-color-active);
 	transform: scale(0.98);
+}
+
+.add-bang {
+	margin-top: 8px;
+	padding: 8px 16px;
+	background-color: var(--text-color);
+	color: var(--bg-color);
+	border-radius: 4px;
+	transition: all 0.2s;
+}
+
+.add-bang:hover {
+	background-color: var(--bg-color-hover);
+	color: var(--text-color-hover);
+}
+
+.add-bang:active {
+	background-color: var(--bg-color-active);
+	transform: scale(0.98);
+}
+
+.custom-bang-item {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 12px;
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	margin-top: 8px;
+}
+
+.custom-bang-info {
+	width: 100%;
+	border-collapse: collapse;
+	border: 1px solid var(--border-color);
+}
+
+.custom-bang-info td {
+	color: var(--text-color-secondary);
+	padding: 8px 16px;
+	border: 1px solid var(--border-color);
+}
+
+.custom-bang-info td:nth-child(2) code {
+	padding: 0.3rem;
+	border-radius: 4px;
+	word-break: break-all;
+	background-color: var(--bg-color-secondary);
+}
+
+.custom-bang-info td:last-child {
+	border-right: 1px solid var(--border-color);
+}
+
+.custom-bang-name {
+	font-weight: 500;
+}
+
+.custom-bang-url {
+	word-break: break-all;
+	color: var(--text-color-secondary);
 }

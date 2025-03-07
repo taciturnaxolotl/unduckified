@@ -22,6 +22,7 @@ export const CONSTANTS = {
 		SEARCH_COUNT: "search-count",
 		HISTORY_ENABLED: "history-enabled",
 		DEFAULT_BANG: "default-bang",
+		CUSTOM_BANGS: "custom-bangs",
 	},
 	CUTIES: {
 		NOTFOUND: [
@@ -43,6 +44,7 @@ export const CONSTANTS = {
 		DOWN: ["(↓°□°)↓", "(´◕‿◕)↓", "↓(´・ω・)↓"],
 	},
 };
+const customBangs = JSON.parse(localStorage.getItem("custom-bangs") || "{}");
 
 function getFocusableElements(
 	root: HTMLElement = document.body,
@@ -133,9 +135,49 @@ const createTemplate = (data: {
 					<button class="close-modal">&times;</button>
 					<h2>Settings</h2>
 					<div class="settings-section">
-							<label for="default-bang" id="bang-description">${bangs[data.LS_DEFAULT_BANG].s || "Unknown bang"}</label>
+					    <h3>Bangs</h3>
+							<label for="default-bang" id="bang-description">Default Bang: ${bangs[data.LS_DEFAULT_BANG].s || "Unknown bang"}</label>
 							<div class="bang-select-container">
 									<input type="text" id="default-bang" class="bang-select" value="${data.LS_DEFAULT_BANG}">
+							</div>
+							<p class="help-text">The best way to add new bangs is by submitting them on <a href="https://duckduckgo.com/newbang" target="_blank">DuckDuckGo</a> but you can also add them below</p>
+							<div style="margin-top: 16px;">
+								<h4>Add Custom Bang</h4>
+								<div class="custom-bang-inputs">
+									<input type="text" placeholder="Bang name" id="bang-name" class="bang-name">
+									<input type="text" placeholder="Shortcut (e.g. !ddg)" id="bang-shortcut" class="bang-shortcut">
+									<input type="text" placeholder="Search URL with {{{s}}}" id="bang-search-url" class="bang-search-url">
+									<input type="text" placeholder="Base domain" id="bang-base-url" class="bang-base-url">
+									<div style="text-align: right;">
+										<button class="add-bang">Add Bang</button>
+									</div>
+								</div>
+								${
+									Object.keys(customBangs).length > 0
+										? `
+  								<h4>Your Custom Bangs</h4>
+  								<div class="custom-bangs-list">
+  								${Object.entries(customBangs)
+										.map(
+											([shortcut, bang]) => `
+  									<div class="custom-bang-item">
+   									<table class="custom-bang-info">
+   											<tr>
+  												<td class="custom-bang-name">${bang.t}</td>
+  												<td class="custom-bang-shortcut"><code>!${shortcut}</code></td>
+  												<td class="custom-bang-base">${bang.d}</td>
+   											</tr>
+   									</table>
+  										<div class="custom-bang-url">${bang.u}</div>
+  										<button class="remove-bang" data-shortcut="${shortcut}">Remove</button>
+  									</div>
+  								`,
+										)
+										.join("")}
+  								</div>
+								`
+										: ""
+								}
 							</div>
 					</div>
 					<div class="settings-section">
@@ -185,6 +227,12 @@ function noSearchDefaultPageRender() {
 		description: app.querySelector<HTMLParagraphElement>("#bang-description"),
 		historyToggle: app.querySelector<HTMLInputElement>("#history-toggle"),
 		clearHistory: app.querySelector<HTMLButtonElement>(".clear-history"),
+		bangName: app.querySelector<HTMLInputElement>(".bang-name"),
+		bangShortcut: app.querySelector<HTMLInputElement>(".bang-shortcut"),
+		bangSearchUrl: app.querySelector<HTMLInputElement>(".bang-search-url"),
+		bangBaseUrl: app.querySelector<HTMLInputElement>(".bang-base-url"),
+		addBang: app.querySelector<HTMLButtonElement>(".add-bang"),
+		removeBangs: app.querySelectorAll<HTMLButtonElement>(".remove-bang"),
 	} as const;
 
 	// Validate all elements exist
@@ -297,6 +345,19 @@ function noSearchDefaultPageRender() {
 				audio.spin.playbackRate = 1;
 			};
 		});
+
+		validatedElements.addBang.addEventListener("click", () => {
+			audio.click.currentTime = 0.1;
+			audio.click.playbackRate = 2;
+			audio.click.play();
+		});
+
+		validatedElements.removeBangs.forEach((button) => {
+			button.addEventListener("click", () => {
+				audio.warning.currentTime = 0;
+				audio.warning.play();
+			});
+		});
 	}
 
 	validatedElements.copyButton.addEventListener("click", async () => {
@@ -342,7 +403,7 @@ function noSearchDefaultPageRender() {
 
 	validatedElements.defaultBangSelect.addEventListener("change", (event) => {
 		const newDefaultBang = (event.target as HTMLSelectElement).value;
-		const bang = bangs[newDefaultBang];
+		const bang = customBangs[newDefaultBang] || bangs[newDefaultBang];
 
 		if (!bang) {
 			validatedElements.defaultBangSelect.value = LS_DEFAULT_BANG;
@@ -363,7 +424,7 @@ function noSearchDefaultPageRender() {
 			new CustomEvent("bangSuccess"),
 		);
 		storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.DEFAULT_BANG, newDefaultBang);
-		validatedElements.description.innerText = bang.s;
+		validatedElements.description.innerText = "Default Bang: " + bang.s;
 	});
 
 	validatedElements.historyToggle.addEventListener("change", (event) => {
@@ -380,6 +441,49 @@ function noSearchDefaultPageRender() {
 				window.location.reload();
 			}, 375);
 		else window.location.reload();
+	});
+
+	validatedElements.addBang.addEventListener("click", () => {
+		const name = validatedElements.bangName.value.trim();
+		const shortcut = validatedElements.bangShortcut.value.trim();
+		const searchUrl = validatedElements.bangSearchUrl.value.trim();
+		const baseUrl = validatedElements.bangBaseUrl.value.trim();
+
+		if (!name || !searchUrl || !baseUrl) return;
+
+		customBangs[shortcut] = {
+			t: name,
+			s: shortcut,
+			u: searchUrl,
+			d: baseUrl,
+		};
+		storage.set(
+			CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS,
+			JSON.stringify(customBangs),
+		);
+
+		if (!prefersReducedMotion)
+			setTimeout(() => {
+				window.location.reload();
+			}, 375);
+		else window.location.reload();
+	});
+
+	validatedElements.removeBangs.forEach((button) => {
+		button.addEventListener("click", (event) => {
+			const shortcut = (event.target as HTMLButtonElement).dataset.shortcut;
+			delete customBangs[shortcut];
+			storage.set(
+				CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS,
+				JSON.stringify(customBangs),
+			);
+
+			if (!prefersReducedMotion)
+				setTimeout(() => {
+					window.location.reload();
+				}, 375);
+			else window.location.reload();
+		});
 	});
 }
 
@@ -415,7 +519,9 @@ function getBangredirectUrl() {
 			storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT, count);
 
 			const match = query.toLowerCase().match(/^!(\S+)|!(\S+)$/i);
-			const selectedBang = match ? bangs[match[1] || match[2]] : defaultBang;
+			const selectedBang = match
+				? customBangs[match[1] || match[2]] || bangs[match[1] || match[2]]
+				: defaultBang;
 			const cleanQuery = match
 				? query.replace(/!\S+\s*|^(\S+!|!\S+)$/i, "").trim()
 				: query;
