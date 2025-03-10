@@ -13,7 +13,7 @@ jobs:
       - name: Install bun
         uses: oven-sh/setup-bun@v1
 
-      - name: 🥔 hash
+      - name: 👀 Check bangs
         run: bun run check
 
       - name: Commit changes

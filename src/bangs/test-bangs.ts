@@ -70,13 +70,13 @@ if (isMainThread) {
 		try {
 			process.stdout.clearLine(0);
 			process.stdout.cursorTo(0);
+			process.stdout.write(
+				`${spinChars[spinIdx]} Completed ${completedBangs}/${bangEntries.length} bangs (${bangsPerSecond}/s)`,
+			);
+			spinIdx = (spinIdx + 1) % spinChars.length;
 		} catch (err) {
 			process.stdout.write("\r");
 		}
-		process.stdout.write(
-			`${spinChars[spinIdx]} Completed ${completedBangs}/${bangEntries.length} bangs (${bangsPerSecond}/s)`,
-		);
-		spinIdx = (spinIdx + 1) % spinChars.length;
 	}, 500);
 
 	const workers = chunks.map((chunk) => {
