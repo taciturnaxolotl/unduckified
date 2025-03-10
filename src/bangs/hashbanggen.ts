@@ -1,4 +1,10 @@
 import rawBangs from "./bangs.json" with { type: "json" };
+import brokenBangs from "./broken-bangs.json" with { type: "json" };
+
+const brokenBangsMap = new Map<string, string>();
+for (const { bang, url } of brokenBangs) {
+	brokenBangsMap.set(bang, url);
+}
 
 // Developer script that converts ./bang.ts' array to hashmap.
 
@@ -42,7 +48,7 @@ const hashbang: {
 	},
 };
 for (const bang of rawBangs) {
-	hashbang[bang.t] = bang;
+	if (!brokenBangsMap.has(bang.t)) hashbang[bang.t] = bang;
 }
 
 Bun.write(

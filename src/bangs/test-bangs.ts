@@ -52,7 +52,7 @@ const testUrl = async (url: string, retries = 3): Promise<boolean> => {
 
 if (isMainThread) {
 	const brokenBangs: { bang: string; url: string }[] = [];
-	const bangEntries = Object.entries(bangs).slice(0, 500);
+	const bangEntries = Object.entries(bangs);
 	const numThreads = cpus().length;
 	const chunkSize = Math.ceil(bangEntries.length / numThreads);
 	const chunks = Array.from({ length: numThreads }, (_, i) =>

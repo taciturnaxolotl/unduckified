@@ -40,6 +40,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add src/bangs.json
+          git add src/bangs/bangs.json src/bangs/hashbang.ts
           git commit -m "chore: update bangs.json" || exit 0
           git push
