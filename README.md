@@ -1,8 +1,7 @@
 # Unduckified
 
-![dark and light modes of the app](.github/images/both.webp)
+![dark and light modes of the app](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/both.webp)
 
-> [!IMPORTANT]
 > This is a fork of [t3dotgg/unduck](https://github.com/t3dotgg/unduck). Check out Theo's hosted version at [unduck.link](https://unduck.link) for the original experience.
 
 ## Quick Start
@@ -114,15 +113,15 @@ gantt
 
 ### Light Mode
 
-![Light Mode](.github/images/light.webp)
-![Light Mode with Search History](.github/images/light-history.webp)
-![Light Mode 404](.github/images/light-404.webp)
+![Light Mode](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/light.webp)
+![Light Mode with Search History](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/light-history.webp)
+![Light Mode 404](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/light-404.webp)
 
 ### Dark Mode 💪
 
-![Dark Mode](.github/images/dark.webp)
-![Dark Mode with Search History](.github/images/dark-history.webp)
-![Dark Mode 404](.github/images/dark-404.webp)
+![Dark Mode](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/dark.webp)
+![Dark Mode with Search History](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/dark-history.webp)
+![Dark Mode 404](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/dark-404.webp)
 
 </details>
 
