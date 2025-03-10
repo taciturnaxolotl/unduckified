@@ -16,7 +16,7 @@ https://s.dunkirk.sh?q=%s
 
 DuckDuckGo does their redirects server side. Their DNS is...not always great. Result is that it often takes ages.
 
-I solved this by doing all of the work client side. Once you've went to https://s.dunkirk.sh once, the JS is all cache'd and will never need to be downloaded again. Your device does the redirects, not me or any other server.
+I solved this by doing all of the work client side. Once you've went to https://s.dunkirk.sh once, the JS is all cached and will never need to be downloaded again. Your device does the redirects, not me or any other server.
 
 ## How is this different from Theo's version again?
 
@@ -38,7 +38,7 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 - [x] redirects to the base page of a bang if there is no query (e.g. `!g` will take you to google.com and `!yt` will take you to youtube.com)
 - [x] Suffix bangs (e.g. `ghr! taciturnaxolotl/unduckified` will take you to this github repo)
 - [x] Quick settings (e.g. `!settings` or `!` will take you to the settings page)
-- [x] Custom loca bangs! (thnks to [@ayoubabedrabbo@mastodon.social](https://mastodon.social/@ayoubabedrabbo/114114311682366314) for the suggestion)
+- [x] Custom local bangs! (thanks to [@ayoubabedrabbo@mastodon.social](https://mastodon.social/@ayoubabedrabbo/114114311682366314) for the suggestion)
 
 I would love to add:
 - [ ] ~Search suggestions~ (as far as I can tell this essentially impossible to do natively with either firefox or chrome; please correct me if I'm wrong though. In this case I would very much love to be wrong)
@@ -48,7 +48,7 @@ and then some more really ambitious stuff like:
 > [!NOTE]
 > Umm yeah, I know I might not get to all of that and yes this is essentially me finally discovering PWAs and wanting to smash everything into one lol.
 
-- [ ] Omptimistic UI chat wrapper (basically [t3.chat](https://t3.chat) but entirely on your own machine and completely free and unlimited and oss)
+- [ ] Optimistic UI chat wrapper (basically [t3.chat](https://t3.chat) but entirely on your own machine and completely free and unlimited and oss)
 - [ ] Meta search engine as the default bang (so you can search Google, Bing, Yahoo, etc. all at once) this one is inspired by [mat-1/metasearch2](https://github.com/mat-1/metasearch2) but without the middleman server.
 
 ## Fancy smancy technical graphs 😮
