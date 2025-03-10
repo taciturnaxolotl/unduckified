@@ -39,6 +39,8 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 - [x] Suffix bangs (e.g. `ghr! taciturnaxolotl/unduckified` will take you to this github repo)
 - [x] Quick settings (e.g. `!settings` or `!` will take you to the settings page)
 - [x] Custom loca bangs! (thnks to [@ayoubabedrabbo@mastodon.social](https://mastodon.social/@ayoubabedrabbo/114114311682366314) for the suggestion)
+
+I would love to add:
 - [ ] ~Search suggestions~ (as far as I can tell this essentially impossible to do natively with either firefox or chrome; please correct me if I'm wrong though. In this case I would very much love to be wrong)
 
 and then some more really ambitious stuff like:
