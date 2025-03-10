@@ -1,4 +1,4 @@
-import { bangs } from "./hashbang.ts";
+import { bangs } from "./bangs/hashbang.ts";
 import {
 	addToSearchHistory,
 	clearSearchHistory,

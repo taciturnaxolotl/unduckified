@@ -7,7 +7,7 @@
 		"dev": "bunx --bun vite",
 		"build": "bunx --bun vite build",
 		"preview": "bunx --bun vite preview",
-		"hash": "bun run src/hashbanggen.ts"
+		"hash": "bun run src/bangs/hashbanggen.ts"
 	},
 	"devDependencies": {
 		"typescript": "~5.7.2",

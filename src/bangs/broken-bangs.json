@@ -1,0 +1,658 @@
+[
+  {
+    "bang": "alternative",
+    "url": "http://alternativeto.net/searchresult.aspx?search=test%20query"
+  },
+  {
+    "bang": "alternativeto",
+    "url": "http://alternativeto.net/browse/search?q=test%20query"
+  },
+  {
+    "bang": "alternet",
+    "url": "https://www.alternet.org/search/site/test%20query"
+  },
+  {
+    "bang": "altex",
+    "url": "https://altex.ro/cauta/?q=test%20query"
+  },
+  {
+    "bang": "alto",
+    "url": "http://alternativeto.net/browse/search?q=test%20query "
+  },
+  {
+    "bang": "altru",
+    "url": "https://altru.greatjob.net/search-results?keywords=test%20query"
+  },
+  {
+    "bang": "altto",
+    "url": "http://alternativeto.net/browse/search?q=test%20query"
+  },
+  {
+    "bang": "alvanista",
+    "url": "http://alvanista.com/search?s=test%20query"
+  },
+  {
+    "bang": "amalexa",
+    "url": "https://www.amazon.com/s?k=test%20query&i=alexa-skills"
+  },
+  {
+    "bang": "am",
+    "url": "https://www.amazon.com/s?k=test%20query"
+  },
+  {
+    "bang": "amara",
+    "url": "http://www.amara.org/search/#/?q=test%20query"
+  },
+  {
+    "bang": "amazon",
+    "url": "https://www.amazon.com/s?k=test%20query"
+  },
+  {
+    "bang": "amazonca",
+    "url": "https://www.amazon.ca/s?k=test%20query"
+  },
+  {
+    "bang": "amazonmp3",
+    "url": "https://www.amazon.com/s?k=test%20query&i=digital-music"
+  },
+  {
+    "bang": "amazonmx",
+    "url": "https://www.amazon.com.mx/s?k=test%20query"
+  },
+  {
+    "bang": "amca",
+    "url": "https://www.amazon.ca/s?k=test%20query"
+  },
+  {
+    "bang": "am.ca",
+    "url": "https://www.amazon.ca/s?k=test%20query"
+  },
+  {
+    "bang": "adidas",
+    "url": "http://www.adidas.fr/search?q=test%20query"
+  },
+  {
+    "bang": "adlibrisdk",
+    "url": "http://www.adlibris.com/dk/searchresult.aspx?search=quickfirstpage&quickvalue=test%20query"
+  },
+  {
+    "bang": "adlibrisfi",
+    "url": "http://www.adlibris.com/fi/searchresult.aspx?search=quickfirstpage&quickvalue=test%20query"
+  },
+  {
+    "bang": "adlibrisno",
+    "url": "http://www.adlibris.com/no/searchresult.aspx?search=quickfirstpage&quickvalue=test%20query"
+  },
+  {
+    "bang": "adlibrisse",
+    "url": "http://www.adlibris.com/se/searchresult.aspx?search=quickfirstpage&quickvalue=test%20query"
+  },
+  {
+    "bang": "adn",
+    "url": "http://animedigitalnetwork.fr/video#search=test%20query"
+  },
+  {
+    "bang": "adobe",
+    "url": "http://www.adobe.com/cfusion/search/index.cfm?loc=en_us&term=test%20query"
+  },
+  {
+    "bang": "ador",
+    "url": "https://www.adorama.com/l/?searchinfo=test%20query"
+  },
+  {
+    "bang": "adr",
+    "url": "https://adrenaline.uol.com.br/site/pesquisa/test%20query"
+  },
+  {
+    "bang": "advfn",
+    "url": "http://uk.advfn.com/p.php?pid=qkquote&symbol=test%20query "
+  },
+  {
+    "bang": "advgta",
+    "url": "https://advancedgta.com/?s=test%20query"
+  },
+  {
+    "bang": "aeo",
+    "url": "https://www.ae.com/search/test%20query"
+  },
+  {
+    "bang": "aerobis",
+    "url": "https://www.aerobis.com/en/?s=test%20query"
+  },
+  {
+    "bang": "afcind",
+    "url": "https://www.afcindustries.com/products/search.aspx?search=test%20query"
+  },
+  {
+    "bang": "afpls",
+    "url": "http://afpl.ent.sirsi.net/client/default/search/results?qu=test%20query&te=ILS"
+  },
+  {
+    "bang": "afpubs",
+    "url": "http://www.e-publishing.af.mil/index.asp?txtSearchWord=test%20query&rdoFormPub=rdoPub"
+  },
+  {
+    "bang": "agames",
+    "url": "https://www.anaitgames.com/buscador.php?search=test%20query"
+  },
+  {
+    "bang": "agora",
+    "url": "http://agora.gg/search/test%20query"
+  },
+  {
+    "bang": "ahmetcadirci",
+    "url": "https://ahmetcadirci.com.tr/search/?q=test%20query"
+  },
+  {
+    "bang": "ahrefs",
+    "url": "https://ahrefs.com/site-explorer/overview/v2/subdomains/recent?target=test%20query"
+  },
+  {
+    "bang": "aion",
+    "url": "http://aion.wikia.com/wiki/index.php?search=test%20query&fulltext=0"
+  },
+  {
+    "bang": "aip",
+    "url": "http://scitation.aip.org/search?value1=test%20query&option1=fulltext"
+  },
+  {
+    "bang": "air1",
+    "url": "http://www.air1.com/search.aspx?searchterm=test%20query"
+  },
+  {
+    "bang": "airbnb",
+    "url": "https://www.airbnb.com/s/test%20query"
+  },
+  {
+    "bang": "airframes",
+    "url": "http://www.airframes.org/reg/test%20query"
+  },
+  {
+    "bang": "airliners",
+    "url": "http://www.airliners.net/search?keywords=test%20query"
+  },
+  {
+    "bang": "airmo",
+    "url": "https://air.mozilla.org/search/?q=test%20query"
+  },
+  {
+    "bang": "airquality",
+    "url": "https://www.goodtobreathein.com/?zipcode=test%20query"
+  },
+  {
+    "bang": "ais",
+    "url": "http://archive.is/test%20query"
+  },
+  {
+    "bang": "ajatt",
+    "url": "http://www.alljapaneseallthetime.com/blog/?s=test%20query"
+  },
+  {
+    "bang": "ak",
+    "url": "https://www.accountkiller.com/en/delete-test%20query-account"
+  },
+  {
+    "bang": "akakce",
+    "url": "http://www.akakce.com/arama/?q=test%20query"
+  },
+  {
+    "bang": "aks",
+    "url": "http://www.allkeyshop.com/blog/catalogue/search-test%20query/"
+  },
+  {
+    "bang": "ala",
+    "url": "http://www.alamaula.com/q/test%20query/S0"
+  },
+  {
+    "bang": "4",
+    "url": "https://www.4fitnessrules.com/workout-videos/?frm_search=test%20query"
+  },
+  {
+    "bang": "5",
+    "url": "http://fiverr.com/gigs/search?query=test%20query"
+  },
+  {
+    "bang": "101",
+    "url": "http://www.101domain.com/domain-availability-search.htm?q=test%20query&sa.x=0&sa.y=0"
+  },
+  {
+    "bang": "144",
+    "url": "http://b144.co.il/PrivateResults.aspx?&p_name=test%20query"
+  },
+  {
+    "bang": "360",
+    "url": "http://www.360skate.com/catalogsearch/result/?q=test%20query "
+  },
+  {
+    "bang": "800",
+    "url": "http://800notes.com/Phone.aspx/test%20query"
+  },
+  {
+    "bang": "8020",
+    "url": "https://8020.net/freetextsearch/search/result/?keyword=test%20query"
+  },
+  {
+    "bang": "11870",
+    "url": "http://11870.com/konsulto?q=test%20query"
+  },
+  {
+    "bang": "01net",
+    "url": "http://www.01net.com/recherche/recherche.php?searchstring=test%20query&chaine=home"
+  },
+  {
+    "bang": "02faq",
+    "url": "https://www.bmw2002faq.com/search/?q=test%20query"
+  },
+  {
+    "bang": "0to255",
+    "url": "http://0to255.com/test%20query"
+  },
+  {
+    "bang": "101domain",
+    "url": "https://www.101domain.com/domain-availability-search.htm?q=test%20query"
+  },
+  {
+    "bang": "11freunde",
+    "url": "http://www.11freunde.de/search/gss/test%20query"
+  },
+  {
+    "bang": "15mpedia",
+    "url": "https://15mpedia.org/w/index.php?search=test%20query"
+  },
+  {
+    "bang": "1d4chan",
+    "url": "https://1d4chan.org/index.php?search=test%20query"
+  },
+  {
+    "bang": "1dr",
+    "url": "http://onedrive.live.com/?q=test%20query"
+  },
+  {
+    "bang": "1gabba",
+    "url": "http://1gabba.net/frontpage?title=test%20query"
+  },
+  {
+    "bang": "24au",
+    "url": "https://krsk.au.ru/nextauction/?search=test%20query"
+  },
+  {
+    "bang": "27crags",
+    "url": "https://27crags.com/site/search?qs=test%20query"
+  },
+  {
+    "bang": "2gis",
+    "url": "http://2gis.ru/moscow/search/test%20query"
+  },
+  {
+    "bang": "2gissbp",
+    "url": "https://2gis.ru/spb/search/test%20query"
+  },
+  {
+    "bang": "2gisufa",
+    "url": "https://2gis.ru/ufa/search/test%20query"
+  },
+  {
+    "bang": "2nn",
+    "url": "https://www.2nn.jp/word/test%20query"
+  },
+  {
+    "bang": "albex",
+    "url": "http://www.albumartexchange.com/covers.php?q=test%20query "
+  },
+  {
+    "bang": "alert",
+    "url": "http://biznesalert.pl/?s=test%20query"
+  },
+  {
+    "bang": "alesund",
+    "url": "http://www.alesund.kommune.no/component/finder/search?q=test%20query&Itemid=406"
+  },
+  {
+    "bang": "alf",
+    "url": "https://www.alfinsight.com/app/SearchResults?quickSearch=test%20query "
+  },
+  {
+    "bang": "alg",
+    "url": "http://www.algomation.com/search?q=test%20query"
+  },
+  {
+    "bang": "alib",
+    "url": "https://discover.elgar.govt.nz/iii/encore/search/C__Stest%20query__Orightresult__U?lang=eng&suite=def"
+  },
+  {
+    "bang": "aliseeks",
+    "url": "http://aliseeks.com/search?SearchText=test%20query"
+  },
+  {
+    "bang": "allaboutcircuits",
+    "url": "http://www.allaboutcircuits.com/scripts/search.html?cx=006978388026519765659%3Ahg719j5vhl8&cof=FORID%3A9&q=test%20query&sa=Find"
+  },
+  {
+    "bang": "allacronyms",
+    "url": "https://www.allacronyms.com/test%20query"
+  },
+  {
+    "bang": "allbibles",
+    "url": "http://biblez.com/search.php?q=test%20query"
+  },
+  {
+    "bang": "allegro",
+    "url": "https://allegro.pl/listing?string=test%20query"
+  },
+  {
+    "bang": "allelec",
+    "url": "http://www.allelectronics.com/index.php?page=seek&id%5Bm%5D=pattern&id%5Bq%5D=test%20query"
+  },
+  {
+    "bang": "allexperts",
+    "url": "http://en.allexperts.com/sitesearch.htm?terms=test%20query"
+  },
+  {
+    "bang": "alliedelec",
+    "url": "http://www.alliedelec.com/search/results.aspx?term=test%20query"
+  },
+  {
+    "bang": "allo",
+    "url": "http://www.allocine.fr/recherche/?q=test%20query"
+  },
+  {
+    "bang": "allocine",
+    "url": "http://www.allocine.fr/recherche/?q=test%20query"
+  },
+  {
+    "bang": "allociné",
+    "url": "http://www.allocine.fr/recherche/?q=test%20query"
+  },
+  {
+    "bang": "allposters",
+    "url": "http://www.allposters.com/gallery.asp?txtSearch=test%20query"
+  },
+  {
+    "bang": "allrecipes",
+    "url": "http://allrecipes.com/search/results/?wt=test%20query"
+  },
+  {
+    "bang": "allsides",
+    "url": "https://www.allsides.com/allsides-search-results?search_api_views_fulltext=test%20query"
+  },
+  {
+    "bang": "allsongs",
+    "url": "http://allsongs.tv/search/?q=test%20query"
+  },
+  {
+    "bang": "almanac",
+    "url": "http://www.almanac.com/store/product-search?keys=test%20query"
+  },
+  {
+    "bang": "almedina",
+    "url": "https://www.almedina.net/search.php?query=test%20query"
+  },
+  {
+    "bang": "2xmc",
+    "url": "https://www.2xmoinscher.com/r?q=test%20query"
+  },
+  {
+    "bang": "35c3",
+    "url": "https://events.ccc.de/congress/2018/wiki/index.php?search=test%20query"
+  },
+  {
+    "bang": "360app",
+    "url": "https://www.360androidapp.com/test%20query"
+  },
+  {
+    "bang": "360so",
+    "url": "https://www.so.com/s?q=test%20query"
+  },
+  {
+    "bang": "3bm",
+    "url": "https://www.3bmeteo.com/meteo/test%20query"
+  },
+  {
+    "bang": "3da",
+    "url": "https://3dagogo.com/search?q=test%20query"
+  },
+  {
+    "bang": "4ch",
+    "url": "https://4chan.org/test%20query"
+  },
+  {
+    "bang": "4chanb",
+    "url": "http://4chan.org/b/test%20query"
+  },
+  {
+    "bang": "4chc",
+    "url": "https://boards.4chan.org/test%20query/catalog"
+  },
+  {
+    "bang": "4chn",
+    "url": "https://archive.nyafuu.org/n/search/text/test%20query/"
+  },
+  {
+    "bang": "4g",
+    "url": "http://4chan.org/g/test%20query"
+  },
+  {
+    "bang": "4pda",
+    "url": "http://4pda.ru/forum/index.php?act=search&source=all&forums[]=all&query=test%20query&x=0&y=0"
+  },
+  {
+    "bang": "4pl",
+    "url": "http://www.4players.de/4players.php/suchergebnis/Allgemein/4players/?s=test%20query"
+  },
+  {
+    "bang": "4players",
+    "url": "http://www.4players.de/4players.php/suchergebnis/Allgemein/4players/?s=test%20query"
+  },
+  {
+    "bang": "4plebs",
+    "url": "https://archive.4plebs.org/_/search/text/test%20query/"
+  },
+  {
+    "bang": "4shared",
+    "url": "http://search.4shared.com/q/CCAD/1/test%20query"
+  },
+  {
+    "bang": "750g",
+    "url": "https://www.750g.com/recherche.htm?search=test%20query"
+  },
+  {
+    "bang": "7tv",
+    "url": "https://www.7tv.de/suche?q=test%20query"
+  },
+  {
+    "bang": "89.9",
+    "url": "https://www.lightfm.com.au/?s=test%20query"
+  },
+  {
+    "bang": "abs",
+    "url": "http://www.allbookstores.com/search?q=test%20query"
+  },
+  {
+    "bang": "abuela",
+    "url": "http://miabuelavende.com/?s=test%20query&post_type=product"
+  },
+  {
+    "bang": "abuseip",
+    "url": "https://www.abuseipdb.com/check/test%20query"
+  },
+  {
+    "bang": "abyss",
+    "url": "http://wall.alphacoders.com/search.php?search=test%20query"
+  },
+  {
+    "bang": "aca",
+    "url": "https://www.amazon.ca/s?k=test%20query"
+  },
+  {
+    "bang": "ac",
+    "url": "http://www.allocine.fr/recherche/?q=test%20query"
+  },
+  {
+    "bang": "acb",
+    "url": "https://americancustomboxes.com/?s=test%20query"
+  },
+  {
+    "bang": "acc",
+    "url": "https://aleth.io/account/test%20query"
+  },
+  {
+    "bang": "accc",
+    "url": "https://www.accc.gov.au/site-search/test%20query"
+  },
+  {
+    "bang": "accountcia",
+    "url": "https://www.accountcia.com/?geodir_search=1&stype=gd_place&sgd_placecategory%5B%5D=&s=test%20query"
+  },
+  {
+    "bang": "accountkiller",
+    "url": "http://www.accountkiller.com/en/delete-test%20query-account"
+  },
+  {
+    "bang": "ace",
+    "url": "http://www.acehardware.com/search/index.jsp?kwCatId=&kw=test%20query&origkw={{{s}}}&f=Taxonomy/ACE/19541496&sr=1"
+  },
+  {
+    "bang": "aceforum",
+    "url": "http://forum.acelaboratory.com/search.php?keywords=test%20query"
+  },
+  {
+    "bang": "acer",
+    "url": "http://us.acer.com/ac/en/US/search?q=test%20query"
+  },
+  {
+    "bang": "ackuc",
+    "url": "https://www.amarchitrakatha.com/us/catalogsearch/result/?cat=0&q=test%20query"
+  },
+  {
+    "bang": "acl",
+    "url": "https://www.aclweb.org/anthology/search/?q=test%20query"
+  },
+  {
+    "bang": "acne",
+    "url": "https://www.acne.org/search.php?i=&q=test%20query"
+  },
+  {
+    "bang": "acortar",
+    "url": "http://cortas.elpais.com/encode.pl?u=http://test%20query"
+  },
+  {
+    "bang": "acp",
+    "url": "http://plugins.cordova.io/#/search?search=test%20query"
+  },
+  {
+    "bang": "acquiredby",
+    "url": "https://acquiredby.co/?s=test%20query"
+  },
+  {
+    "bang": "acs",
+    "url": "http://pubs.acs.org/action/doSearch?AllField=test%20query"
+  },
+  {
+    "bang": "ada",
+    "url": "http://www.ada-auth.org/search-rm05.cgi?SearchA=test%20query&SearchO=&SearchN="
+  },
+  {
+    "bang": "adablog",
+    "url": "https://blog.adafruit.com/?s=test%20query"
+  },
+  {
+    "bang": "adf",
+    "url": "https://forums.developer.apple.com/search.jspa?q=test%20query"
+  },
+  {
+    "bang": "8chb",
+    "url": "http://8ch.net/boards.php?title=test%20query"
+  },
+  {
+    "bang": "8chc",
+    "url": "http://8ch.net/test%20query/catalog.html"
+  },
+  {
+    "bang": "8tracks",
+    "url": "http://8tracks.com/explore/all?q=test%20query"
+  },
+  {
+    "bang": "99quotes",
+    "url": "https://99quotes.me/search?q=test%20query"
+  },
+  {
+    "bang": "9g",
+    "url": "http://9gag.com/search?query=test%20query"
+  },
+  {
+    "bang": "9gag",
+    "url": "https://9gag.com/search?query=test%20query"
+  },
+  {
+    "bang": "a2",
+    "url": "http://alternativeto.net/browse/search/?q=test%20query&ignoreExactMatch=true"
+  },
+  {
+    "bang": "aa",
+    "url": "http://www.amazon.com/s/&url=search-alias%3Dautomotive&field-keywords=test%20query"
+  },
+  {
+    "bang": "aae",
+    "url": "http://www.albumartexchange.com/covers.php?q=test%20query"
+  },
+  {
+    "bang": "a",
+    "url": "https://www.amazon.com/s?k=test%20query"
+  },
+  {
+    "bang": "aapt",
+    "url": "http://www.aptoide.com/search/view?search_top= test%20query &x=0&y=0"
+  },
+  {
+    "bang": "aaw",
+    "url": "http://aceattorney.wikia.com/wiki/test%20query"
+  },
+  {
+    "bang": "àax",
+    "url": "http://www.albumartexchange.com/covers?fltr=ALL&sort=TITLE&q=test%20query"
+  },
+  {
+    "bang": "aax",
+    "url": "http://www.albumartexchange.com/covers.php?q=test%20query"
+  },
+  {
+    "bang": "ab",
+    "url": "http://airbitz.co/search?term=test%20query"
+  },
+  {
+    "bang": "abandonia",
+    "url": "http://www.abandonia.com/en/search_abandonia/test%20query"
+  },
+  {
+    "bang": "abbuc",
+    "url": "http://www.abbuc.de/component/search/?searchword=test%20query"
+  },
+  {
+    "bang": "abc",
+    "url": "http://abcnotation.com/searchTunes?q=test%20query"
+  },
+  {
+    "bang": "abcam",
+    "url": "https://www.abcam.com/products?keywords=test%20query"
+  },
+  {
+    "bang": "abcnotation",
+    "url": "http://abcnotation.com/searchTunes?q=test%20query&f=c&o=a&s=0"
+  },
+  {
+    "bang": "abe",
+    "url": "http://www.abesmarket.com/catalogsearch/result/?cat=5&order=relevance&dir=desc&q=test%20query"
+  },
+  {
+    "bang": "ab-er",
+    "url": "http://www.lingvo-online.ru/en/Translate/en-ru/test%20query"
+  },
+  {
+    "bang": "abn",
+    "url": "http://abr.business.gov.au/Search.aspx?SearchText=test%20query"
+  },
+  {
+    "bang": "about",
+    "url": "http://search.about.com/fullsearch.htm?terms=test%20query"
+  }
+]

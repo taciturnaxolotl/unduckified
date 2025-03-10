@@ -31,7 +31,7 @@ jobs:
       - name: Replace bangs.json
         run: |
           mkdir -p src
-          mv bangs.json src/bangs.json
+          mv bangs.json src/bangs/bangs.json
 
       - name: 🥔 hash
         run: bun run hash
