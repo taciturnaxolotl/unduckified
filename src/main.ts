@@ -44,7 +44,17 @@ export const CONSTANTS = {
 		DOWN: ["(↓°□°)↓", "(´◕‿◕)↓", "↓(´・ω・)↓"],
 	},
 };
-const customBangs = JSON.parse(localStorage.getItem("custom-bangs") || "{}");
+const customBangs: {
+	[key: string]: {
+		c?: string;
+		d: string;
+		r: number;
+		s: string;
+		sc?: string;
+		t: string;
+		u: string;
+	};
+} = JSON.parse(localStorage.getItem("custom-bangs") || "{}");
 
 function getFocusableElements(
 	root: HTMLElement = document.body,
@@ -461,6 +471,7 @@ function noSearchDefaultPageRender() {
 			s: shortcut,
 			u: searchUrl,
 			d: baseUrl,
+			r: 0,
 		};
 		storage.set(
 			CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS,
@@ -476,7 +487,8 @@ function noSearchDefaultPageRender() {
 
 	validatedElements.removeBangs.forEach((button) => {
 		button.addEventListener("click", (event) => {
-			const shortcut = (event.target as HTMLButtonElement).dataset.shortcut;
+			const shortcut = (event.target as HTMLButtonElement).dataset
+				.shortcut as string;
 			delete customBangs[shortcut];
 			storage.set(
 				CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS,
