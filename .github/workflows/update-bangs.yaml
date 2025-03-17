@@ -43,3 +43,16 @@ jobs:
           git add src/bangs/bangs.json src/bangs/hashbang.ts
           git commit -m "chore: update bangs.json" || exit 0
           git push
+
+      - name: Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Add remote
+        run: git remote add tangled git@ember:did:plc:krxbvxvis5skq7jj6eot23ul/unduckified
+
+      - name: Push to tangled
+        run: git push tangled main
