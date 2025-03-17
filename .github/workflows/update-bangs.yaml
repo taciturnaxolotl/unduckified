@@ -1,4 +1,4 @@
-name: Daily fetch bangs.json from DDG
+name: Daily fetch bangs.json from Kagi
 on:
   schedule:
     - cron: "0 0 * * *"
@@ -15,7 +15,7 @@ jobs:
 
       - name: Download bangs.json
         run: |
-          curl -o bangs.json https://duckduckgo.com/bang.js
+          curl -o bangs.json https://raw.githubusercontent.com/kagisearch/bangs/refs/heads/main/data/bangs.json
 
       - name: Verify file
         run: |
