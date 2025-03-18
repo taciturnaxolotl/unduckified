@@ -54,5 +54,10 @@ jobs:
       - name: Add remote
         run: git remote add tangled git@ember:did:plc:krxbvxvis5skq7jj6eot23ul/unduckified
 
+      - name: Configure ssh
+        run: |
+          mkdir -p ~/.ssh
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
       - name: Push to tangled
         run: git push tangled main
