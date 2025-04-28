@@ -18409,9 +18409,9 @@
   },
   {
     "s": "Common Vulnerabilities and Exposures (CVE)",
-    "d": "cve.mitre.org",
+    "d": "www.cve.org",
     "t": "cve",
-    "u": "https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword={{{s}}}",
+    "u": "https://www.cve.org/CVERecord/SearchResults?query={{{s}}}",
     "c": "Tech",
     "sc": "Libraries/Frameworks"
   },
@@ -85446,6 +85446,14 @@
     "d": "www.svgrepo.com",
     "t": "svgrepo",
     "u": "https://www.svgrepo.com/vectors/{{{s}}}/",
+    "c": "Multimedia",
+    "sc": "Images"
+  },
+  {
+    "s": "svgl",
+    "d": "svgl.app",
+    "t": "svgl",
+    "u": "https://svgl.app/?search={{{s}}}",
     "c": "Multimedia",
     "sc": "Images"
   },
