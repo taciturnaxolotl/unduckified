@@ -42,7 +42,7 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 
 I would love to add these but they don't seem possible / feasible at the moment:
 - [ ] ~Search suggestions~ (as far as I can tell this essentially impossible to do natively with either firefox or chrome; please correct me if I'm wrong though. In this case I would very much love to be wrong)
-- [x] ~Weekly bang checks to ensure that all bangs still work and excludes those that don't~ this ended up being unreliable because of cloudflare rate limiting and switching to kagi bangs helped a lot with this
+- [x] ~Weekly bang checks to ensure that all bangs still work and excludes those that don't~ (this ended up being unreliable because of cloudflare rate limiting and switching to kagi bangs helped a lot with this)
 
 ## Fancy smancy technical graphs 😮
 
