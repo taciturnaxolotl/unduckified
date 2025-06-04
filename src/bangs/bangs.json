@@ -107229,7 +107229,7 @@
     "s": "Kagi Translate (Proofread)",
     "d": "translate.kagi.com",
     "t": "kpr",
-    "u": "https://translate.kagi.com/?text={{{s}}}&from=Automatic&to=Proofread",
+    "u": "https://translate.kagi.com/proofread?text={{{s}}}&from=auto",
     "c": "Translation",
     "sc": "General"
   },
@@ -107307,5 +107307,13 @@
     "u": "https://vibe.naver.com/search?query={{{s}}}",
     "c": "Multimedia",
     "sc": "Music"
+  },
+  {
+    "s": "Libro.fm",
+    "d": "libro.fm",
+    "t": "Libro",
+    "u": "https://libro.fm/search?utf8=%E2%9C%93&q={{{s}}}",
+    "c": "Shopping",
+    "sc": "Online"
   }
 ]
