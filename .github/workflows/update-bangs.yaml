@@ -41,8 +41,18 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add src/bangs/bangs.json src/bangs/hashbang.ts
-          git commit -m "chore: update bangs.json" || exit 0
-          git push
+
+          # Check if the last commit was a bangs update
+          LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
+          if [[ "$LAST_COMMIT_MSG" == "chore: update bangs.json" ]]; then
+            # If it was, amend the commit
+            git commit --amend -m "chore: update bangs.json" || exit 0
+          else
+            # Otherwise, create a new commit
+            git commit -m "chore: update bangs.json" || exit 0
+          fi
+
+          git push --force-with-lease
 
       - name: Tailscale
         uses: tailscale/github-action@v3
