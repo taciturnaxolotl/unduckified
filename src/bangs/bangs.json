@@ -8,6 +8,14 @@
     "sc": "Downloads (apps)"
   },
   {
+    "s": "ADS-B Exchange",
+    "d": "www.adsbexchange.com",
+    "t": "adsb",
+    "u": "https://www.adsbexchange.com/?icao={{{s}}}",
+    "c": "Research",
+    "sc": "Travel"
+  },
+  {
     "s": "BMW 2002 FAQ",
     "d": "www.bmw2002faq.com",
     "t": "02faq",
@@ -47755,6 +47763,14 @@
     "u": "https://www.jetpens.com/search?q={{{s}}}",
     "c": "Shopping",
     "sc": "Online (marketplace)"
+  },
+  {
+    "s": "JetPhotos",
+    "d": "www.jetphotos.com",
+    "t": "jetphoto",
+    "u": "https://www.jetphotos.com/photo/keyword/{{{s}}}",
+    "c": "Research",
+    "sc": "Travel"
   },
   {
     "s": "JeuxVideo",
