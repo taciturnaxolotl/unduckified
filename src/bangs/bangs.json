@@ -1444,7 +1444,7 @@
     "s": "Allociné",
     "d": "www.allocine.fr",
     "t": "ac",
-    "u": "https://www.allocine.fr/recherche/?q={{{s}}}",
+    "u": "https://www.allocine.fr/rechercher/?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Movies"
   },
@@ -3225,7 +3225,7 @@
     "s": "Allociné",
     "d": "www.allocine.fr",
     "t": "allo",
-    "u": "https://www.allocine.fr/recherche/?q={{{s}}}",
+    "u": "https://www.allocine.fr/rechercher/?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Movies"
   },
@@ -3233,7 +3233,7 @@
     "s": "Allocine.com",
     "d": "www.allocine.fr",
     "t": "allocine",
-    "u": "https://www.allocine.fr/recherche/?q={{{s}}}",
+    "u": "https://www.allocine.fr/rechercher/?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Movies"
   },
@@ -3241,7 +3241,7 @@
     "s": "Allociné",
     "d": "www.allocine.fr",
     "t": "allociné",
-    "u": "https://www.allocine.fr/recherche/?q={{{s}}}",
+    "u": "https://www.allocine.fr/rechercher/?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Movies"
   },
@@ -4528,7 +4528,7 @@
   {
     "s": "Amazon Prime Now",
     "d": "primenow.amazon.com",
-    "t": "aNOW",
+    "t": "anow",
     "u": "https://primenow.amazon.com/search?k={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
@@ -4542,10 +4542,10 @@
     "sc": "Newspaper"
   },
   {
-    "s": "docs.ansible.com",
+    "s": "Ansible Docs",
     "d": "docs.ansible.com",
     "t": "ansible",
-    "u": "https://docs.ansible.com/ansible/latest/#stq={{{s}}}&stp=1",
+    "u": "https://docs.ansible.com/ansible/latest/search.html?q={{{s}}}",
     "c": "Tech",
     "sc": "Sysadmin"
   },
@@ -4553,7 +4553,7 @@
     "s": "Ansible Galaxy",
     "d": "galaxy.ansible.com",
     "t": "ansible-galaxy",
-    "u": "https://galaxy.ansible.com/list#/roles?page=1&page_size=10&autocomplete={{{s}}}",
+    "u": "https://galaxy.ansible.com/ui/search/?keywords={{{s}}}",
     "c": "Tech",
     "sc": "Sysadmin"
   },
@@ -4561,7 +4561,7 @@
     "s": "Ansible Module Documentation",
     "d": "docs.ansible.com",
     "t": "ansiblemod",
-    "u": "https://docs.ansible.com/ansible/{{{s}}}_module.html",
+    "u": "https://docs.ansible.com/ansible/latest/collections/ansible/builtin/{{{s}}}_module.html",
     "c": "Tech",
     "sc": "Sysadmin"
   },
@@ -5508,7 +5508,7 @@
     "s": "ArchLinux User Repository",
     "d": "aur.archlinux.org",
     "t": "archaur",
-    "u": "https://aur.archlinux.org/packages.php?O=0&K={{{s}}}&do_Search=Go",
+    "u": "https://aur.archlinux.org/packages?O=0&K={{{s}}}",
     "c": "Tech",
     "sc": "Languages (other)"
   },
@@ -5866,9 +5866,9 @@
   },
   {
     "s": "Ark official Wiki",
-    "d": "ark.gamepedia.com",
+    "d": "ark.wiki.gg",
     "t": "arkwiki",
-    "u": "https://ark.gamepedia.com/index.php?search={{{s}}}",
+    "u": "https://ark.wiki.gg/index.php?search={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (specific)"
   },
@@ -6740,7 +6740,7 @@
   {
     "s": "XE (AUD2EUR)",
     "d": "www.xe.com",
-    "t": "AUD2EUR",
+    "t": "aud2eur",
     "u": "https://www.xe.com/currencyconverter/convert/?Amount={{{s}}}&From=AUD&To=EUR",
     "c": "Online Services",
     "sc": "Tools"
@@ -6748,7 +6748,7 @@
   {
     "s": "XE (AUD2GBP)",
     "d": "www.xe.com",
-    "t": "AUD2GDP",
+    "t": "aud2gdp",
     "u": "https://www.xe.com/currencyconverter/convert/?Amount={{{s}}}&From=AUD&To=GBP",
     "c": "Online Services",
     "sc": "Tools"
@@ -7797,7 +7797,7 @@
   {
     "s": "Pipl - Profile Search enguine",
     "d": "pipl.com",
-    "t": "BangPeople",
+    "t": "bangpeople",
     "u": "https://pipl.com/search/?q={{{s}}}",
     "c": "Online Services",
     "sc": "Search"
@@ -8176,7 +8176,7 @@
     "s": "British Board of Film Classification",
     "d": "www.bbfc.co.uk",
     "t": "bbfc",
-    "u": "https://www.bbfc.co.uk/search/releases/{{{s}}}",
+    "u": "https://www.bbfc.co.uk/search?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Movies"
   },
@@ -9620,7 +9620,7 @@
     "s": "bilibili",
     "d": "www.bilibili.com",
     "t": "bili",
-    "u": "https://www.bilibili.com/search?keyword={{{s}}}:",
+    "u": "https://www.bilibili.com/search?keyword={{{s}}}",
     "c": "Multimedia",
     "sc": "Video"
   },
@@ -9731,7 +9731,7 @@
   {
     "s": "Bing UK",
     "d": "bing.co.uk",
-    "t": "Binguk",
+    "t": "binguk",
     "u": "https://bing.co.uk/?q={{{s}}}",
     "c": "Online Services",
     "sc": "Search (non-US)"
@@ -10780,11 +10780,11 @@
   },
   {
     "s": "Binding of Isaac: Rebirth Wiki",
-    "d": "bindingofisaacrebirth.gamepedia.com",
+    "d": "bindingofisaacrebirth.wiki.gg",
     "t": "boi",
-    "u": "https://bindingofisaacrebirth.gamepedia.com/index.php?search={{{s}}}",
+    "u": "https://bindingofisaacrebirth.wiki.gg/index.php?search={{{s}}}",
     "c": "Entertainment",
-    "sc": "Games (general)"
+    "sc": "Games (specific)"
   },
   {
     "s": "boingboing",
@@ -11392,7 +11392,7 @@
     "s": "Baseball-Reference",
     "d": "www.baseball-reference.com",
     "t": "baseball",
-    "u": "https://www.baseball-reference.com/pl/player_search.cgi?search={{{s}}}",
+    "u": "https://www.baseball-reference.com/search/search.fcgi?hint=&search={{{s}}}",
     "c": "Research",
     "sc": "Reference"
   },
@@ -12705,7 +12705,7 @@
   {
     "s": "CajunLyrics",
     "d": "www.cajunlyrics.com",
-    "t": "CajunLyrics",
+    "t": "cajunlyrics",
     "u": "https://www.cajunlyrics.com/?page=search&word={{{s}}}",
     "c": "Multimedia",
     "sc": "Music (Lyrics)"
@@ -16230,7 +16230,7 @@
   {
     "s": "Colorado State University library",
     "d": "colostate-primo.hosted.exlibrisgroup.com",
-    "t": "Cololib",
+    "t": "cololib",
     "u": "https://colostate-primo.hosted.exlibrisgroup.com/primo-explore/search?vid=01COLSU&lang=en_US&primoQueryTemp=d&search_field=any&search_scope=Everything&query=any,contains,{{{s}}}",
     "c": "Research",
     "sc": "Academic"
@@ -16708,7 +16708,7 @@
   {
     "s": "Coolapk",
     "d": "www.coolapk.com",
-    "t": "Coolapk",
+    "t": "coolapk",
     "u": "https://www.coolapk.com/search?q={{{s}}}",
     "c": "Tech",
     "sc": "Downloads (apps)"
@@ -19292,9 +19292,9 @@
   },
   {
     "s": "Dead by Daylight Wiki",
-    "d": "deadbydaylight.gamepedia.com",
+    "d": "deadbydaylight.wiki.gg",
     "t": "dbd",
-    "u": "https://deadbydaylight.gamepedia.com/index.php?search={{{s}}}&title=Special:Search&go=Go",
+    "u": "https://deadbydaylight.wiki.gg/index.php?search={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (specific)"
   },
@@ -19918,9 +19918,9 @@
   },
   {
     "s": "Official Darkest Dungeon Wiki",
-    "d": "darkestdungeon.gamepedia.com",
+    "d": "darkestdungeon.wiki.gg",
     "t": "ddwiki",
-    "u": "https://darkestdungeon.gamepedia.com/index.php?search={{{s}}}",
+    "u": "https://darkestdungeon.wiki.gg/index.php?search={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (specific)"
   },
@@ -23842,7 +23842,7 @@
   {
     "s": "Discord Servers",
     "d": "discordservers.com",
-    "t": "DscSrv",
+    "t": "dscsrv",
     "u": "https://discordservers.com/?term={{{s}}}",
     "c": "Online Services",
     "sc": "Social"
@@ -25386,9 +25386,9 @@
   },
   {
     "s": "Eco Wiki",
-    "d": "eco.gamepedia.com",
+    "d": "wiki.play.eco",
     "t": "ecowiki",
-    "u": "https://eco.gamepedia.com/index.php?search={{{s}}}&title=Special:Search",
+    "u": "https://wiki.play.eco/index.php?search={{{s}}}&title=Special:Search",
     "c": "Entertainment",
     "sc": "Games (specific)"
   },
@@ -28014,11 +28014,11 @@
   },
   {
     "s": "Enter the Gungeon Wiki",
-    "d": "enterthegungeon.gamepedia.com",
+    "d": "enterthegungeon.wiki.gg",
     "t": "etg",
-    "u": "https://enterthegungeon.gamepedia.com/index.php?search={{{s}}}",
+    "u": "https://enterthegungeon.wiki.gg/index.php?search={{{s}}}",
     "c": "Entertainment",
-    "sc": "Games (general)"
+    "sc": "Games (specific)"
   },
   {
     "s": "etherscan",
@@ -28633,7 +28633,7 @@
     "s": "Examine",
     "d": "examine.com",
     "t": "examine",
-    "u": "https://examine.com/search.php?q={{{s}}}",
+    "u": "https://examine.com/search/?q={{{s}}}",
     "c": "Research",
     "sc": "Health"
   },
@@ -32472,9 +32472,9 @@
   },
   {
     "s": "Unofficial Feed The Beast Wiki",
-    "d": "ftb.gamepedia.com",
+    "d": "ftbwiki.org",
     "t": "ftbwiki",
-    "u": "https://ftb.gamepedia.com/index.php?title=Special:Search&search={{{s}}}",
+    "u": "https://ftbwiki.org/index.php?title=Special:Search&search={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (Minecraft)"
   },
@@ -33140,7 +33140,7 @@
     "s": "Ansible Galaxy",
     "d": "galaxy.ansible.com",
     "t": "galaxy",
-    "u": "https://galaxy.ansible.com/search?keywords={{{s}}}",
+    "u": "https://galaxy.ansible.com/ui/search/?keywords={{{s}}}",
     "c": "Tech",
     "sc": "Sysadmin"
   },
@@ -35051,6 +35051,14 @@
     "d": "github.com",
     "t": "ghcode",
     "u": "https://github.com/search?utf8=%E2%9C%93&q={{{s}}}&type=Code",
+    "c": "Tech",
+    "sc": "Programming"
+  },
+  {
+    "s": "grep.app",
+    "d": "grep.app",
+    "t": "grep",
+    "u": "https://grep.app/search?q={{{s}}}",
     "c": "Tech",
     "sc": "Programming"
   },
@@ -40624,7 +40632,7 @@
   {
     "s": "Detect language to Chinese",
     "d": "translate.google.com",
-    "t": "gtzh-CN",
+    "t": "gtzh-cn",
     "u": "https://translate.google.com/#auto/zh-CN/{{{s}}}",
     "c": "Translation",
     "sc": "Google"
@@ -40632,7 +40640,7 @@
   {
     "s": "Detect language to traditional Chinese",
     "d": "translate.google.com",
-    "t": "gtzh-TW",
+    "t": "gtzh-tw",
     "u": "https://translate.google.com/#auto/zh-TW/{{{s}}}",
     "c": "Online Services",
     "sc": "Google"
@@ -46592,9 +46600,9 @@
   },
   {
     "s": "The Binding of Isaac Rebirth Wiki",
-    "d": "bindingofisaacrebirth.gamepedia.com",
+    "d": "bindingofisaacrebirth.wiki.gg",
     "t": "isaac",
-    "u": "https://bindingofisaacrebirth.gamepedia.com/index.php?search={{{s}}}",
+    "u": "https://bindingofisaacrebirth.wiki.gg/index.php?search={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (specific)"
   },
@@ -48948,7 +48956,7 @@
   {
     "s": "KarmaPlace",
     "d": "www.karmaplace.com",
-    "t": "KarmaPlace",
+    "t": "karmaplace",
     "u": "https://www.karmaplace.com/catalogsearch/result/?q={{{s}}}",
     "c": "Shopping",
     "sc": "Online (marketplace)"
@@ -54615,7 +54623,7 @@
   {
     "s": "Lazada Malaysia",
     "d": "www.lazada.com.my",
-    "t": "LzdMy",
+    "t": "lzdmy",
     "u": "https://www.lazada.com.my/catalog/?q={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
@@ -55562,7 +55570,7 @@
     "s": "Super Mario Wiki",
     "d": "www.mariowiki.com",
     "t": "mario",
-    "u": "https://www.mariowiki.com/{{{s}}}",
+    "u": "https://www.mariowiki.com/index.php?title=Special:Search&search={{{s}}}&go=Go",
     "c": "Entertainment",
     "sc": "Games (specific)"
   },
@@ -56501,10 +56509,26 @@
     ]
   },
   {
-    "s": "Minecraft Name History",
+    "s": "NameMC",
     "d": "namemc.com",
     "t": "mcname",
     "u": "https://namemc.com/search?q={{{s}}}",
+    "c": "Entertainment",
+    "sc": "Games (Minecraft)"
+  },
+  {
+    "s": "Laby",
+    "d": "laby.net",
+    "t": "laby",
+    "u": "https://laby.net/@{{{s}}}",
+    "c": "Entertainment",
+    "sc": "Games (Minecraft)"
+  },
+  {
+    "s": "Crafty",
+    "d": "crafty.gg",
+    "t": "crafty",
+    "u": "https://crafty.gg/players?search={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (Minecraft)"
   },
@@ -61310,9 +61334,9 @@
   },
   {
     "s": "NameMC",
-    "d": "de.namemc.com",
+    "d": "namemc.com",
     "t": "namemc",
-    "u": "https://de.namemc.com/search?q={{{s}}}",
+    "u": "https://namemc.com/search?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (Minecraft)"
   },
@@ -63209,7 +63233,7 @@
     "s": "Nexus Mods",
     "d": "www.nexusmods.com",
     "t": "nm",
-    "u": "https://www.nexusmods.com/search/?gsearch={{{s}}}&gsearchtype=mods",
+    "u": "https://www.nexusmods.com/search?keyword={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (general)"
   },
@@ -65477,9 +65501,9 @@
   },
   {
     "s": "Oxygen Not Included Wiki",
-    "d": "oxygennotincluded.gamepedia.com",
+    "d": "oxygennotincluded.wiki.gg",
     "t": "oni",
-    "u": "https://oxygennotincluded.gamepedia.com/index.php?search={{{s}}}",
+    "u": "https://oxygennotincluded.wiki.gg/index.php?search={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (specific)"
   },
@@ -68602,7 +68626,7 @@
   {
     "s": "Perlentaucher",
     "d": "www.perlentaucher.de",
-    "t": "Perlen",
+    "t": "perlen",
     "u": "https://www.perlentaucher.de/nsuche?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Misc"
@@ -70417,7 +70441,7 @@
     "sc": "General"
   },
   {
-    "s": "Path of Exile Wiki",
+    "s": "Path of Exile Gamepedia",
     "d": "pathofexile.gamepedia.com",
     "t": "poewiki",
     "u": "https://pathofexile.gamepedia.com/index.php?title=Special:Search&profile=default&search={{{s}}}&fulltext=Search",
@@ -74372,12 +74396,12 @@
     "sc": "Online"
   },
   {
-    "s": "Binding of Isaac Rebirth Gamepedia",
-    "d": "bindingofisaacrebirth.gamepedia.com",
+    "s": "Binding of Isaac Rebirth Wiki",
+    "d": "bindingofisaacrebirth.wiki.gg",
     "t": "rebirth",
-    "u": "https://bindingofisaacrebirth.gamepedia.com/index.php?search={{{s}}}",
+    "u": "https://bindingofisaacrebirth.wiki.gg/index.php?search={{{s}}}",
     "c": "Entertainment",
-    "sc": "Games (general)"
+    "sc": "Games (specific)"
   },
   {
     "s": "Red de Bibliotecas REBIUN",
@@ -86946,6 +86970,14 @@
     "sc": "Tech"
   },
   {
+    "s": "Temu",
+    "d": "www.temu.com",
+    "t": "temu",
+    "u": "https://www.temu.com/search_result.html?search_key={{{s}}}",
+    "c": "Shopping",
+    "sc": "Online (marketplace)"
+  },
+  {
     "s": "https://temp-mail.org/",
     "d": "temp-mail.org",
     "t": "tempmail",
@@ -89265,7 +89297,7 @@
     "s": "Terms of Service; Didn't Read",
     "d": "tosdr.org",
     "t": "tosdr",
-    "u": "https://tosdr.org/#search={{{s}}}",
+    "u": "https://tosdr.org/search/{{{s}}}",
     "c": "Online Services",
     "sc": "Tools"
   },
@@ -100219,9 +100251,9 @@
   },
   {
     "s": "Wynncraft Wiki",
-    "d": "wynncraft.gamepedia.com",
+    "d": "wynncraft.wiki.gg",
     "t": "wynn",
-    "u": "https://wynncraft.gamepedia.com/index.php?search={{{s}}}",
+    "u": "https://wynncraft.wiki.gg/index.php?search={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (Minecraft)"
   },
@@ -102581,7 +102613,7 @@
   {
     "s": "Λεξικό",
     "d": "el.m.wiktionary.org",
-    "t": "Λεξικό",
+    "t": "λεξικό",
     "u": "https://el.m.wiktionary.org/wiki/{{{s}}}",
     "c": "Research",
     "sc": "Academic"
@@ -106779,7 +106811,7 @@
   {
     "s": "Βικιπαίδεια",
     "d": "el.m.wikipedia.org",
-    "t": "Βικι",
+    "t": "βικι",
     "u": "https://el.m.wikipedia.org/wiki/{{{s}}}",
     "c": "Research",
     "sc": "Academic"
@@ -107341,9 +107373,17 @@
     "sc": "Music"
   },
   {
+    "s": "winget.run",
+    "d": "winget.run",
+    "t": "winget",
+    "u": "https://winget.run/search?query={{{s}}}",
+    "c": "Tech",
+    "sc": "Downloads (apps)"
+  },
+  {
     "s": "Libro.fm",
     "d": "libro.fm",
-    "t": "Libro",
+    "t": "libro",
     "u": "https://libro.fm/search?utf8=%E2%9C%93&q={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
