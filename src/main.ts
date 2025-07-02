@@ -536,12 +536,18 @@ function getBangredirectUrl() {
 			storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT, count);
 
 			const match = query.toLowerCase().match(/^!(\S+)|!(\S+)$/i);
-			const selectedBang = match
+			let selectedBang = match
 				? customBangs[match[1] || match[2]] || bangs[match[1] || match[2]]
 				: defaultBang;
-			const cleanQuery = match
+			let cleanQuery = match
 				? query.replace(/!\S+\s*|^(\S+!|!\S+)$/i, "").trim()
 				: query;
+
+			if (selectedBang === undefined) {
+				// invalid bang, fallback to default
+				selectedBang = defaultBang;
+				cleanQuery = query;  // use full query, as DuckDuckGo does
+			}
 
 			// Redirect to base domain if cleanQuery is empty
 			if (!cleanQuery && selectedBang?.d) {
