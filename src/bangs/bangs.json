@@ -1444,7 +1444,7 @@
     "s": "Allociné",
     "d": "www.allocine.fr",
     "t": "ac",
-    "u": "https://www.allocine.fr/recherche/?q={{{s}}}",
+    "u": "https://www.allocine.fr/rechercher/?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Movies"
   },
@@ -3225,7 +3225,7 @@
     "s": "Allociné",
     "d": "www.allocine.fr",
     "t": "allo",
-    "u": "https://www.allocine.fr/recherche/?q={{{s}}}",
+    "u": "https://www.allocine.fr/rechercher/?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Movies"
   },
@@ -3233,7 +3233,7 @@
     "s": "Allocine.com",
     "d": "www.allocine.fr",
     "t": "allocine",
-    "u": "https://www.allocine.fr/recherche/?q={{{s}}}",
+    "u": "https://www.allocine.fr/rechercher/?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Movies"
   },
@@ -3241,7 +3241,7 @@
     "s": "Allociné",
     "d": "www.allocine.fr",
     "t": "allociné",
-    "u": "https://www.allocine.fr/recherche/?q={{{s}}}",
+    "u": "https://www.allocine.fr/rechercher/?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Movies"
   },
@@ -89273,7 +89273,7 @@
     "s": "Terms of Service; Didn't Read",
     "d": "tosdr.org",
     "t": "tosdr",
-    "u": "https://tosdr.org/#search={{{s}}}",
+    "u": "https://tosdr.org/search/{{{s}}}",
     "c": "Online Services",
     "sc": "Tools"
   },
@@ -107347,6 +107347,14 @@
     "u": "https://vibe.naver.com/search?query={{{s}}}",
     "c": "Multimedia",
     "sc": "Music"
+  },
+  {
+    "s": "winget.run",
+    "d": "winget.run",
+    "t": "winget",
+    "u": "https://winget.run/search?query={{{s}}}",
+    "c": "Tech",
+    "sc": "Downloads (apps)"
   },
   {
     "s": "Libro.fm",
