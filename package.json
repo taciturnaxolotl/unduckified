@@ -11,12 +11,12 @@
 		"check": "bun run src/bangs/test-bangs.ts"
 	},
 	"devDependencies": {
-		"typescript": "~5.7.2",
-		"vite": "^6.1.0",
-		"@types/bun": "^1.2.4",
-		"vite-plugin-pwa": "^0.21.1"
+		"typescript": "~5.7.3",
+		"vite": "^6.3.5",
+		"@types/bun": "^1.2.20",
+		"vite-plugin-pwa": "^0.21.2"
 	},
 	"dependencies": {
-		"@fontsource/inter": "^5.2.5"
+		"@fontsource/inter": "^5.2.6"
 	}
 }
