@@ -7,6 +7,7 @@
 ## Quick Start
 
 Add this URL as a custom search engine to your browser to use DuckDuckGo's bangs, but faster:
+
 ```
 https://s.dunkirk.sh?q=%s
 ```
@@ -41,69 +42,14 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 - [x] Kagi bangs! We are able to grab the bangs from [kagisearch/bangs](https://github.com/kagisearch/bangs/) and Kagi is far more responsive than DuckDuckGo when it comes to updating their bangs.
 
 I would love to add these but they don't seem possible / feasible at the moment:
+
 - [ ] ~Search suggestions~ (as far as I can tell this essentially impossible to do natively with either firefox or chrome; please correct me if I'm wrong though. In this case I would very much love to be wrong)
 - [x] ~Weekly bang checks to ensure that all bangs still work and excludes those that don't~ this ended up being unreliable because of cloudflare rate limiting and switching to kagi bangs helped a lot with this
-
-## Fancy smancy technical graphs 😮
-
-The total size of the app is `717.4 KB` (one time download)
-
-### Resource Breakdown
-
-```mermaid
-graph TD
-    subgraph Resources by Size
-        A[index-B8HLUc3J.js<br/>contains all the ddg bangs<br/>482.5 KB]
-        B[Font File<br/>25.1 KB]
-        subgraph Audio Files
-            C[Audio Files<br/>198.5 KB Total]
-        end
-        subgraph Small Assets
-            D[SVGs & CSS<br/>~11 KB]
-        end
-    end
-```
-
-### Network Performance
-
-```mermaid
-gantt
-    title Network Waterfall Chart
-    dateFormat  HH:mm:ss.SSS
-    axisFormat  %L
-    
-    section Initial HTML
-    GET / (2.8 KB)           :done, h1, 10:07:29.038, 208ms
-    
-    section JavaScript
-    beacon.min.js            :done, b1, 10:07:29.279, 0ms
-    index-B8HLUc3J.js (482.5 KB) :done, j1, 10:07:29.286, 32ms
-    registerSW.js (2.2 KB)   :done, j2, 10:07:29.287, 60ms
-    beacon.min.js (2nd)      :done, b2, 10:07:29.383, 0ms
-    
-    section Styles
-    Main CSS (3.8 KB)        :done, c2, 10:07:29.287, 60ms
-    Font File (25.1 KB)      :done, f1, 10:07:29.379, 46ms
-    
-    section Assets
-    gear.svg (2.5 KB)        :done, s1, 10:07:29.494, 58ms
-    clipboard.svg (2.4 KB)   :done, s2, 10:07:29.495, 63ms
-    search.svg (2.4 KB)      :done, s3, 10:07:29.589, 32ms
-    
-    section Audio
-    heavier-tick-sprite.mp3 (22.4 KB) :done, a1, 10:07:29.495, 33ms
-    toggle-off.mp3 (34.3 KB) :done, a2, 10:07:29.495, 32ms
-    toggle-on.mp3 (34.3 KB)  :done, a3, 10:07:29.496, 46ms
-    click.mp3 (34.3 KB)      :done, a4, 10:07:29.497, 35ms
-    double.mp3 (34.3 KB)     :done, a5, 10:07:29.498, 44ms
-    foot-switch.mp3 (34.3 KB):done, a6, 10:07:29.498, 38ms
-```
-
 
 ## Screenshots
 
 <details>
-    <summary>Spoiler Alert: There is both a light and a dark mode 🤯</summary>
+    <summary>Spoiler Alert: There is both a light and a dark mode 🤯 (shocking i know)</summary>
 
 ### Light Mode
 
@@ -111,7 +57,7 @@ gantt
 ![Light Mode with Search History](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/light-history.webp)
 ![Light Mode 404](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/light-404.webp)
 
-### Dark Mode 💪
+### Dark Mode (the superior mode)
 
 ![Dark Mode](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/dark.webp)
 ![Dark Mode with Search History](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/dark-history.webp)
