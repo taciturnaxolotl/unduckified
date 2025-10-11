@@ -1,3 +1,4 @@
+import "./global.css";
 import { bangs } from "./bangs/hashbang.ts";
 import {
 	addToSearchHistory,
@@ -7,11 +8,6 @@ import {
 	storage,
 } from "./libs.ts";
 
-import "@fontsource/inter/latin-400.css";
-import "@fontsource/inter/latin-500.css";
-import "@fontsource/inter/latin-600.css";
-import "@fontsource/inter/latin-700.css";
-import "./global.css";
 import notFoundPageRender from "./404.ts";
 
 export const CONSTANTS = {
@@ -528,13 +524,6 @@ function getBangredirectUrl() {
 				return null;
 			}
 
-			const count = (
-				Number.parseInt(
-					storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT) || "0",
-				) + 1
-			).toString();
-			storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT, count);
-
 			const match = query.toLowerCase().match(/^!(\S+)|!(\S+)$/i);
 			const selectedBang = match
 				? customBangs[match[1] || match[2]] || bangs[match[1] || match[2]]
@@ -548,20 +537,32 @@ function getBangredirectUrl() {
 				return ensureProtocol(selectedBang.d);
 			}
 
-			if (
-				storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED) === "true"
-			) {
-				addToSearchHistory(cleanQuery, {
-					bang: selectedBang?.t || "",
-					name: selectedBang?.s || "",
-					url: selectedBang?.u || "",
-				});
-			}
-
-			return selectedBang?.u.replace(
+			const redirectUrl = selectedBang?.u.replace(
 				"{{{s}}}",
 				encodeURIComponent(cleanQuery).replace(/%2F/g, "/"),
 			);
+
+			// Do these operations after determining redirect URL to minimize delay
+			setTimeout(() => {
+				const count = (
+					Number.parseInt(
+						storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT) || "0",
+					) + 1
+				).toString();
+				storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT, count);
+
+				if (
+					storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED) === "true"
+				) {
+					addToSearchHistory(cleanQuery, {
+						bang: selectedBang?.t || "",
+						name: selectedBang?.s || "",
+						url: selectedBang?.u || "",
+					});
+				}
+			}, 0);
+
+			return redirectUrl;
 		}
 		default:
 			notFoundPageRender();
