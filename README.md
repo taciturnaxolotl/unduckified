@@ -41,10 +41,19 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 - [x] Custom local bangs! (thanks to [@ayoubabedrabbo@mastodon.social](https://mastodon.social/@ayoubabedrabbo/114114311682366314) for the suggestion)
 - [x] Kagi bangs! We are able to grab the bangs from [kagisearch/bangs](https://github.com/kagisearch/bangs/) and Kagi is far more responsive than DuckDuckGo when it comes to updating their bangs.
 
-I would love to add these but they don't seem possible / feasible at the moment:
+## Search Suggestions
 
-- [ ] ~Search suggestions~ (as far as I can tell this essentially impossible to do natively with either firefox or chrome; please correct me if I'm wrong though. In this case I would very much love to be wrong)
-- [x] ~Weekly bang checks to ensure that all bangs still work and excludes those that don't~ (this ended up being unreliable because of cloudflare rate limiting and switching to kagi bangs helped a lot with this)
+On firefox based browsers you can use the dedicated search suggestions url field but on most other browsers unless they have global search suggestions you are kind of out of luck. Thanks to [`KobeW50`](https://github.com/KobeW50) for bringing this to my attention! I added the urls for duckduckgo and chrome below and you can pick your poison on which one you would rather have see what you type in the url bar.
+
+![search suggestions field on firefox](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/search-suggestions.jpeg)
+
+```
+https://duckduckgo.com/ac/?q=%s&type=list
+```
+
+```
+https://www.google.com/complete/search?client=chrome&q=%s
+```
 
 ## Screenshots
 
