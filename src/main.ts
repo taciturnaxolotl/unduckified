@@ -292,12 +292,12 @@ function noSearchDefaultPageRender() {
 		});
 
 		const audio = {
-			spin: createAudio("/heavier-tick-sprite.mp3"),
-			toggleOff: createAudio("/toggle-button-off.mp3"),
-			toggleOn: createAudio("/toggle-button-on.mp3"),
-			click: createAudio("/click-button.mp3"),
-			warning: createAudio("/double-button.mp3"),
-			copy: createAudio("/foot-switch.mp3"),
+			spin: createAudio("/heavier-tick-sprite.opus"),
+			toggleOff: createAudio("/toggle-button-off.opus"),
+			toggleOn: createAudio("/toggle-button-on.opus"),
+			click: createAudio("/click-button.opus"),
+			warning: createAudio("/double-button.opus"),
+			copy: createAudio("/foot-switch.opus"),
 		};
 
 		validatedElements.copyButton.addEventListener("click", () => {
