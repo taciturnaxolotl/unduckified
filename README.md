@@ -26,11 +26,11 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 
 - [x] Bangs
 - [x] Dark Mode
-- [x] Settings (for things like disabling search history and changing default bang)
+- [x] Settings (for things like enabling search history, changing default bang, and creating custom bangs)
 - [x] Search counter
 - [x] [OpenSearch](https://developer.mozilla.org/en-US/docs/Web/XML/Guides/OpenSearch) support
 - [x] Search History (clearable, all local, and disabled by default ofc)
-- [x] Fancy sounds (disabled if you have `prefers-reduced-motion` set; sounds only account for `198.5 KB` of the `717.4 KB` total size)
+- [x] Fancy sounds (disabled if you have `prefers-reduced-motion` set)
 - [x] Cute little text animations
 - [x] Auto updating bangs file! (I'm using a [GitHub Action](https://github.com/taciturnaxolotl/unduckified/actions/workflows/update-bangs.yaml) to update the bangs file every 24 hours)
 - [x] Hashmapped bangs for faster searching
