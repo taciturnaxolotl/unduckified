@@ -58,7 +58,7 @@ https://www.google.com/complete/search?client=chrome&q=%s
 ## Screenshots
 
 <details>
-    <summary>Spoiler Alert: There is both a light and a dark mode 🤯 (shocking i know)</summary>
+    <summary>open this to view the screenshots</summary>
 
 ### Light Mode
 
