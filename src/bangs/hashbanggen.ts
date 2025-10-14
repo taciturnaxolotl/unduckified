@@ -3,21 +3,21 @@ import rawBangs from "./bangs.json" with { type: "json" };
 // Developer script that converts ./bang.ts' array to hashmap.
 
 const hashbang: {
-  [key: string]: {
-    c?: string; // Category
-    sc?: string; // Subcategory
-    d: string; // Domain
-    ad?: string; // Alternate Domain
-    r: number; // Rank (default to 0)
-    s: string; // Website Name
-    t: string; // Trigger
-    ts?: string[]; // Additional Triggers
-    u: string; // Template URL
-    x?: string; // Regex pattern
-    fmt?: string[]; // Format flags
-    skip_tests?: boolean; // Skip tests flag
-  };
-}  = {
+	[key: string]: {
+		c?: string; // Category
+		sc?: string; // Subcategory
+		d: string; // Domain
+		ad?: string; // Alternate Domain
+		r: number; // Rank (default to 0)
+		s: string; // Website Name
+		t: string; // Trigger
+		ts?: string[]; // Additional Triggers
+		u: string; // Template URL
+		x?: string; // Regex pattern
+		fmt?: string[]; // Format flags
+		skip_tests?: boolean; // Skip tests flag
+	};
+} = {
 	t3: {
 		c: "AI",
 		d: "www.t3.chat",
@@ -45,36 +45,45 @@ const hashbang: {
 		t: "tiktok",
 		u: "https://www.tiktok.com/search?q={{{s}}}",
 	},
+	image: {
+		c: "Online Services",
+		d: "duckduckgo.com",
+		r: 0,
+		s: "Duckduckgo images",
+		sc: "Search",
+		t: "image",
+		u: "https://duckduckgo.com/?q={{{s}}}&ia=images&iax=images&atb=v375-1",
+	},
 };
 
 // Convert rawBangs array to hashbang object
 rawBangs.forEach((bang: any) => {
-  if (!bang.t || !bang.u || !bang.s || !bang.d) {
-    console.warn(`Skipping invalid bang: ${JSON.stringify(bang)}`);
-    return;
-  }
+	if (!bang.t || !bang.u || !bang.s || !bang.d) {
+		console.warn(`Skipping invalid bang: ${JSON.stringify(bang)}`);
+		return;
+	}
 
-  hashbang[bang.t] = {
-    c: bang.c,
-    sc: bang.sc,
-    d: bang.d,
-    ad: bang.ad,
-    r: 0, // Default rank
-    s: bang.s,
-    t: bang.t,
-    ts: bang.ts,
-    u: bang.u,
-    x: bang.x,
-    fmt: bang.fmt,
-    skip_tests: bang.skip_tests,
-  };
+	hashbang[bang.t] = {
+		c: bang.c,
+		sc: bang.sc,
+		d: bang.d,
+		ad: bang.ad,
+		r: 0, // Default rank
+		s: bang.s,
+		t: bang.t,
+		ts: bang.ts,
+		u: bang.u,
+		x: bang.x,
+		fmt: bang.fmt,
+		skip_tests: bang.skip_tests,
+	};
 
-  // Add additional triggers (if any) to the hashbang
-  if (bang.ts) {
-    bang.ts.forEach((trigger: string) => {
-      hashbang[trigger] = { ...hashbang[bang.t], t: trigger };
-    });
-  }
+	// Add additional triggers (if any) to the hashbang
+	if (bang.ts) {
+		bang.ts.forEach((trigger: string) => {
+			hashbang[trigger] = { ...hashbang[bang.t], t: trigger };
+		});
+	}
 });
 
 Bun.write(
