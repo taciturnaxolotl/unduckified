@@ -518,7 +518,8 @@ function getBangredirectUrl() {
 	const query = url.searchParams.get("q")?.trim() ?? "";
 
 	switch (url.pathname.replace(/\/$/, "")) {
-		case "": {
+		case "": 
+		case "/search": {
 			if (!query || query === "!" || query === "!settings") {
 				noSearchDefaultPageRender();
 				return null;
@@ -564,9 +565,10 @@ function getBangredirectUrl() {
 
 			return redirectUrl;
 		}
-		default:
+		default: {
 			notFoundPageRender();
 			return null;
+		}
 	}
 }
 
