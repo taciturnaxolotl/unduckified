@@ -829,6 +829,14 @@
     "sc": "Books"
   },
   {
+    "s": "7TV",
+    "d": "7tv.app",
+    "t": "7tv",
+    "u": "https://7tv.app/emotes?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Tools"
+  },
+  {
     "s": "800notes.com",
     "d": "800notes.com",
     "t": "800",
@@ -1415,6 +1423,19 @@
     "sc": "Images"
   },
   {
+    "s": "Amazon UAE",
+    "d": "www.amazon.ae",
+    "t": "a.ae",
+    "ts": [
+      "amazon_ae",
+      "amazonae",
+      "amazon.ae"
+    ],
+    "u": "https://www.amazon.ae/s?k={{{s}}}",
+    "c": "Shopping",
+    "sc": "Online"
+  },
+  {
     "s": "Amazon.ca",
     "d": "www.amazon.ca",
     "t": "aca",
@@ -1611,6 +1632,18 @@
     "u": "https://applecoach.nl/?s={{{s}}}",
     "c": "Tech",
     "sc": "Blogs"
+  },
+  {
+    "s": "Apple Gaming Wiki",
+    "d": "www.applegamingwiki.com",
+    "t": "agw",
+    "ts": [
+      "applegaming",
+      "applegamingwiki"
+    ],
+    "u": "https://www.applegamingwiki.com/w/index.php?search={{{s}}}",
+    "c": "Entertainment",
+    "sc": "Games (general)"
   },
   {
     "s": "Cortas",
@@ -2634,14 +2667,6 @@
     "sc": "Online"
   },
   {
-    "s": "Al Jazeera (English)",
-    "d": "www.aljazeera.com",
-    "t": "aje",
-    "u": "https://www.aljazeera.com/Search/?q={{{s}}}",
-    "c": "News",
-    "sc": "International"
-  },
-  {
     "s": "アマゾン (Amazon Japan)",
     "d": "www.amazon.co.jp",
     "t": "aj",
@@ -2978,14 +3003,6 @@
     "u": "https://alipaczka.pl/?track={{{s}}}",
     "c": "Online Services",
     "sc": "Tracking"
-  },
-  {
-    "s": "Aljazeera English",
-    "d": "english.aljazeera.net",
-    "t": "aljazeera",
-    "u": "https://english.aljazeera.net/Services/Search/?q={{{s}}}",
-    "c": "News",
-    "sc": "Aggregators"
   },
   {
     "s": "Alko",
@@ -4376,7 +4393,7 @@
     "s": "AP",
     "d": "ap.org",
     "t": "ap",
-    "u": "https://ap.org/Search/SearchResults?searchkeywords={{{s}}}",
+    "u": "https://ap.org/?s={{{s}}}&orderby=",
     "c": "News",
     "sc": "Broadcast"
   },
@@ -4809,13 +4826,42 @@
     "sc": "Companies"
   },
   {
-    "s": "App Store on iTunes",
-    "d": "kagi.com",
-    "ad": "itunes.apple.com/us/app",
+    "s": "App Store (iPhone)",
+    "d": "apps.apple.com",
     "t": "appstore",
-    "u": "/search?q=site:itunes.apple.com/us/app/+{{{s}}}",
-    "c": "Shopping",
-    "sc": "Tech"
+    "ts": [
+      "iphoneapps",
+      "iosapps",
+      "iapp",
+      "ipa"
+    ],
+    "u": "https://apps.apple.com/iphone/search?term={{{s}}}",
+    "c": "Tech",
+    "sc": "Downloads (apps)"
+  },
+  {
+    "s": "App Store (Mac)",
+    "d": "apps.apple.com",
+    "t": "macapps",
+    "ts": [
+      "appstoremac",
+      "appsmac",
+      "dmg"
+    ],
+    "u": "https://apps.apple.com/mac/search?term={{{s}}}",
+    "c": "Tech",
+    "sc": "Downloads (apps)"
+  },
+  {
+    "s": "App Store UK (iPhone)",
+    "d": "apps.apple.com",
+    "t": "ukappstore",
+    "ts": [
+      "appstoreuk"
+    ],
+    "u": "https://apps.apple.com/gb/iphone/search?term={{{s}}}",
+    "c": "Tech",
+    "sc": "Downloads (apps)"
   },
   {
     "s": "April",
@@ -8279,6 +8325,14 @@
     "sc": "TV"
   },
   {
+    "s": "BetterTTV",
+    "d": "betterttv.com",
+    "t": "bttv",
+    "u": "https://betterttv.com/emotes/shared/search?query={{{s}}}",
+    "c": "Online Services",
+    "sc": "Tools"
+  },
+  {
     "s": "betterworldbooks.com",
     "d": "betterworldbooks.com",
     "t": "betterworldbooks",
@@ -10082,7 +10136,7 @@
     "s": "boomkat",
     "d": "boomkat.com",
     "t": "boomkat",
-    "u": "http://boomkat.com/search?q={{{s}}}",
+    "u": "http://boomkat.com/products?q[keywords]={{{s}}}",
     "c": "Multimedia",
     "sc": "Music"
   },
@@ -13265,6 +13319,17 @@
     "sc": "AI Chatbots"
   },
   {
+    "s": "Google AI Mode",
+    "d": "www.google.com",
+    "t": "gai",
+    "ts": [
+      "googleai"
+    ],
+    "u": "https://www.google.com/search?q={{{s}}}&udm=50",
+    "c": "Online Services",
+    "sc": "AI Chatbots"
+  },
+  {
     "s": "Chatters Salons",
     "d": "chatters.ca",
     "t": "chatters",
@@ -15917,13 +15982,14 @@
   },
   {
     "s": "cppreference.com",
-    "d": "en.cppreference.com",
+    "d": "kagi.com",
+    "ad": "cppreference.com",
     "t": "cpp",
     "ts": [
       "cppref",
       "c++ref"
     ],
-    "u": "https://en.cppreference.com/mwiki/index.php?search={{{s}}}",
+    "u": "/search?q={{{s}}}+site:cppreference.com",
     "c": "Tech",
     "sc": "Languages (c++)"
   },
@@ -16085,6 +16151,17 @@
       "crissue"
     ],
     "u": "https://issues.chromium.org/issues?q={{{s}}}",
+    "c": "Tech",
+    "sc": "Programming"
+  },
+  {
+    "s": "Chromium Review",
+    "d": "chromium-review.googlesource.com",
+    "t": "cge",
+    "ts": [
+      "cgerrit"
+    ],
+    "u": "https://chromium-review.googlesource.com/q/{{{s}}}",
     "c": "Tech",
     "sc": "Programming"
   },
@@ -20834,14 +20911,6 @@
     "sc": "Tools (URLs)"
   },
   {
-    "s": "Digital Open Access Identifier",
-    "d": "doai.io",
-    "t": "doai",
-    "u": "https://doai.io/{{{s}}}",
-    "c": "Online Services",
-    "sc": "Tools (URLs)"
-  },
-  {
     "s": "Directory of Open Access Journals",
     "d": "www.doaj.org",
     "t": "doaj",
@@ -24639,6 +24708,17 @@
     "sc": "Online (marketplace)"
   },
   {
+    "s": "Engineering Archive",
+    "d": "engrxiv.org",
+    "t": "engr",
+    "ts": [
+      "engrxiv"
+    ],
+    "u": "https://engrxiv.org/search/search?query={{{s}}}",
+    "c": "Research",
+    "sc": "Academic"
+  },
+  {
     "s": "Engrish",
     "d": "www.engrish.com",
     "t": "engrish",
@@ -28321,7 +28401,7 @@
       "flathub",
       "fthub"
     ],
-    "u": "https://flathub.org/apps/search/{{{s}}}",
+    "u": "https://flathub.org/apps/search?q={{{s}}}",
     "c": "Online Services",
     "sc": "Tools"
   },
@@ -28329,7 +28409,7 @@
     "s": "FlatIcon",
     "d": "www.flaticon.com",
     "t": "flaticon",
-    "u": "https://www.flaticon.com/search/{{{s}}}",
+    "u": "https://www.flaticon.com/search?word={{{s}}}",
     "c": "Multimedia",
     "sc": "Images"
   },
@@ -41007,10 +41087,14 @@
     "sc": "General"
   },
   {
-    "s": "Aljazeera",
+    "s": "Al Jazeera",
     "d": "www.aljazeera.com",
-    "t": "intaljazeera",
-    "u": "https://www.aljazeera.com/Services/Search/?q={{{s}}}",
+    "t": "aljazeera",
+    "ts": [
+      "intaljazeera",
+      "aje"
+    ],
+    "u": "https://www.aljazeera.com/search/{{{s}}}",
     "c": "News",
     "sc": "International"
   },
@@ -45850,14 +45934,6 @@
     "sc": "Jobs"
   },
   {
-    "s": "letterboxd",
-    "d": "letterboxd.com",
-    "t": "lb",
-    "u": "https://letterboxd.com/search/{{{s}}}/",
-    "c": "Entertainment",
-    "sc": "Movies"
-  },
-  {
     "s": "Logos Bible Software",
     "d": "www.logos.com",
     "t": "lbs",
@@ -45870,6 +45946,7 @@
     "d": "letterboxd.com",
     "t": "lbx",
     "ts": [
+      "lb",
       "ltr",
       "letterboxd"
     ],
@@ -48849,6 +48926,18 @@
     "u": "https://library.macewan.ca/library-search?query={{{s}}}",
     "c": "Research",
     "sc": "Academic"
+  },
+  {
+    "s": "MacGamingDB",
+    "d": "macgamingdb.app",
+    "t": "mgdb",
+    "ts": [
+      "macgaming",
+      "macgamingdb"
+    ],
+    "u": "https://macgamingdb.app/?q={{{s}}}",
+    "c": "Entertainment",
+    "sc": "Games (general)"
   },
   {
     "s": "MacGeneration",
@@ -52938,7 +53027,7 @@
     "s": "Morningstar Search",
     "d": "www.morningstar.com",
     "t": "morningstar",
-    "u": "https://www.morningstar.com/search.html?q={{{s}}}",
+    "u": "https://www.morningstar.com/search?query={{{s}}}",
     "c": "Research",
     "sc": "Topical"
   },
@@ -53392,22 +53481,6 @@
     "u": "https://www.sciencelab.com/search.php?q={{{s}}}",
     "c": "Research",
     "sc": "Reference (science)"
-  },
-  {
-    "s": "Morningstar (ETF quote)",
-    "d": "etfs.morningstar.com",
-    "t": "mseq",
-    "u": "http://etfs.morningstar.com/quote?t={{{s}}}",
-    "c": "Online Services",
-    "sc": "Tools"
-  },
-  {
-    "s": "Morningstar",
-    "d": "www.morningstar.com",
-    "t": "msfq",
-    "u": "https://www.morningstar.com/funds/xnas/{{{s}}}/quote.html",
-    "c": "Online Services",
-    "sc": "Tools"
   },
   {
     "s": "messenger.com",
@@ -61219,7 +61292,7 @@
     ],
     "u": "https://perplexity.ai/?q={{{s}}}",
     "c": "Online Services",
-    "sc": "Tools"
+    "sc": "AI Chatbots"
   },
   {
     "s": "Personality Database",
@@ -61265,7 +61338,7 @@
     "s": "Petco",
     "d": "www.petco.com",
     "t": "petco",
-    "u": "http://www.petco.com/shop/SearchDisplay?categoryId=&storeId=10151&catalogId=10051&langId=-1&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&searchSource=Q&pageView=&beginIndex=0&pageSize=24&fromPageValue=search&searchTerm={{{s}}}",
+    "u": "https://www.petco.com/shop/en/petcostore/search?query={{{s}}}",
     "c": "Shopping",
     "sc": "Big box/department"
   },
@@ -62748,6 +62821,14 @@
     "sc": "Tools"
   },
   {
+    "s": "Podnews",
+    "d": "podnews.net",
+    "t": "podnews",
+    "u": "https://podnews.net/search?q={{{s}}}",
+    "c": "News",
+    "sc": "Business"
+  },
+  {
     "s": "Path of Exile Database",
     "d": "poedb.tw",
     "t": "poedb",
@@ -64053,6 +64134,17 @@
     "u": "https://mail.proton.me/#keyword={{{s}}}",
     "c": "Online Services",
     "sc": "Tools"
+  },
+  {
+    "s": "Lumo",
+    "d": "lumo.proton.me",
+    "t": "lumo",
+    "ts": [
+      "protonlumo"
+    ],
+    "u": "https://lumo.proton.me/?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "AI Chatbots"
   },
   {
     "s": "Provigo Grocery Store",
@@ -67037,7 +67129,7 @@
     "ts": [
       "reuters"
     ],
-    "u": "https://www.reuters.com/search/news?blob={{{s}}}",
+    "u": "https://www.reuters.com/site-search/?query={{{s}}}",
     "c": "News",
     "sc": "International"
   },
@@ -68506,7 +68598,7 @@
     "s": "Real Time Trains",
     "d": "www.realtimetrains.co.uk",
     "t": "rtt",
-    "u": "https://www.realtimetrains.co.uk/search/handler?type=basic&qs=true&search={{{s}}}",
+    "u": "https://www.realtimetrains.co.uk/search/handler?type=basic&qsearch={{{s}}}",
     "c": "Online Services",
     "sc": "Tracking"
   },
@@ -70667,6 +70759,15 @@
     "ad": "www.serienjunkies.de",
     "t": "serjunk",
     "u": "/search?q={{{s}}}+site:www.serienjunkies.de",
+    "c": "Entertainment",
+    "sc": "TV"
+  },
+  {
+    "s": "SeriesGraph",
+    "d": "seriesgraph.com",
+    "t": "sgr",
+    "ts": ["seriesgraph"],
+    "u": "https://seriesgraph.com/show/search/{{{s}}}",
     "c": "Entertainment",
     "sc": "TV"
   },
@@ -78484,6 +78585,18 @@
     "sc": "Social"
   },
   {
+    "s": "Trainboard",
+    "d": "trainboard.eu",
+    "t": "trainb",
+    "ts": [
+      "trainboard",
+      "zugtafel"
+    ],
+    "u": "https://trainboard.eu/bang.html?station={{{s}}}",
+    "c": "Online Services",
+    "sc": "Tools"
+  },
+  {
     "s": "Trainline Live Departures",
     "d": "www.thetrainline.com",
     "t": "tlld",
@@ -81052,15 +81165,6 @@
     "sc": "Academic"
   },
   {
-    "s": "UK App Store (Kagi Search)",
-    "d": "kagi.com",
-    "ad": "apps.apple.com/gb/app/",
-    "t": "ukappstore",
-    "u": "/search?q={{{s}}}+site:apps.apple.com/gb/app/",
-    "c": "Shopping",
-    "sc": "Online (marketplace)"
-  },
-  {
     "s": "UKCSGO",
     "d": "ukcsgo.com",
     "t": "ukcsgo",
@@ -82293,7 +82397,7 @@
     "ts": [
       "uvalib"
     ],
-    "u": "https://search.lib.virginia.edu/catalog?q={{{s}}}",
+    "u": "https://search.lib.virginia.edu/search?q=keyword:+{{{{s}}}}&pool=uva_library&sort=SortRelevance_desc",
     "c": "Research",
     "sc": "Academic"
   },
@@ -84739,18 +84843,6 @@
     "u": "https://whocalled.us/lookup/{{{s}}}",
     "c": "Research",
     "sc": "Reference"
-  },
-  {
-    "s": "Wiktionary",
-    "d": "en.wiktionary.org",
-    "t": "wdic",
-    "ts": [
-      "wictionary",
-      "wkten"
-    ],
-    "u": "https://en.wiktionary.org/wiki/{{{s}}}",
-    "c": "Research",
-    "sc": "Reference (words)"
   },
   {
     "s": "Wordreference (es)",
@@ -87875,15 +87967,18 @@
     "sc": "Reference (words)"
   },
   {
-    "s": "Wikitionary",
+    "s": "Wiktionary",
     "d": "en.wiktionary.org",
     "t": "wtionary",
     "ts": [
-      "wt"
+      "wt",
+      "wdic",
+      "wictionary",
+      "wkten"
     ],
     "u": "https://en.wiktionary.org/w/index.php?search={{{s}}}&title=Special:Search&go=Go",
     "c": "Research",
-    "sc": "Learning"
+    "sc": "Reference (words)"
   },
   {
     "s": "What the fuck should I listen to right now",
@@ -93042,6 +93137,14 @@
       "proofread"
     ],
     "u": "https://translate.kagi.com/proofread?text={{{s}}}&from=auto",
+    "c": "Translation",
+    "sc": "General"
+  },
+  {
+    "s": "Kagi Translate (Dictionary)",
+    "d": "translate.kagi.com",
+    "t": "kdic",
+    "u": "https://translate.kagi.com/dictionary?word={{{s}}}&from=auto",
     "c": "Translation",
     "sc": "General"
   },
