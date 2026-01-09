@@ -148,6 +148,11 @@ const createTemplate = (data: {
 							</div>
 							<p class="help-text">The best way to add new bangs is by submitting them on <a href="https://duckduckgo.com/newbang" target="_blank">DuckDuckGo</a> but you can also add them below</p>
 							<div style="margin-top: 16px;">
+								<h4>Search Bangs</h4>
+								<input type="text" placeholder="Search bangs by name or shortcut..." id="bang-search" class="bang-search">
+								<div id="bang-search-results" class="bang-search-results"></div>
+							</div>
+							<div style="margin-top: 16px;">
 								<h4>Add Custom Bang</h4>
 								<div class="custom-bang-inputs">
 									<input type="text" placeholder="Bang name" id="bang-name" class="bang-name">

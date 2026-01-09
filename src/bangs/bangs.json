@@ -93144,5 +93144,77 @@
     "u": "https://libro.fm/search?utf8=%E2%9C%93&q={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
+  },
+  {
+    "s": "Kagi Search",
+    "d": "kagi.com",
+    "t": "k",
+    "ts": ["kagi"],
+    "u": "https://kagi.com/search?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Search"
+  },
+  {
+    "s": "Kagi Images",
+    "d": "kagi.com",
+    "t": "ki",
+    "ts": ["kagii"],
+    "u": "https://kagi.com/images?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Search"
+  },
+  {
+    "s": "Kagi Videos",
+    "d": "kagi.com",
+    "t": "kv",
+    "ts": ["kagiv"],
+    "u": "https://kagi.com/videos?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Search"
+  },
+  {
+    "s": "Kagi News",
+    "d": "kagi.com",
+    "t": "kn",
+    "ts": ["kagin"],
+    "u": "https://kagi.com/news?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Search"
+  },
+  {
+    "s": "Kagi Maps",
+    "d": "kagi.com",
+    "t": "km",
+    "ts": ["kagim"],
+    "u": "https://kagi.com/maps?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Search"
+  },
+  {
+    "s": "Kagi Podcasts",
+    "d": "kagi.com",
+    "t": "kp",
+    "ts": ["kagip"],
+    "u": "https://kagi.com/podcasts?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Search"
+  },
+  {
+    "s": "Kagi FastGPT",
+    "d": "kagi.com",
+    "t": "kfast",
+    "ts": ["kfgpt"],
+    "u": "https://kagi.com/fastgpt?query={{{s}}}",
+    "c": "Online Services",
+    "sc": "Search"
+  },
+  {
+    "s": "Kagi Assistant",
+    "d": "kagi.com",
+    "t": "kai",
+    "ts": ["kagiai"],
+    "u": "https://kagi.com/assistant?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Search"
   }
 ]
