@@ -142,7 +142,7 @@ const createTemplate = (data: {
 					<h2>Settings</h2>
 					<div class="settings-section">
 					    <h3>Bangs</h3>
-							<label for="default-bang" id="bang-description">Default Bang: ${bangs[data.LS_DEFAULT_BANG].s || "Unknown bang"}</label>
+							<label for="default-bang" id="bang-description">Default Bang: ${(customBangs[data.LS_DEFAULT_BANG] || bangs[data.LS_DEFAULT_BANG])?.s || "Unknown bang"}</label>
 							<div class="bang-select-container">
 									<input type="text" id="default-bang" class="bang-select" value="${data.LS_DEFAULT_BANG}">
 							</div>
