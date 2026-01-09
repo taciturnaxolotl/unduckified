@@ -42,12 +42,9 @@ export const CONSTANTS = {
 };
 const customBangs: {
 	[key: string]: {
-		c?: string;
 		d: string;
-		r: number;
+		ad?: string;
 		s: string;
-		sc?: string;
-		t: string;
 		u: string;
 	};
 } = JSON.parse(localStorage.getItem("custom-bangs") || "{}");
@@ -174,7 +171,7 @@ const createTemplate = (data: {
   									<div class="custom-bang-item">
    									<table class="custom-bang-info">
    											<tr>
-  												<td class="custom-bang-name">${bang.t}</td>
+  												<td class="custom-bang-name">${bang.s}</td>
   												<td class="custom-bang-shortcut"><code>!${shortcut}</code></td>
   												<td class="custom-bang-base">${bang.d}</td>
    											</tr>
@@ -470,11 +467,9 @@ function noSearchDefaultPageRender() {
 		if (!name || !searchUrl || !baseUrl) return;
 
 		customBangs[shortcut] = {
-			t: name,
-			s: shortcut,
+			s: name,
 			u: searchUrl,
 			d: baseUrl,
-			r: 0,
 		};
 		storage.set(
 			CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS,
@@ -506,51 +501,55 @@ function noSearchDefaultPageRender() {
 		});
 	});
 
+	let searchDebounceTimer: ReturnType<typeof setTimeout>;
 	validatedElements.bangSearch.addEventListener("input", (event) => {
-		const query = (event.target as HTMLInputElement).value.trim().toLowerCase();
+		clearTimeout(searchDebounceTimer);
 		const resultsContainer = validatedElements.bangSearchResults;
+		const query = (event.target as HTMLInputElement).value.trim().toLowerCase();
 
 		if (!query) {
 			resultsContainer.innerHTML = "";
 			return;
 		}
 
-		const allBangs = { ...bangs, ...customBangs };
-		const results = Object.entries(allBangs)
-			.filter(([shortcut, bang]) => {
-				const searchableText = `${shortcut} ${bang.s} ${bang.d} ${bang.t || ""}`.toLowerCase();
-				return searchableText.includes(query);
-			})
-			.sort((a, b) => {
-				const [shortcutA, bangA] = a;
-				const [shortcutB, bangB] = b;
-				const aStartsWithQuery = shortcutA.toLowerCase().startsWith(query) || bangA.s.toLowerCase().startsWith(query);
-				const bStartsWithQuery = shortcutB.toLowerCase().startsWith(query) || bangB.s.toLowerCase().startsWith(query);
-				if (aStartsWithQuery && !bStartsWithQuery) return -1;
-				if (!aStartsWithQuery && bStartsWithQuery) return 1;
-				return shortcutA.length - shortcutB.length;
-			})
-			.slice(0, 20);
+		searchDebounceTimer = setTimeout(() => {
+			const allBangs = { ...bangs, ...customBangs };
+			const results = Object.entries(allBangs)
+				.filter(([shortcut, bang]) => {
+					const searchableText = `${shortcut} ${bang.s} ${bang.d}`.toLowerCase();
+					return searchableText.includes(query);
+				})
+				.sort((a, b) => {
+					const [shortcutA, bangA] = a;
+					const [shortcutB, bangB] = b;
+					const aStartsWithQuery = shortcutA.toLowerCase().startsWith(query) || bangA.s.toLowerCase().startsWith(query);
+					const bStartsWithQuery = shortcutB.toLowerCase().startsWith(query) || bangB.s.toLowerCase().startsWith(query);
+					if (aStartsWithQuery && !bStartsWithQuery) return -1;
+					if (!aStartsWithQuery && bStartsWithQuery) return 1;
+					return shortcutA.length - shortcutB.length;
+				})
+				.slice(0, 20);
 
-		if (results.length === 0) {
-			resultsContainer.innerHTML = '<div class="bang-search-empty">No bangs found</div>';
-			return;
-		}
+			if (results.length === 0) {
+				resultsContainer.innerHTML = '<div class="bang-search-empty">No bangs found</div>';
+				return;
+			}
 
-		resultsContainer.innerHTML = results
-			.map(
-				([shortcut, bang]) => {
-					const displayName = bang.s.replace(/\s*\(Kagi Search\)\s*$/i, " (default search)") || bang.s;
-					return `
-					<div class="bang-search-item">
-						<code>!${shortcut}</code>
-						<span class="bang-search-name">${displayName}</span>
-						<span class="bang-search-domain">${bang.d}</span>
-					</div>
-				`;
-				},
-			)
-			.join("");
+			resultsContainer.innerHTML = results
+				.map(
+					([shortcut, bang]) => {
+						const displayName = bang.s.replace(/\s*\(Kagi Search\)\s*$/i, " (default search)") || bang.s;
+						return `
+						<div class="bang-search-item">
+							<code>!${shortcut}</code>
+							<span class="bang-search-name">${displayName}</span>
+							<span class="bang-search-domain">${bang.d}</span>
+						</div>
+					`;
+					},
+				)
+				.join("");
+		}, 150);
 	});
 }
 
@@ -580,8 +579,9 @@ function getBangredirectUrl() {
 			}
 
 			const match = query.toLowerCase().match(/^!(\S+)|!(\S+)$/i);
+			const bangShortcut = match ? (match[1] || match[2]) : LS_DEFAULT_BANG;
 			const selectedBang = match
-				? customBangs[match[1] || match[2]] || bangs[match[1] || match[2]]
+				? customBangs[bangShortcut] || bangs[bangShortcut]
 				: defaultBang;
 			const cleanQuery = match
 				? query.replace(/!\S+\s*|^(\S+!|!\S+)$/i, "").trim()
@@ -625,7 +625,7 @@ function getBangredirectUrl() {
 					storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED) === "true"
 				) {
 					addToSearchHistory(cleanQuery, {
-						bang: selectedBang?.t || "",
+						bang: bangShortcut,
 						name: selectedBang?.s || "",
 						url: selectedBang?.u || "",
 					});

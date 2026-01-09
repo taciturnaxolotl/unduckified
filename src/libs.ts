@@ -12,29 +12,12 @@ const storage = {
 	remove: (key: string) => localStorage.removeItem(key),
 };
 
-const memoizedGetSearchHistory = (() => {
-	let cache: Array<{
-		query: string;
-		bang: string;
-		name: string;
-		timestamp: number;
-	}> | null = null;
-	return () => {
-		if (!cache) {
-			cache = JSON.parse(
-				storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY) || "[]",
-			);
-		}
-		return cache;
-	};
-})();
-
 function addToSearchHistory(
 	query: string,
 	bang: { bang: string; name: string; url: string },
 ) {
-	const history = memoizedGetSearchHistory();
-	if (!history) return;
+	const history: Array<{ query: string; bang: string; name: string; timestamp: number }> =
+		JSON.parse(storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY) || "[]");
 
 	history.unshift({
 		query,
@@ -71,7 +54,6 @@ function clearSearchHistory() {
 export {
 	createAudio,
 	storage,
-	memoizedGetSearchHistory,
 	addToSearchHistory,
 	getSearchHistory,
 	clearSearchHistory,
