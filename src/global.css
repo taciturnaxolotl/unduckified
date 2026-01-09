@@ -455,3 +455,59 @@ input {
 	word-break: break-all;
 	color: var(--text-color-secondary);
 }
+
+.bang-search {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	background-color: var(--bg-color-secondary);
+	color: var(--text-color);
+	font-size: 14px;
+}
+
+.bang-search-results {
+	max-height: 200px;
+	overflow-y: auto;
+	margin-top: 8px;
+	border-radius: 4px;
+}
+
+.bang-search-item {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 8px 12px;
+	border-bottom: 1px solid var(--border-color);
+	background-color: var(--bg-color-secondary);
+}
+
+.bang-search-item:last-child {
+	border-bottom: none;
+}
+
+.bang-search-item code {
+	padding: 2px 6px;
+	border-radius: 4px;
+	background-color: var(--bg-color-active);
+	font-size: 12px;
+	min-width: 60px;
+}
+
+.bang-search-name {
+	flex: 1;
+	font-weight: 500;
+}
+
+.bang-search-domain {
+	color: var(--text-color-secondary);
+	font-size: 12px;
+}
+
+.bang-search-empty {
+	padding: 12px;
+	text-align: center;
+	color: var(--text-color-secondary);
+	background-color: var(--bg-color-secondary);
+	border-radius: 4px;
+}

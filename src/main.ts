@@ -244,6 +244,8 @@ function noSearchDefaultPageRender() {
 		bangBaseUrl: app.querySelector<HTMLInputElement>(".bang-base-url"),
 		addBang: app.querySelector<HTMLButtonElement>(".add-bang"),
 		removeBangs: app.querySelectorAll<HTMLButtonElement>(".remove-bang"),
+		bangSearch: app.querySelector<HTMLInputElement>("#bang-search"),
+		bangSearchResults: app.querySelector<HTMLDivElement>("#bang-search-results"),
 	} as const;
 
 	// Validate all elements exist
@@ -503,6 +505,53 @@ function noSearchDefaultPageRender() {
 			else window.location.reload();
 		});
 	});
+
+	validatedElements.bangSearch.addEventListener("input", (event) => {
+		const query = (event.target as HTMLInputElement).value.trim().toLowerCase();
+		const resultsContainer = validatedElements.bangSearchResults;
+
+		if (!query) {
+			resultsContainer.innerHTML = "";
+			return;
+		}
+
+		const allBangs = { ...bangs, ...customBangs };
+		const results = Object.entries(allBangs)
+			.filter(([shortcut, bang]) => {
+				const searchableText = `${shortcut} ${bang.s} ${bang.d} ${bang.t || ""}`.toLowerCase();
+				return searchableText.includes(query);
+			})
+			.sort((a, b) => {
+				const [shortcutA, bangA] = a;
+				const [shortcutB, bangB] = b;
+				const aStartsWithQuery = shortcutA.toLowerCase().startsWith(query) || bangA.s.toLowerCase().startsWith(query);
+				const bStartsWithQuery = shortcutB.toLowerCase().startsWith(query) || bangB.s.toLowerCase().startsWith(query);
+				if (aStartsWithQuery && !bStartsWithQuery) return -1;
+				if (!aStartsWithQuery && bStartsWithQuery) return 1;
+				return shortcutA.length - shortcutB.length;
+			})
+			.slice(0, 20);
+
+		if (results.length === 0) {
+			resultsContainer.innerHTML = '<div class="bang-search-empty">No bangs found</div>';
+			return;
+		}
+
+		resultsContainer.innerHTML = results
+			.map(
+				([shortcut, bang]) => {
+					const displayName = bang.s.replace(/\s*\(Kagi Search\)\s*$/i, " (default search)") || bang.s;
+					return `
+					<div class="bang-search-item">
+						<code>!${shortcut}</code>
+						<span class="bang-search-name">${displayName}</span>
+						<span class="bang-search-domain">${bang.d}</span>
+					</div>
+				`;
+				},
+			)
+			.join("");
+	});
 }
 
 const LS_DEFAULT_BANG =
@@ -540,10 +589,25 @@ function getBangredirectUrl() {
 
 			// Redirect to base domain if cleanQuery is empty
 			if (!cleanQuery && selectedBang?.d) {
-				return ensureProtocol(selectedBang.d);
+				return ensureProtocol(selectedBang.ad || selectedBang.d);
 			}
 
-			const redirectUrl = selectedBang?.u.replace(
+			// Check if this is a "(Kagi Search)" bang that should use the default search provider
+			let bangUrl = selectedBang?.u || "";
+			if (selectedBang?.s?.includes("(Kagi Search)") && selectedBang?.u?.match(/^\/search\?q=\{\{\{s\}\}\}\+site:/)) {
+				const siteMatch = selectedBang.u.match(/\+site:([^\s&]+)/);
+				if (siteMatch && defaultBang?.u) {
+					const siteDomain = siteMatch[1];
+					const queryWithSite = `${cleanQuery} site:${siteDomain}`;
+					const redirectUrl = defaultBang.u.replace(
+						"{{{s}}}",
+						encodeURIComponent(queryWithSite).replace(/%2F/g, "/"),
+					);
+					return ensureProtocol(redirectUrl);
+				}
+			}
+
+			const redirectUrl = bangUrl.replace(
 				"{{{s}}}",
 				encodeURIComponent(cleanQuery).replace(/%2F/g, "/"),
 			);
