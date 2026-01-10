@@ -43,25 +43,25 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
+
       - name: Check for changes and commit
         id: check_changes
         run: |
           git add src/bangs/bangs.json src/bangs/hashbang.ts
-          
+
           # Check if there are changes to commit
           if git diff --staged --quiet; then
             echo "No changes to commit"
             echo "has_changes=false" >> $GITHUB_OUTPUT
             exit 0
           fi
-          
+
           echo "Changes detected in bangs files"
           echo "has_changes=true" >> $GITHUB_OUTPUT
-          
+
           # Look for bangs update commits in history
           git fetch origin main --unshallow
-          
+
           # Check if previous commit was a bangs update
           PREV_COMMIT_MSG=$(git log -1 --pretty=%B)
           if [[ "$PREV_COMMIT_MSG" == "chore: update bangs.json" ]]; then
@@ -71,7 +71,7 @@ jobs:
             # Create a new commit
             git commit -m "chore: update bangs.json"
           fi
-          
+
           # Push to main - using force only if we amended
           if [[ "$PREV_COMMIT_MSG" == "chore: update bangs.json" ]]; then
             git push --force-with-lease origin main
@@ -97,6 +97,7 @@ jobs:
       - name: Push to Tangled
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
-          git remote add tangled git@ember:did:plc:krxbvxvis5skq7jj6eot23ul/unduckified || true
+          git remote add tangled git@terebithia:did:plc:krxbvxvis5skq7jj6eot23ul/unduckified || true
           git push tangled main
         continue-on-error: true
+
