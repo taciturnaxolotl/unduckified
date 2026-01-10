@@ -296,26 +296,10 @@
     "sc": "Online (marketplace)"
   },
   {
-    "s": "2gis.ru",
+    "s": "2GIS",
     "d": "2gis.ru",
     "t": "2gis",
-    "u": "https://2gis.ru/moscow/search/{{{s}}}",
-    "c": "Online Services",
-    "sc": "Maps"
-  },
-  {
-    "s": "2gis Санкт-Петербург",
-    "d": "2gis.ru",
-    "t": "2gissbp",
-    "u": "https://2gis.ru/spb/search/{{{s}}}",
-    "c": "Online Services",
-    "sc": "Maps"
-  },
-  {
-    "s": "2GIS Уфа",
-    "d": "2gis.ru",
-    "t": "2gisufa",
-    "u": "https://2gis.ru/ufa/search/{{{s}}}",
+    "u": "https://2gis.ru/search/{{{s}}}",
     "c": "Online Services",
     "sc": "Maps"
   },
@@ -358,14 +342,6 @@
     "u": "https://events.ccc.de/congress/2018/wiki/index.php?search={{{s}}}",
     "c": "News",
     "sc": "Specialty"
-  },
-  {
-    "s": "360skate.com",
-    "d": "www.360skate.com",
-    "t": "360",
-    "u": "http://www.360skate.com/catalogsearch/result/?q={{{s}}}",
-    "c": "Shopping",
-    "sc": "Online"
   },
   {
     "s": "360图片",
@@ -502,7 +478,10 @@
     "s": "4chan /b/",
     "d": "boards.4chan.org",
     "t": "4_b",
-    "u": "http://boards.4chan.org/b/catalog#s={{{s}}}",
+    "ts": [
+      "4chrandom"
+    ],
+    "u": "https://boards.4chan.org/b/catalog#s={{{s}}}",
     "c": "Entertainment",
     "sc": "Forum"
   },
@@ -543,7 +522,7 @@
     "s": "4chan Boards",
     "d": "4chan.org",
     "t": "4chanb",
-    "u": "http://4chan.org/b/{{{s}}}",
+    "u": "https://4chan.org/b/{{{s}}}",
     "c": "Entertainment",
     "sc": "Misc"
   },
@@ -604,14 +583,6 @@
     "sc": "General"
   },
   {
-    "s": "4chan /b/ board",
-    "d": "boards.4chan.org",
-    "t": "4chrandom",
-    "u": "https://boards.4chan.org/b/catalog#s={{{s}}}",
-    "c": "Entertainment",
-    "sc": "Forum"
-  },
-  {
     "s": "4chansearch",
     "d": "4chansearch.com",
     "t": "4chsearch",
@@ -631,7 +602,7 @@
     "s": "4chan, /vg/",
     "d": "boards.4chan.org",
     "t": "4cvg",
-    "u": "http://boards.4chan.org/vg/catalog#s={{{s}}}",
+    "u": "https://boards.4chan.org/vg/catalog#s={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (general)"
   },
@@ -639,7 +610,7 @@
     "s": "4chan - /g/ - Technology",
     "d": "4chan.org",
     "t": "4g",
-    "u": "http://4chan.org/g/{{{s}}}",
+    "u": "https://4chan.org/g/{{{s}}}",
     "c": "Tech",
     "sc": "Blogs"
   },
@@ -655,7 +626,7 @@
     "s": "4pda",
     "d": "4pda.to",
     "t": "4pda",
-    "u": "http://4pda.to/forum/index.php?act=search&source=all&forums[]=all&query={{{s}}}&x=0&y=0",
+    "u": "https://4pda.to/forum/index.php?act=search&source=all&forums[]=all&query={{{s}}}&x=0&y=0",
     "c": "Entertainment",
     "sc": "Forum"
   },
@@ -776,7 +747,7 @@
     "s": "Fiverr",
     "d": "fiverr.com",
     "t": "5",
-    "u": "http://fiverr.com/gigs/search?query={{{s}}}",
+    "u": "https://fiverr.com/gigs/search?query={{{s}}}",
     "c": "Online Services",
     "sc": "Jobs"
   },
@@ -829,10 +800,18 @@
     "sc": "Books"
   },
   {
+    "s": "7TV",
+    "d": "7tv.app",
+    "t": "7tv",
+    "u": "https://7tv.app/emotes?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Tools"
+  },
+  {
     "s": "800notes.com",
     "d": "800notes.com",
     "t": "800",
-    "u": "http://800notes.com/Phone.aspx/{{{s}}}",
+    "u": "https://800notes.com/Phone.aspx/{{{s}}}",
     "c": "Online Services",
     "sc": "Search"
   },
@@ -970,11 +949,16 @@
   {
     "s": "AlternativeTo.net",
     "d": "alternativeto.net",
-    "t": "alternative",
+    "t": "alto",
     "ts": [
-      "a2"
+      "a2",
+      "ato",
+      "alt",
+      "altto",
+      "alternative",
+      "alternativeto"
     ],
-    "u": "http://alternativeto.net/searchresult.aspx?search={{{s}}}",
+    "u": "https://alternativeto.net/browse/search/?q={{{s}}}",
     "c": "Tech",
     "sc": "Downloads (software)"
   },
@@ -1185,10 +1169,13 @@
     "sc": "General"
   },
   {
-    "s": "Abandonia",
-    "d": "www.abandonia.com",
-    "t": "abandonia",
-    "u": "http://www.abandonia.com/en/search_abandonia/{{{s}}}",
+    "s": "Abandoned Times (fka Abandonia)",
+    "d": "www.abandonedtimes.com",
+    "t": "abtimes",
+    "ts": [
+      "abandonia"
+    ],
+    "u": "https://www.abandonedtimes.com/?s={{{s}}}",
     "c": "Multimedia",
     "sc": "Games (general)"
   },
@@ -1386,7 +1373,7 @@
     "s": "AllBookstores",
     "d": "www.allbookstores.com",
     "t": "abs",
-    "u": "http://www.allbookstores.com/search?q={{{s}}}",
+    "u": "https://www.allbookstores.com/search?q={{{s}}}",
     "c": "Shopping",
     "sc": "Online (deals)"
   },
@@ -1410,9 +1397,22 @@
     "s": "Wallpaper Abyss",
     "d": "wall.alphacoders.com",
     "t": "abyss",
-    "u": "http://wall.alphacoders.com/search.php?search={{{s}}}",
+    "u": "https://wall.alphacoders.com/search.php?search={{{s}}}",
     "c": "Multimedia",
     "sc": "Images"
+  },
+  {
+    "s": "Amazon UAE",
+    "d": "www.amazon.ae",
+    "t": "a.ae",
+    "ts": [
+      "amazon_ae",
+      "amazonae",
+      "amazon.ae"
+    ],
+    "u": "https://www.amazon.ae/s?k={{{s}}}",
+    "c": "Shopping",
+    "sc": "Online"
   },
   {
     "s": "Amazon.ca",
@@ -1496,7 +1496,7 @@
     "s": "AccuWeather",
     "d": "www.accuweather.com",
     "t": "accuweather",
-    "u": "http://www.accuweather.com/us-city-list.asp?zipcode={{{s}}}",
+    "u": "https://www.accuweather.com/us-city-list.asp?zipcode={{{s}}}",
     "c": "News",
     "sc": "Weather"
   },
@@ -1613,6 +1613,18 @@
     "sc": "Blogs"
   },
   {
+    "s": "Apple Gaming Wiki",
+    "d": "www.applegamingwiki.com",
+    "t": "agw",
+    "ts": [
+      "applegaming",
+      "applegamingwiki"
+    ],
+    "u": "https://www.applegamingwiki.com/w/index.php?search={{{s}}}",
+    "c": "Entertainment",
+    "sc": "Games (general)"
+  },
+  {
     "s": "Cortas",
     "d": "cortas.elpais.com",
     "t": "acortar",
@@ -1650,7 +1662,7 @@
     "s": "ACS Publications",
     "d": "pubs.acs.org",
     "t": "acs",
-    "u": "http://pubs.acs.org/action/doSearch?AllField={{{s}}}",
+    "u": "https://pubs.acs.org/action/doSearch?AllField={{{s}}}",
     "c": "Research",
     "sc": "Academic"
   },
@@ -1696,9 +1708,10 @@
   },
   {
     "s": "Ada 2005 Manual",
-    "d": "www.ada-auth.org",
+    "d": "kagi.com",
+    "ad": "www.ada-auth.org",
     "t": "ada",
-    "u": "http://www.ada-auth.org/search-rm05.cgi?SearchA={{{s}}}&SearchO=&SearchN=",
+    "u": "/search?q=site%3Awww.ada-auth.org+{{{s}}}",
     "c": "Research",
     "sc": "Academic"
   },
@@ -1794,7 +1807,7 @@
     "s": "PrestaShop Addons",
     "d": "addons.prestashop.com",
     "t": "addons",
-    "u": "http://addons.prestashop.com/fr/recherche?search_query={{{s}}}",
+    "u": "https://addons.prestashop.com/fr/recherche?search_query={{{s}}}",
     "c": "Tech",
     "sc": "Downloads (add-ons)"
   },
@@ -1864,15 +1877,16 @@
     "s": "adidas",
     "d": "www.adidas.fr",
     "t": "adidas",
-    "u": "http://www.adidas.fr/search?q={{{s}}}",
+    "u": "https://www.adidas.fr/search?q={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
   },
   {
     "s": "Adjective1",
-    "d": "adjective1.com",
+    "d": "kagi.com",
+    "ad": "adjective1.com",
     "t": "adjective",
-    "u": "http://adjective1.com/?s={{{s}}}",
+    "u": "/search?q=site%3Aadjective1.com+{{{s}}}",
     "c": "Multimedia",
     "sc": "General"
   },
@@ -1931,7 +1945,7 @@
     "s": "Adobe",
     "d": "www.adobe.com",
     "t": "adobe",
-    "u": "http://www.adobe.com/cfusion/search/index.cfm?loc=en_us&term={{{s}}}",
+    "u": "https://www.adobe.com/cfusion/search/index.cfm?loc=en_us&term={{{s}}}",
     "c": "Tech",
     "sc": "Companies"
   },
@@ -2042,7 +2056,7 @@
     "s": "Adverts.ie",
     "d": "www.adverts.ie",
     "t": "adverts",
-    "u": "http://www.adverts.ie/for-sale/q_{{{s}}}/",
+    "u": "https://www.adverts.ie/for-sale/q_{{{s}}}/",
     "c": "Shopping",
     "sc": "Online (intl)"
   },
@@ -2111,7 +2125,7 @@
     "s": "AE7Q Amateur Extra Query Tools",
     "d": "ae7q.com",
     "t": "aeq",
-    "u": "http://ae7q.com/query/data/CallHistory.php?CALL={{{s}}}",
+    "u": "https://ae7q.com/query/data/CallHistory.php?CALL={{{s}}}",
     "c": "Online Services",
     "sc": "Tools"
   },
@@ -2273,7 +2287,7 @@
     "s": "Android Geeks",
     "d": "www.android.gs",
     "t": "ag",
-    "u": "http://www.android.gs/?s=&q={{{s}}}",
+    "u": "https://www.android.gs/?s=&q={{{s}}}",
     "c": "Tech",
     "sc": "Blogs"
   },
@@ -2410,9 +2424,10 @@
   },
   {
     "s": "Arkham Horror Wiki",
-    "d": "www.arkhamhorrorwiki.com",
+    "d": "kagi.com",
+    "ad": "www.arkhamhorrorwiki.com",
     "t": "ahw",
-    "u": "http://www.arkhamhorrorwiki.com/wiki/index.php?title=Special:Search&search={{{s}}}&go=Go",
+    "u": "/search?q=site%3Aarkhamhorrorwiki.com+{{{s}}}",
     "c": "Entertainment",
     "sc": "Games (specific)"
   },
@@ -2524,7 +2539,7 @@
     "s": "Aircraft Registration Database Lookup",
     "d": "www.airframes.org",
     "t": "airframes",
-    "u": "http://www.airframes.org/reg/{{{s}}}",
+    "u": "https://www.airframes.org/reg/{{{s}}}",
     "c": "Research",
     "sc": "Reference"
   },
@@ -2575,7 +2590,10 @@
     "s": "archive.is",
     "d": "archive.is",
     "t": "ais",
-    "u": "http://archive.is/{{{s}}}",
+    "ts": [
+      "archiveis"
+    ],
+    "u": "https://archive.is/search/?q={{{s}}}",
     "c": "Online Services",
     "sc": "Tools (URLs)"
   },
@@ -2634,14 +2652,6 @@
     "sc": "Online"
   },
   {
-    "s": "Al Jazeera (English)",
-    "d": "www.aljazeera.com",
-    "t": "aje",
-    "u": "https://www.aljazeera.com/Search/?q={{{s}}}",
-    "c": "News",
-    "sc": "International"
-  },
-  {
     "s": "アマゾン (Amazon Japan)",
     "d": "www.amazon.co.jp",
     "t": "aj",
@@ -2659,7 +2669,7 @@
     "s": "Akakçe",
     "d": "www.akakce.com",
     "t": "akakce",
-    "u": "http://www.akakce.com/arama/?q={{{s}}}",
+    "u": "https://www.akakce.com/arama/?q={{{s}}}",
     "c": "Shopping",
     "sc": "Online (deals)"
   },
@@ -2935,7 +2945,7 @@
     "s": "alibris",
     "d": "www.alibris.com",
     "t": "alibris",
-    "u": "http://www.alibris.com/booksearch?keyword={{{s}}}",
+    "u": "https://www.alibris.com/booksearch?keyword={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
   },
@@ -2978,14 +2988,6 @@
     "u": "https://alipaczka.pl/?track={{{s}}}",
     "c": "Online Services",
     "sc": "Tracking"
-  },
-  {
-    "s": "Aljazeera English",
-    "d": "english.aljazeera.net",
-    "t": "aljazeera",
-    "u": "https://english.aljazeera.net/Services/Search/?q={{{s}}}",
-    "c": "News",
-    "sc": "Aggregators"
   },
   {
     "s": "Alko",
@@ -3052,10 +3054,13 @@
     "sc": "Online (intl)"
   },
   {
-    "s": "All Electronics",
-    "d": "www.allelectronics.com",
-    "t": "allelec",
-    "u": "http://www.allelectronics.com/index.php?page=seek&id[m]=pattern&id[q]={{{s}}}",
+    "s": "Aretronics (fka All Electronics)",
+    "d": "aretronics.com",
+    "t": "aretronics",
+    "ts": [
+      "allelec"
+    ],
+    "u": "https://aretronics.com/search?type=product&q={{{s}}}",
     "c": "Shopping",
     "sc": "Tech"
   },
@@ -3092,10 +3097,13 @@
     "sc": "Health"
   },
   {
-    "s": "Allied Electronics",
-    "d": "www.alliedelec.com",
-    "t": "alliedelec",
-    "u": "http://www.alliedelec.com/search/results.aspx?term={{{s}}}",
+    "s": "RS (fka Allied Electronics)",
+    "d": "us.rs-online.com",
+    "t": "rselec",
+    "ts": [
+      "alliedelec"
+    ],
+    "u": "https://us.rs-online.com/catalogsearch/result/?q={{{s}}}",
     "c": "Shopping",
     "sc": "Tech"
   },
@@ -3165,7 +3173,7 @@
     "ts": [
       "ar-ar"
     ],
-    "u": "http://www.almaany.com/ar/dict/ar-ar/{{{s}}}",
+    "u": "https://www.almaany.com/ar/dict/ar-ar/{{{s}}}",
     "c": "Research",
     "sc": "Reference (words)"
   },
@@ -3176,7 +3184,7 @@
     "ts": [
       "maany"
     ],
-    "u": "http://www.almaany.com/ar/dict/ar-en/{{{s}}}/",
+    "u": "https://www.almaany.com/ar/dict/ar-en/{{{s}}}/",
     "c": "Research",
     "sc": "Reference"
   },
@@ -3256,14 +3264,6 @@
     "sc": "Sysadmin (packages)"
   },
   {
-    "s": "alternativeTo",
-    "d": "alternativeto.net",
-    "t": "alt",
-    "u": "http://alternativeto.net/SearchResult.aspx?search={{{s}}}",
-    "c": "Online Services",
-    "sc": "Tools"
-  },
-  {
     "s": "Alternate België",
     "d": "www.alternate.be",
     "t": "altbe",
@@ -3286,18 +3286,6 @@
     "u": "https://www.alternate.nl/html/search.html?query={{{s}}}",
     "c": "Shopping",
     "sc": "Tech"
-  },
-  {
-    "s": "alternativeto.net",
-    "d": "alternativeto.net",
-    "t": "alternativeto",
-    "ts": [
-      "alto",
-      "altto"
-    ],
-    "u": "http://alternativeto.net/browse/search?q={{{s}}}",
-    "c": "Tech",
-    "sc": "Domains"
   },
   {
     "s": "Alternet",
@@ -3408,14 +3396,6 @@
     "sc": "Blogs"
   },
   {
-    "s": "Amara",
-    "d": "www.amara.org",
-    "t": "amara",
-    "u": "http://www.amara.org/search/#/?q={{{s}}}",
-    "c": "Multimedia",
-    "sc": "Video"
-  },
-  {
     "s": "Amazon MP3 Store",
     "d": "www.amazon.com",
     "t": "amazonmp3",
@@ -3452,7 +3432,7 @@
     "ts": [
       "ao"
     ],
-    "u": "https://www.amazon.com/gp/your-account/order-history?opt=ab&search={{{s}}}",
+    "u": "https://www.amazon.com/your-orders/search?opt=ab&search={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
   },
@@ -3479,14 +3459,6 @@
     "sc": "Online (intl)"
   },
   {
-    "s": "AMC TV",
-    "d": "www.amctv.com",
-    "t": "amc",
-    "u": "http://www.amctv.com/search#q={{{s}}}",
-    "c": "Entertainment",
-    "sc": "TV"
-  },
-  {
     "s": "Amazon Cloud",
     "d": "www.amazon.com",
     "t": "amcloud",
@@ -3496,9 +3468,9 @@
   },
   {
     "s": "AMD",
-    "d": "search.amd.com",
+    "d": "www.amd.com",
     "t": "amd",
-    "u": "http://search.amd.com/en-us/Pages/results-all.aspx?k={{{s}}}",
+    "u": "https://www.amd.com/en/search/site-search.html#q={{{s}}}",
     "c": "Tech",
     "sc": "Companies"
   },
@@ -3571,9 +3543,9 @@
   },
   {
     "s": "Amiami",
-    "d": "slist.amiami.com",
+    "d": "www.amiami.com",
     "t": "amiami",
-    "u": "http://slist.amiami.com/top/search/list?s_keywords={{{s}}}",
+    "u": "https://www.amiami.com/eng/search/list/?s_keywords={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
   },
@@ -3793,7 +3765,7 @@
     "ts": [
       "anaped"
     ],
-    "u": "http://anarchopedia.org/Special:Search?search={{{s}}}",
+    "u": "https://anarchopedia.org/Special:Search?search={{{s}}}",
     "c": "Research",
     "sc": "Reference"
   },
@@ -4376,7 +4348,7 @@
     "s": "AP",
     "d": "ap.org",
     "t": "ap",
-    "u": "https://ap.org/Search/SearchResults?searchkeywords={{{s}}}",
+    "u": "https://ap.org/?s={{{s}}}&orderby=",
     "c": "News",
     "sc": "Broadcast"
   },
@@ -4809,13 +4781,42 @@
     "sc": "Companies"
   },
   {
-    "s": "App Store on iTunes",
-    "d": "kagi.com",
-    "ad": "itunes.apple.com/us/app",
+    "s": "App Store (iPhone)",
+    "d": "apps.apple.com",
     "t": "appstore",
-    "u": "/search?q=site:itunes.apple.com/us/app/+{{{s}}}",
-    "c": "Shopping",
-    "sc": "Tech"
+    "ts": [
+      "iphoneapps",
+      "iosapps",
+      "iapp",
+      "ipa"
+    ],
+    "u": "https://apps.apple.com/iphone/search?term={{{s}}}",
+    "c": "Tech",
+    "sc": "Downloads (apps)"
+  },
+  {
+    "s": "App Store (Mac)",
+    "d": "apps.apple.com",
+    "t": "macapps",
+    "ts": [
+      "appstoremac",
+      "appsmac",
+      "dmg"
+    ],
+    "u": "https://apps.apple.com/mac/search?term={{{s}}}",
+    "c": "Tech",
+    "sc": "Downloads (apps)"
+  },
+  {
+    "s": "App Store UK (iPhone)",
+    "d": "apps.apple.com",
+    "t": "ukappstore",
+    "ts": [
+      "appstoreuk"
+    ],
+    "u": "https://apps.apple.com/gb/iphone/search?term={{{s}}}",
+    "c": "Tech",
+    "sc": "Downloads (apps)"
   },
   {
     "s": "April",
@@ -5141,14 +5142,6 @@
     "u": "https://archive.org/search.php?query={{{s}}}",
     "c": "Online Services",
     "sc": "Tools"
-  },
-  {
-    "s": "Archive.is",
-    "d": "archive.is",
-    "t": "archiveis",
-    "u": "http://archive.is/search/?q={{{s}}}",
-    "c": "Online Services",
-    "sc": "Tools (URLs)"
   },
   {
     "s": "Archive Team Wiki",
@@ -6055,14 +6048,6 @@
     "sc": "Business"
   },
   {
-    "s": "AlternativeTo",
-    "d": "alternativeto.net",
-    "t": "ato",
-    "u": "https://alternativeto.net/browse/search/?q={{{s}}}",
-    "c": "Tech",
-    "sc": "Downloads (software)"
-  },
-  {
     "s": "Atom Tickets",
     "d": "www.atomtickets.com",
     "t": "atom",
@@ -6522,9 +6507,9 @@
     "s": "Avito",
     "d": "www.avito.ru",
     "t": "avito",
-    "u": "https://www.avito.ru/rossiya?q={{{s}}}",
+    "u": "https://www.avito.ru/?q={{{s}}}",
     "c": "Shopping",
-    "sc": "Online (deals)"
+    "sc": "Online (marketplace)"
   },
   {
     "s": "avtoprom.org",
@@ -8277,6 +8262,14 @@
     "u": "https://www.betches.com/search/{{{s}}}",
     "c": "Entertainment",
     "sc": "TV"
+  },
+  {
+    "s": "BetterTTV",
+    "d": "betterttv.com",
+    "t": "bttv",
+    "u": "https://betterttv.com/emotes/shared/search?query={{{s}}}",
+    "c": "Online Services",
+    "sc": "Tools"
   },
   {
     "s": "betterworldbooks.com",
@@ -10082,7 +10075,7 @@
     "s": "boomkat",
     "d": "boomkat.com",
     "t": "boomkat",
-    "u": "http://boomkat.com/search?q={{{s}}}",
+    "u": "http://boomkat.com/products?q[keywords]={{{s}}}",
     "c": "Multimedia",
     "sc": "Music"
   },
@@ -10448,6 +10441,14 @@
     "u": "/search?q={{{s}}}+site:formulae.brew.sh",
     "c": "Tech",
     "sc": "Downloads (software)"
+  },
+  {
+    "s": "Home Manager - Option Search",
+    "d": "home-manager-options.extranix.com",
+    "t": "hmo",
+    "u": "https://home-manager-options.extranix.com/?query={{{s}}}&release=master",
+    "c": "Tech",
+    "sc": "Sysadmin"
   },
   {
     "s": "B-Rhymes",
@@ -13225,7 +13226,7 @@
     "ts": [
       "cgpt"
     ],
-    "u": "https://chatgpt.com/?q={{{s}}}",
+    "u": "https://chatgpt.com/?prompt={{{s}}}",
     "c": "Online Services",
     "sc": "AI Chatbots"
   },
@@ -13261,6 +13262,17 @@
     "d": "openrouter.ai",
     "t": "opr",
     "u": "https://openrouter.ai/models?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "AI Chatbots"
+  },
+  {
+    "s": "Google AI Mode",
+    "d": "www.google.com",
+    "t": "gai",
+    "ts": [
+      "googleai"
+    ],
+    "u": "https://www.google.com/search?q={{{s}}}&udm=50",
     "c": "Online Services",
     "sc": "AI Chatbots"
   },
@@ -15529,9 +15541,9 @@
   },
   {
     "s": "Microsoft Copilot",
-    "d": "bing.com",
+    "d": "copilot.microsoft.com",
     "t": "copilot",
-    "u": "https://bing.com/chat?q={{{s}}}&sendquery=1",
+    "u": "https://copilot.microsoft.com/?q={{{s}}}&bypassredir=1",
     "c": "Online Services",
     "sc": "Tools"
   },
@@ -16086,6 +16098,17 @@
       "crissue"
     ],
     "u": "https://issues.chromium.org/issues?q={{{s}}}",
+    "c": "Tech",
+    "sc": "Programming"
+  },
+  {
+    "s": "Chromium Review",
+    "d": "chromium-review.googlesource.com",
+    "t": "cge",
+    "ts": [
+      "cgerrit"
+    ],
+    "u": "https://chromium-review.googlesource.com/q/{{{s}}}",
     "c": "Tech",
     "sc": "Programming"
   },
@@ -20835,14 +20858,6 @@
     "sc": "Tools (URLs)"
   },
   {
-    "s": "Digital Open Access Identifier",
-    "d": "doai.io",
-    "t": "doai",
-    "u": "https://doai.io/{{{s}}}",
-    "c": "Online Services",
-    "sc": "Tools (URLs)"
-  },
-  {
     "s": "Directory of Open Access Journals",
     "d": "www.doaj.org",
     "t": "doaj",
@@ -24640,6 +24655,17 @@
     "sc": "Online (marketplace)"
   },
   {
+    "s": "Engineering Archive",
+    "d": "engrxiv.org",
+    "t": "engr",
+    "ts": [
+      "engrxiv"
+    ],
+    "u": "https://engrxiv.org/search/search?query={{{s}}}",
+    "c": "Research",
+    "sc": "Academic"
+  },
+  {
     "s": "Engrish",
     "d": "www.engrish.com",
     "t": "engrish",
@@ -27733,6 +27759,14 @@
     "sc": "Learning"
   },
   {
+    "s": "FOSDEM",
+    "d": "fosdem.org",
+    "t": "fosdem",
+    "u": "https://fosdem.org/2026/search/?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Events"
+  },
+  {
     "s": "FossHub",
     "d": "www.fosshub.com",
     "t": "fhub",
@@ -28322,7 +28356,7 @@
       "flathub",
       "fthub"
     ],
-    "u": "https://flathub.org/apps/search/{{{s}}}",
+    "u": "https://flathub.org/apps/search?q={{{s}}}",
     "c": "Online Services",
     "sc": "Tools"
   },
@@ -28330,7 +28364,7 @@
     "s": "FlatIcon",
     "d": "www.flaticon.com",
     "t": "flaticon",
-    "u": "https://www.flaticon.com/search/{{{s}}}",
+    "u": "https://www.flaticon.com/search?word={{{s}}}",
     "c": "Multimedia",
     "sc": "Images"
   },
@@ -32884,6 +32918,19 @@
     "sc": "Google"
   },
   {
+    "s": "Gemini",
+    "d": "gemini.google.com",
+    "t": "gemini",
+    "ts": [
+      "geminiai",
+      "gemai",
+      "gmai"
+    ],
+    "u": "https://gemini.google.com/?prompt_text={{{s}}}",
+    "c": "Online Services",
+    "sc": "AI Chatbots"
+  },
+  {
     "s": "GMail.com",
     "d": "mail.google.com",
     "t": "gmail",
@@ -36645,6 +36692,14 @@
     "sc": "AI Chatbots"
   },
   {
+    "s": "Grokipedia",
+    "d": "grokipedia.com",
+    "t": "grokipedia",
+    "u": "https://grokipedia.com/search?q={{{s}}}",
+    "c": "Research",
+    "sc": "Reference"
+  },
+  {
     "s": "h2g2",
     "d": "www.h2g2.com",
     "t": "h2g2",
@@ -36736,7 +36791,12 @@
     ],
     "u": "https://hn.algolia.com/?q={{{s}}}",
     "c": "News",
-    "sc": "Aggregators"
+    "sc": "Aggregators",
+    "fmt": [
+      "open_snap_domain",
+      "url_encode_placeholder",
+      "url_encode_space_to_plus"
+    ]
   },
   {
     "s": "Hackology",
@@ -37087,6 +37147,17 @@
     "u": "https://www.homebrewtalk.com/search/?keyword={{{s}}}",
     "c": "Entertainment",
     "sc": "Forum"
+  },
+  {
+    "s": "Huberman Lab",
+    "d": "www.hubermanlab.com",
+    "t": "hblb",
+    "ts": [
+      "hubermanlab"
+    ],
+    "u": "https://www.hubermanlab.com/search-results?q={{{s}}}",
+    "c": "Entertainment",
+    "sc": "Audio (Podcast)"
   },
   {
     "s": "Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen",
@@ -41008,10 +41079,14 @@
     "sc": "General"
   },
   {
-    "s": "Aljazeera",
+    "s": "Al Jazeera",
     "d": "www.aljazeera.com",
-    "t": "intaljazeera",
-    "u": "https://www.aljazeera.com/Services/Search/?q={{{s}}}",
+    "t": "aljazeera",
+    "ts": [
+      "intaljazeera",
+      "aje"
+    ],
+    "u": "https://www.aljazeera.com/search/{{{s}}}",
     "c": "News",
     "sc": "International"
   },
@@ -41889,15 +41964,15 @@
     "sc": "Blogs"
   },
   {
-    "s": "Yandex Images",
+    "s": "Yandex Images (en)",
     "d": "yandex.com",
-    "t": "iya",
+    "t": "ymg",
     "ts": [
-      "ymg"
+      "iya"
     ],
     "u": "https://yandex.com/images/search?text={{{s}}}",
-    "c": "Multimedia",
-    "sc": "Images"
+    "c": "Online Services",
+    "sc": "Search (non-US)"
   },
   {
     "s": "izneo",
@@ -42887,6 +42962,14 @@
     "u": "https://www.japandict.com/?s={{{s}}}",
     "c": "Online Services",
     "sc": "Tools"
+  },
+  {
+    "s": "jpdb japanese dictionary",
+    "d": "jpdb.io",
+    "t": "jpdb",
+    "u": "https://jpdb.io/search?q={{{s}}}",
+    "c": "Research",
+    "sc": "Learning"
   },
   {
     "s": "We Sell Car Plate Number Online, Malaysia",
@@ -45851,14 +45934,6 @@
     "sc": "Jobs"
   },
   {
-    "s": "letterboxd",
-    "d": "letterboxd.com",
-    "t": "lb",
-    "u": "https://letterboxd.com/search/{{{s}}}/",
-    "c": "Entertainment",
-    "sc": "Movies"
-  },
-  {
     "s": "Logos Bible Software",
     "d": "www.logos.com",
     "t": "lbs",
@@ -45871,6 +45946,7 @@
     "d": "letterboxd.com",
     "t": "lbx",
     "ts": [
+      "lb",
       "ltr",
       "letterboxd"
     ],
@@ -47870,18 +47946,10 @@
     "sc": "Games (general)"
   },
   {
-    "s": "LoL Wikia",
-    "d": "leagueoflegends.wikia.com",
-    "t": "lolwikia",
-    "u": "https://leagueoflegends.wikia.com/wiki/Special:Search?query={{{s}}}",
-    "c": "Entertainment",
-    "sc": "Games (general)"
-  },
-  {
     "s": "League of Legends Wiki",
-    "d": "leagueoflegends.wikia.com",
-    "t": "lolwiki",
-    "u": "https://leagueoflegends.wikia.com/wiki/Special:Search?search={{{s}}}",
+    "d": "wiki.leagueoflegends.com",
+    "t": "lolw",
+    "u": "https://wiki.leagueoflegends.com/en-us/?search={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (specific)"
   },
@@ -48850,6 +48918,18 @@
     "u": "https://library.macewan.ca/library-search?query={{{s}}}",
     "c": "Research",
     "sc": "Academic"
+  },
+  {
+    "s": "MacGamingDB",
+    "d": "macgamingdb.app",
+    "t": "mgdb",
+    "ts": [
+      "macgaming",
+      "macgamingdb"
+    ],
+    "u": "https://macgamingdb.app/?q={{{s}}}",
+    "c": "Entertainment",
+    "sc": "Games (general)"
   },
   {
     "s": "MacGeneration",
@@ -52939,7 +53019,7 @@
     "s": "Morningstar Search",
     "d": "www.morningstar.com",
     "t": "morningstar",
-    "u": "https://www.morningstar.com/search.html?q={{{s}}}",
+    "u": "https://www.morningstar.com/search?query={{{s}}}",
     "c": "Research",
     "sc": "Topical"
   },
@@ -53393,22 +53473,6 @@
     "u": "https://www.sciencelab.com/search.php?q={{{s}}}",
     "c": "Research",
     "sc": "Reference (science)"
-  },
-  {
-    "s": "Morningstar (ETF quote)",
-    "d": "etfs.morningstar.com",
-    "t": "mseq",
-    "u": "http://etfs.morningstar.com/quote?t={{{s}}}",
-    "c": "Online Services",
-    "sc": "Tools"
-  },
-  {
-    "s": "Morningstar",
-    "d": "www.morningstar.com",
-    "t": "msfq",
-    "u": "https://www.morningstar.com/funds/xnas/{{{s}}}/quote.html",
-    "c": "Online Services",
-    "sc": "Tools"
   },
   {
     "s": "messenger.com",
@@ -54166,11 +54230,12 @@
     "sc": "Search"
   },
   {
-    "s": "market.yandex.ru",
+    "s": "Yandex Market",
     "d": "market.yandex.ru",
     "t": "mya",
     "ts": [
-      "yama"
+      "yama",
+      "yandexm"
     ],
     "u": "https://market.yandex.ru/search?text={{{s}}}",
     "c": "Shopping",
@@ -54546,7 +54611,7 @@
     "s": "namuwiki",
     "d": "namu.wiki",
     "t": "namu",
-    "u": "https://namu.wiki/Search?q={{{s}}}",
+    "u": "https://namu.wiki/Go?q={{{s}}}",
     "c": "Research",
     "sc": "Reference"
   },
@@ -54781,7 +54846,7 @@
       "na",
       "ㄴ"
     ],
-    "u": "https://search.naver.com/search.naver?query={{{s}}}):",
+    "u": "https://search.naver.com/search.naver?query={{{s}}}",
     "c": "Online Services",
     "sc": "Search (non-US)"
   },
@@ -56728,10 +56793,16 @@
   {
     "s": "Nixpkgs Repository",
     "d": "github.com",
+    "ad": "github.com/NixOS/nixpkgs",
     "t": "nr",
     "u": "https://github.com/NixOS/nixpkgs/search?q={{{s}}}",
     "c": "Tech",
-    "sc": "Sysadmin (packages)"
+    "sc": "Sysadmin (packages)",
+    "fmt": [
+      "url_encode_placeholder",
+      "url_encode_space_to_plus",
+      "open_snap_domain"
+    ]
   },
   {
     "s": "NASDAQ Real Time Quotes",
@@ -59878,10 +59949,10 @@
     "sc": "Blogs"
   },
   {
-    "s": "OZON.ru",
+    "s": "OZON",
     "d": "www.ozon.ru",
     "t": "ozon",
-    "u": "http://www.ozon.ru/?context=search&text={{{s}}}",
+    "u": "https://www.ozon.ru/search/?text={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
   },
@@ -61220,7 +61291,7 @@
     ],
     "u": "https://perplexity.ai/?q={{{s}}}",
     "c": "Online Services",
-    "sc": "Tools"
+    "sc": "AI Chatbots"
   },
   {
     "s": "Personality Database",
@@ -61266,7 +61337,7 @@
     "s": "Petco",
     "d": "www.petco.com",
     "t": "petco",
-    "u": "http://www.petco.com/shop/SearchDisplay?categoryId=&storeId=10151&catalogId=10051&langId=-1&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&searchSource=Q&pageView=&beginIndex=0&pageSize=24&fromPageValue=search&searchTerm={{{s}}}",
+    "u": "https://www.petco.com/shop/en/petcostore/search?query={{{s}}}",
     "c": "Shopping",
     "sc": "Big box/department"
   },
@@ -61668,13 +61739,13 @@
   },
   {
     "s": "PHP.net",
-    "d": "secure.php.net",
+    "d": "www.php.net",
     "ad": "php.net",
     "t": "phpnet",
     "ts": [
       "php"
     ],
-    "u": "https://secure.php.net/manual-lookup.php?pattern={{{s}}}",
+    "u": "https://www.php.net/manual-lookup.php?pattern={{{s}}}",
     "c": "Tech",
     "sc": "Languages (php)"
   },
@@ -61954,14 +62025,6 @@
     "u": "https://pipl.com/search/?q={{{s}}}&l=&sloc=&in=5",
     "c": "Online Services",
     "sc": "Search"
-  },
-  {
-    "s": "pip",
-    "d": "pypi.python.org",
-    "t": "pip",
-    "u": "https://pypi.python.org/pypi?:action=search&term={{{s}}}&submit=search",
-    "c": "Tech",
-    "sc": "Languages (python)"
   },
   {
     "s": "Wiki der Piratenpartei Deutschland",
@@ -62749,6 +62812,14 @@
     "sc": "Tools"
   },
   {
+    "s": "Podnews",
+    "d": "podnews.net",
+    "t": "podnews",
+    "u": "https://podnews.net/search?q={{{s}}}",
+    "c": "News",
+    "sc": "Business"
+  },
+  {
     "s": "Path of Exile Database",
     "d": "poedb.tw",
     "t": "poedb",
@@ -63160,9 +63231,9 @@
     "sc": "Online"
   },
   {
-    "s": "Incendar.com",
+    "s": "Incendar funko pop search",
     "d": "incendar.com",
-    "t": "pop",
+    "t": "fpop",
     "u": "https://incendar.com/funko_pop_search.php?search={{{s}}}",
     "c": "Entertainment",
     "sc": "TV"
@@ -64056,6 +64127,17 @@
     "sc": "Tools"
   },
   {
+    "s": "Lumo",
+    "d": "lumo.proton.me",
+    "t": "lumo",
+    "ts": [
+      "protonlumo"
+    ],
+    "u": "https://lumo.proton.me/?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "AI Chatbots"
+  },
+  {
     "s": "Provigo Grocery Store",
     "d": "www.provigo.ca",
     "t": "provigo",
@@ -64711,11 +64793,12 @@
     "sc": "Design"
   },
   {
-    "s": "pypi.org",
+    "s": "PyPI",
     "d": "pypi.org",
-    "t": "pypa",
+    "t": "pypi",
     "ts": [
-      "pypi"
+      "pip",
+      "pypa"
     ],
     "u": "https://pypi.org/search/?q={{{s}}}",
     "c": "Tech",
@@ -67038,7 +67121,7 @@
     "ts": [
       "reuters"
     ],
-    "u": "https://www.reuters.com/search/news?blob={{{s}}}",
+    "u": "https://www.reuters.com/site-search/?query={{{s}}}",
     "c": "News",
     "sc": "International"
   },
@@ -68507,7 +68590,7 @@
     "s": "Real Time Trains",
     "d": "www.realtimetrains.co.uk",
     "t": "rtt",
-    "u": "https://www.realtimetrains.co.uk/search/handler?type=basic&qs=true&search={{{s}}}",
+    "u": "https://www.realtimetrains.co.uk/search/handler?type=basic&qsearch={{{s}}}",
     "c": "Online Services",
     "sc": "Tracking"
   },
@@ -69177,6 +69260,19 @@
     "u": "https://www.samsclub.com/sams/search/searchResults.jsp?searchTerm={{{s}}}&searchCategoryId=all",
     "c": "Shopping",
     "sc": "Big box/department"
+  },
+  {
+    "s": "Mamont",
+    "d": "www.mmnt.ru",
+    "t": "mmnt",
+    "ts": [
+      "mamont",
+      "мамонт",
+      "ммнт"
+    ],
+    "u": "https://www.mmnt.ru/get?st={{{s}}}&in=w",
+    "c": "Online Services",
+    "sc": "Search"
   },
   {
     "s": "Sanakirja.org",
@@ -70672,6 +70768,17 @@
     "sc": "TV"
   },
   {
+    "s": "SeriesGraph",
+    "d": "seriesgraph.com",
+    "t": "sgr",
+    "ts": [
+      "seriesgraph"
+    ],
+    "u": "https://seriesgraph.com/show/search/{{{s}}}",
+    "c": "Entertainment",
+    "sc": "TV"
+  },
+  {
     "s": "servershop24",
     "d": "www.servershop24.de",
     "t": "server24",
@@ -71881,9 +71988,9 @@
   {
     "s": "Scikit-Learn (Kagi Search)",
     "d": "kagi.com",
-    "ad": "scikit-learn.org/stable/modules/generated/",
+    "ad": "scikit-learn.org/stable/",
     "t": "sklearn",
-    "u": "/search?q={{{s}}}+site:http://scikit-learn.org/stable/modules/generated/",
+    "u": "/search?q={{{s}}}+site:https://scikit-learn.org/stable/",
     "c": "Research",
     "sc": "Academic (math/cs)"
   },
@@ -72161,14 +72268,6 @@
     "u": "https://slovnik.seznam.cz/en/?q={{{s}}}",
     "c": "Research",
     "sc": "Learning"
-  },
-  {
-    "s": "Yandex.Slovari",
-    "d": "slovari.yandex.ru",
-    "t": "slov",
-    "u": "https://slovari.yandex.ru/search.xml?text={{{s}}}",
-    "c": "Research",
-    "sc": "Learning (intl)"
   },
   {
     "s": "Sololearn Discuss",
@@ -78485,6 +78584,18 @@
     "sc": "Social"
   },
   {
+    "s": "Trainboard",
+    "d": "trainboard.eu",
+    "t": "trainb",
+    "ts": [
+      "trainboard",
+      "zugtafel"
+    ],
+    "u": "https://trainboard.eu/bang.html?station={{{s}}}",
+    "c": "Online Services",
+    "sc": "Tools"
+  },
+  {
     "s": "Trainline Live Departures",
     "d": "www.thetrainline.com",
     "t": "tlld",
@@ -81053,15 +81164,6 @@
     "sc": "Academic"
   },
   {
-    "s": "UK App Store (Kagi Search)",
-    "d": "kagi.com",
-    "ad": "apps.apple.com/gb/app/",
-    "t": "ukappstore",
-    "u": "/search?q={{{s}}}+site:apps.apple.com/gb/app/",
-    "c": "Shopping",
-    "sc": "Online (marketplace)"
-  },
-  {
     "s": "UKCSGO",
     "d": "ukcsgo.com",
     "t": "ukcsgo",
@@ -82294,7 +82396,7 @@
     "ts": [
       "uvalib"
     ],
-    "u": "https://search.lib.virginia.edu/catalog?q={{{s}}}",
+    "u": "https://search.lib.virginia.edu/search?q=keyword:+{{{{s}}}}&pool=uva_library&sort=SortRelevance_desc",
     "c": "Research",
     "sc": "Academic"
   },
@@ -84742,18 +84844,6 @@
     "sc": "Reference"
   },
   {
-    "s": "Wiktionary",
-    "d": "en.wiktionary.org",
-    "t": "wdic",
-    "ts": [
-      "wictionary",
-      "wkten"
-    ],
-    "u": "https://en.wiktionary.org/wiki/{{{s}}}",
-    "c": "Research",
-    "sc": "Reference (words)"
-  },
-  {
     "s": "Wordreference (es)",
     "d": "www.wordreference.com",
     "t": "wdr",
@@ -86738,8 +86828,7 @@
     "d": "www.wordnik.com",
     "t": "wnk",
     "ts": [
-      "wordnik",
-      "word"
+      "wordnik"
     ],
     "u": "https://www.wordnik.com/words/?myWord={{{s}}}",
     "c": "Research",
@@ -87876,15 +87965,18 @@
     "sc": "Reference (words)"
   },
   {
-    "s": "Wikitionary",
+    "s": "Wiktionary",
     "d": "en.wiktionary.org",
     "t": "wtionary",
     "ts": [
-      "wt"
+      "wt",
+      "wdic",
+      "wictionary",
+      "wkten"
     ],
     "u": "https://en.wiktionary.org/w/index.php?search={{{s}}}&title=Special:Search&go=Go",
     "c": "Research",
-    "sc": "Learning"
+    "sc": "Reference (words)"
   },
   {
     "s": "What the fuck should I listen to right now",
@@ -88321,6 +88413,18 @@
     "sc": "Social"
   },
   {
+    "s": "Nitter (alternative Twitter front-end)",
+    "d": "nitter.net",
+    "t": "nitter",
+    "ts": [
+      "nit",
+      "ntr"
+    ],
+    "u": "https://nitter.net/search?f=tweets&q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Social"
+  },
+  {
     "s": "x86 Opcode & Instruction Reference",
     "d": "ref.x86asm.net",
     "t": "x86",
@@ -88629,23 +88733,16 @@
     "sc": "Online (marketplace)"
   },
   {
-    "s": "Yandex Dictionaries",
-    "d": "slovari.yandex.ru",
-    "t": "yad",
-    "u": "https://slovari.yandex.ru/{{{s}}}/",
-    "c": "Research",
-    "sc": "Reference (words intl)"
-  },
-  {
     "s": "Yandex (en)",
     "d": "yandex.com",
-    "t": "yaen",
+    "t": "yan",
     "ts": [
+      "yaen",
       "yandexen"
     ],
-    "u": "https://yandex.com/yandsearch?text={{{s}}}",
+    "u": "https://yandex.com/search?text={{{s}}}",
     "c": "Online Services",
-    "sc": "Search (non-US)"
+    "sc": "Search"
   },
   {
     "s": "Yahoo Finance Australia",
@@ -88683,11 +88780,12 @@
     "sc": "Video"
   },
   {
-    "s": "Yandex Music (ru)",
+    "s": "Yandex Music",
     "d": "music.yandex.ru",
     "t": "yamusic",
     "ts": [
-      "yamu"
+      "yamu",
+      "яму"
     ],
     "u": "https://music.yandex.ru/search?text={{{s}}}",
     "c": "Multimedia",
@@ -88703,38 +88801,16 @@
   },
   {
     "s": "Yandex Maps",
-    "d": "maps.yandex.ru",
+    "d": "yandex.ru",
     "t": "yandexmaps",
     "ts": [
-      "yxmaps"
+      "yamaps",
+      "yxmaps",
+      "якарты"
     ],
-    "u": "https://maps.yandex.ru/?text={{{s}}}",
+    "u": "https://yandex.ru/maps/?text={{{s}}}",
     "c": "Online Services",
     "sc": "Maps"
-  },
-  {
-    "s": "Yandex Market",
-    "d": "market.yandex.ru",
-    "t": "yandexm",
-    "u": "https://market.yandex.ru/search.xml?text={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search (non-US)"
-  },
-  {
-    "s": "yandex.ru/pogoda/",
-    "d": "yandex.ru",
-    "t": "yandexw",
-    "u": "https://yandex.ru/pogoda/{{{s}}}",
-    "c": "News",
-    "sc": "Weather"
-  },
-  {
-    "s": "Yandex.Ru",
-    "d": "www.yandex.ru",
-    "t": "yandex",
-    "u": "https://www.yandex.ru/yandsearch?text={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search (non-US)"
   },
   {
     "s": "Yahoo! Answers",
@@ -88743,14 +88819,6 @@
     "u": "http://answers.yahoo.com/search/search_result;_ylt=AnPnri0ekBBFsWt64sNbHmvj1KIX;_ylv=3?p={{{s}}}&submit-go=Search+Y!+Answers",
     "c": "Online Services",
     "sc": "Social"
-  },
-  {
-    "s": "yandex.com",
-    "d": "www.yandex.com",
-    "t": "yan",
-    "u": "https://www.yandex.com/?q={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search (Private)"
   },
   {
     "s": "Yarn",
@@ -88762,17 +88830,6 @@
     "u": "https://yarnpkg.com/en/packages?q={{{s}}}",
     "c": "Tech",
     "sc": "Languages (javascript)"
-  },
-  {
-    "s": "Yandex Slovari",
-    "d": "slovari.yandex.ru",
-    "t": "yaslovari",
-    "ts": [
-      "ys"
-    ],
-    "u": "https://slovari.yandex.ru/{{{s}}}",
-    "c": "Online Services",
-    "sc": "Search"
   },
   {
     "s": "Yandex Turkey",
@@ -88791,7 +88848,7 @@
     "sc": "Video"
   },
   {
-    "s": "Yandex Translate",
+    "s": "Yandex Translate (en)",
     "d": "translate.yandex.com",
     "t": "yat",
     "ts": [
@@ -88799,7 +88856,7 @@
     ],
     "u": "https://translate.yandex.com/?text={{{s}}}",
     "c": "Online Services",
-    "sc": "Search"
+    "sc": "Tools"
   },
   {
     "s": "Yandex Video",
@@ -88810,18 +88867,14 @@
     "sc": "Search (non-US)"
   },
   {
-    "s": "Yandex Weather",
-    "d": "yandex.ru",
-    "t": "yaw",
-    "u": "https://yandex.ru/pogoda/search?request={{{s}}}",
-    "c": "News",
-    "sc": "Weather"
-  },
-  {
     "s": "Yandex",
     "d": "yandex.ru",
     "t": "ya",
-    "u": "https://yandex.ru/search/?text={{{s}}}",
+    "ts": [
+      "yandex",
+      "я"
+    ],
+    "u": "https://yandex.ru/search?text={{{s}}}",
     "c": "Online Services",
     "sc": "Search (non-US)"
   },
@@ -89543,9 +89596,15 @@
     "sc": "Programming"
   },
   {
-    "s": "Yandex.Translate",
+    "s": "Yandex Translate",
     "d": "translate.yandex.ru",
     "t": "ytr",
+    "ts": [
+      "ys",
+      "yad",
+      "slov",
+      "yaslovari"
+    ],
     "u": "https://translate.yandex.ru/?text={{{s}}}",
     "c": "Online Services",
     "sc": "Tools"
@@ -90313,17 +90372,6 @@
     "sc": "Docs"
   },
   {
-    "s": "Yandex.Maps (Карты)",
-    "d": "yandex.ru",
-    "t": "карты",
-    "ts": [
-      "ям"
-    ],
-    "u": "https://yandex.ru/maps/?text={{{s}}}",
-    "c": "Online Services",
-    "sc": "Maps"
-  },
-  {
     "s": "Лабиринт",
     "d": "www.labirint.ru",
     "t": "л",
@@ -90356,28 +90404,16 @@
     "sc": "Search (non-US)"
   },
   {
-    "s": "Yandex.ru",
+    "s": "Yandex Images",
     "d": "yandex.ru",
-    "t": "я",
-    "u": "https://yandex.ru/yandsearch?text={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search (non-US)"
-  },
-  {
-    "s": "Yandex images (Яндекс картинки)",
-    "d": "yandex.ru",
-    "t": "як",
+    "t": "yai",
+    "ts": [
+      "yak",
+      "як"
+    ],
     "u": "https://yandex.ru/images/search?text={{{s}}}",
     "c": "Online Services",
-    "sc": "Search"
-  },
-  {
-    "s": "Yandex Music",
-    "d": "music.yandex.com",
-    "t": "яму",
-    "u": "https://music.yandex.com/search?text={{{s}}}",
-    "c": "Multimedia",
-    "sc": "Music"
+    "sc": "Search (non-US)"
   },
   {
     "s": "Nayiri",
@@ -93047,6 +93083,17 @@
     "sc": "General"
   },
   {
+    "s": "Kagi Translate (Dictionary)",
+    "d": "translate.kagi.com",
+    "t": "kdic",
+    "ts": [
+      "word"
+    ],
+    "u": "https://translate.kagi.com/dictionary?word={{{s}}}&from=auto",
+    "c": "Translation",
+    "sc": "General"
+  },
+  {
     "s": "Home Assistant Community",
     "d": "community.home-assistant.io",
     "t": "hac",
@@ -93144,77 +93191,5 @@
     "u": "https://libro.fm/search?utf8=%E2%9C%93&q={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
-  },
-  {
-    "s": "Kagi Search",
-    "d": "kagi.com",
-    "t": "k",
-    "ts": ["kagi"],
-    "u": "https://kagi.com/search?q={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search"
-  },
-  {
-    "s": "Kagi Images",
-    "d": "kagi.com",
-    "t": "ki",
-    "ts": ["kagii"],
-    "u": "https://kagi.com/images?q={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search"
-  },
-  {
-    "s": "Kagi Videos",
-    "d": "kagi.com",
-    "t": "kv",
-    "ts": ["kagiv"],
-    "u": "https://kagi.com/videos?q={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search"
-  },
-  {
-    "s": "Kagi News",
-    "d": "kagi.com",
-    "t": "kn",
-    "ts": ["kagin"],
-    "u": "https://kagi.com/news?q={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search"
-  },
-  {
-    "s": "Kagi Maps",
-    "d": "kagi.com",
-    "t": "km",
-    "ts": ["kagim"],
-    "u": "https://kagi.com/maps?q={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search"
-  },
-  {
-    "s": "Kagi Podcasts",
-    "d": "kagi.com",
-    "t": "kp",
-    "ts": ["kagip"],
-    "u": "https://kagi.com/podcasts?q={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search"
-  },
-  {
-    "s": "Kagi FastGPT",
-    "d": "kagi.com",
-    "t": "kfast",
-    "ts": ["kfgpt"],
-    "u": "https://kagi.com/fastgpt?query={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search"
-  },
-  {
-    "s": "Kagi Assistant",
-    "d": "kagi.com",
-    "t": "kai",
-    "ts": ["kagiai"],
-    "u": "https://kagi.com/assistant?q={{{s}}}",
-    "c": "Online Services",
-    "sc": "Search"
   }
 ]
