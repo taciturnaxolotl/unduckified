@@ -199,6 +199,15 @@ const createTemplate = (data: {
 									<button class="clear-history">Clear History</button>
 							</div>
 					</div>
+					<div class="settings-section">
+							<h3>Settings Import/Export</h3>
+							<p class="help-text">Export your settings and custom bangs to a file, or import them from a previously saved file.</p>
+							<div style="display: flex; gap: 8px; margin-top: 8px;">
+								<button class="export-settings">Export Settings</button>
+								<button class="import-settings">Import Settings</button>
+								<input type="file" id="import-file" accept=".json" style="display: none;">
+							</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -243,6 +252,9 @@ function noSearchDefaultPageRender() {
 		removeBangs: app.querySelectorAll<HTMLButtonElement>(".remove-bang"),
 		bangSearch: app.querySelector<HTMLInputElement>("#bang-search"),
 		bangSearchResults: app.querySelector<HTMLDivElement>("#bang-search-results"),
+		exportSettings: app.querySelector<HTMLButtonElement>(".export-settings"),
+		importSettings: app.querySelector<HTMLButtonElement>(".import-settings"),
+		importFile: app.querySelector<HTMLInputElement>("#import-file"),
 	} as const;
 
 	// Validate all elements exist
@@ -550,6 +562,67 @@ function noSearchDefaultPageRender() {
 				)
 				.join("");
 		}, 150);
+	});
+
+	validatedElements.exportSettings.addEventListener("click", () => {
+		const settingsData = {
+			defaultBang: storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.DEFAULT_BANG),
+			customBangs: storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS),
+			historyEnabled: storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED),
+			exportDate: new Date().toISOString(),
+		};
+
+		const dataStr = JSON.stringify(settingsData, null, 2);
+		const dataBlob = new Blob([dataStr], { type: "application/json" });
+		const url = URL.createObjectURL(dataBlob);
+		const link = document.createElement("a");
+		link.href = url;
+		link.download = `unduckified-settings-${new Date().toISOString().split("T")[0]}.json`;
+		link.click();
+		URL.revokeObjectURL(url);
+	});
+
+	validatedElements.importSettings.addEventListener("click", () => {
+		validatedElements.importFile.click();
+	});
+
+	validatedElements.importFile.addEventListener("change", async (event) => {
+		const file = (event.target as HTMLInputElement).files?.[0];
+		if (!file) return;
+
+		try {
+			const text = await file.text();
+			const settingsData = JSON.parse(text);
+
+			if (settingsData.defaultBang) {
+				storage.set(
+					CONSTANTS.LOCAL_STORAGE_KEYS.DEFAULT_BANG,
+					settingsData.defaultBang,
+				);
+			}
+			if (settingsData.customBangs) {
+				storage.set(
+					CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS,
+					settingsData.customBangs,
+				);
+			}
+			if (settingsData.historyEnabled !== undefined) {
+				storage.set(
+					CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED,
+					settingsData.historyEnabled,
+				);
+			}
+
+			alert("Settings imported successfully!");
+			if (!prefersReducedMotion)
+				setTimeout(() => {
+					window.location.reload();
+				}, 375);
+			else window.location.reload();
+		} catch (error) {
+			alert("Failed to import settings. Please check the file format.");
+			console.error("Import error:", error);
+		}
 	});
 }
 
