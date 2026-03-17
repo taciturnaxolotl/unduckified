@@ -47,7 +47,11 @@ const customBangs: {
 		s: string;
 		u: string;
 	};
-} = JSON.parse(localStorage.getItem("custom-bangs") || "{}");
+} = Object.fromEntries(
+	Object.entries<{ d: string; ad?: string; s: string; u: string }>(
+		JSON.parse(localStorage.getItem("custom-bangs") || "{}"),
+	).map(([k, v]) => [k.toLowerCase(), v]),
+);
 
 function getFocusableElements(
 	root: HTMLElement = document.body,
@@ -472,7 +476,8 @@ function noSearchDefaultPageRender() {
 		const name = validatedElements.bangName.value.trim();
 		const shortcut = validatedElements.bangShortcut.value
 			.trim()
-			.replace(/^!+/, "");
+			.replace(/^!+/, "")
+			.toLowerCase();
 		const searchUrl = validatedElements.bangSearchUrl.value.trim();
 		const baseUrl = validatedElements.bangBaseUrl.value.trim();
 
@@ -628,7 +633,7 @@ function noSearchDefaultPageRender() {
 
 const LS_DEFAULT_BANG =
 	storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.DEFAULT_BANG) ?? "ddg";
-const defaultBang = bangs[LS_DEFAULT_BANG];
+const defaultBang = customBangs[LS_DEFAULT_BANG] || bangs[LS_DEFAULT_BANG];
 
 function ensureProtocol(url: string, defaultProtocol = "https://") {
 	try {
