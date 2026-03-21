@@ -299,6 +299,11 @@
     "s": "2GIS",
     "d": "2gis.ru",
     "t": "2gis",
+    "ts": [
+      "дубльгис",
+      "двагис",
+      "2гис"
+    ],
     "u": "https://2gis.ru/search/{{{s}}}",
     "c": "Online Services",
     "sc": "Maps"
@@ -1274,6 +1279,9 @@
     "s": "Amazon Belgium",
     "d": "www.amazon.com.be",
     "t": "amazonbe",
+    "ts": [
+      "abe"
+    ],
     "u": "https://www.amazon.com.be/s?k={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
@@ -1448,6 +1456,10 @@
     "s": "Словари и энциклопедии на Академике",
     "d": "dic.academic.ru",
     "t": "acad",
+    "ts": [
+      "акад",
+      "академик"
+    ],
     "u": "https://dic.academic.ru/searchall.php?SWord={{{s}}}",
     "c": "Research",
     "sc": "Academic"
@@ -1921,6 +1933,9 @@
     "s": "Adme.ru",
     "d": "www.adme.ru",
     "t": "adme",
+    "ts": [
+      "адми"
+    ],
     "u": "https://www.adme.ru/search/?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Misc"
@@ -5365,7 +5380,7 @@
     "s": "ARIN Whois",
     "d": "whois.arin.net",
     "t": "arin",
-    "u": "https://whois.arin.net/ui/query.do?queryinput={{{s}}}",
+    "u": "https://whois.arin.net/ui/?q={{{s}}}",
     "c": "Tech",
     "sc": "Sysadmin (network)"
   },
@@ -5863,7 +5878,8 @@
     "t": "ass",
     "u": "https://www.amazon.com/gp/subscribe-and-save/manager/",
     "c": "Shopping",
-    "sc": "Online"
+    "sc": "Online",
+    "skip_tests": true
   },
   {
     "s": "Asterisk Wiki (Kagi Search)",
@@ -6519,6 +6535,9 @@
     "s": "Avito",
     "d": "www.avito.ru",
     "t": "avito",
+    "ts": [
+      "авито"
+    ],
     "u": "https://www.avito.ru/?q={{{s}}}",
     "c": "Shopping",
     "sc": "Online (marketplace)"
@@ -8757,7 +8776,8 @@
     "d": "bigenc.ru",
     "t": "bigenc",
     "ts": [
-      "gre"
+      "gre",
+      "брэ"
     ],
     "u": "https://bigenc.ru/search?q={{{s}}}",
     "c": "Research",
@@ -10829,6 +10849,14 @@
     "sc": "Social"
   },
   {
+    "s": "PDSls",
+    "d": "pds.ls",
+    "t": "pdsls",
+    "u": "https://pds.ls/?q={{{s}}}",
+    "c": "Online Services",
+    "sc": "Social"
+  },
+  {
     "s": "SignBSL",
     "d": "www.signbsl.com",
     "t": "bsl",
@@ -11650,7 +11678,9 @@
     "d": "calendar.google.com",
     "t": "gcal",
     "ts": [
-      "calendar"
+      "calendar",
+      "календарь",
+      "гкал"
     ],
     "u": "https://calendar.google.com/calendar/b/0/r/search?q={{{s}}}",
     "c": "Online Services",
@@ -12472,7 +12502,8 @@
     "ts": [
       "cxx",
       "rcpp",
-      "stl"
+      "stl",
+      "cplusplus"
     ],
     "u": "https://www.cplusplus.com/search.do?q={{{s}}}",
     "c": "Tech",
@@ -13281,7 +13312,8 @@
     "d": "www.google.com",
     "t": "gai",
     "ts": [
-      "googleai"
+      "googleai",
+      "гии"
     ],
     "u": "https://www.google.com/search?q={{{s}}}&udm=50",
     "c": "Online Services",
@@ -15087,6 +15119,9 @@
     "s": "Compose Email (Gmail)",
     "d": "mail.google.com",
     "t": "compose",
+    "ts": [
+      "письмо"
+    ],
     "u": "https://mail.google.com/mail/?view=cm&to=&su={{{s}}}",
     "c": "Online Services",
     "sc": "Google"
@@ -15279,6 +15314,10 @@
     "s": "Consultant Plus",
     "d": "www.consultant.ru",
     "t": "consplus",
+    "ts": [
+      "консультант",
+      "кплюс"
+    ],
     "u": "https://www.consultant.ru/search/?q={{{s}}}",
     "c": "Research",
     "sc": "Law"
@@ -15309,7 +15348,8 @@
     "t": "contacts",
     "ts": [
       "gc",
-      "gcontact"
+      "gcontact",
+      "контакты"
     ],
     "u": "https://contacts.google.com/search/{{{s}}}",
     "c": "Online Services",
@@ -15921,14 +15961,6 @@
     "u": "https://chipublib.bibliocommons.com/search?&t=title&search_category=title&q={{{s}}}",
     "c": "Research",
     "sc": "Reference"
-  },
-  {
-    "s": "Cplusplus.com",
-    "d": "www.cplusplus.com",
-    "t": "cplusplus",
-    "u": "https://www.cplusplus.com/query/search.cgi?q={{{s}}}",
-    "c": "Tech",
-    "sc": "Languages (c++)"
   },
   {
     "s": "Czech post",
@@ -17112,6 +17144,10 @@
     "s": "Киберленинка",
     "d": "cyberleninka.ru",
     "t": "cybl",
+    "ts": [
+      "кибл",
+      "киберленинка"
+    ],
     "u": "https://cyberleninka.ru/search?q={{{s}}}",
     "c": "Research",
     "sc": "Academic"
@@ -17240,6 +17276,11 @@
     "s": "Drive2.ru",
     "d": "www.drive2.ru",
     "t": "d2r",
+    "ts": [
+      "drive2",
+      "драйв2",
+      "д2"
+    ],
     "u": "https://www.drive2.ru/search?text={{{s}}}",
     "c": "Tech",
     "sc": "Blogs"
@@ -17256,6 +17297,9 @@
     "s": "dirty.ru",
     "d": "dirty.ru",
     "t": "d3",
+    "ts": [
+      "д3"
+    ],
     "u": "https://dirty.ru/search/?query={{{s}}}",
     "c": "Entertainment",
     "sc": "Forum"
@@ -17296,6 +17340,9 @@
     "s": "Папа знает",
     "d": "daddyknows.ru",
     "t": "daddyknows",
+    "ts": [
+      "папазнает"
+    ],
     "u": "https://daddyknows.ru/?s={{{s}}}",
     "c": "Entertainment",
     "sc": "Blogs"
@@ -20862,6 +20909,9 @@
     "s": "DNS",
     "d": "www.dns-shop.ru",
     "t": "dnsshop",
+    "ts": [
+      "днс"
+    ],
     "u": "https://www.dns-shop.ru/search/?q={{{s}}}",
     "c": "Shopping",
     "sc": "Online (marketplace)"
@@ -21739,7 +21789,9 @@
     "d": "drive.google.com",
     "t": "drive",
     "ts": [
-      "gdrive"
+      "gdrive",
+      "гдиск",
+      "драйв"
     ],
     "u": "https://drive.google.com/drive/search?q={{{s}}}",
     "c": "Online Services",
@@ -21773,6 +21825,9 @@
     "s": "drom.ru",
     "d": "www.drom.ru",
     "t": "drom",
+    "ts": [
+      "дром"
+    ],
     "u": "https://www.drom.ru/search/?q={{{s}}}",
     "c": "Shopping",
     "sc": "Online (deals)"
@@ -22492,6 +22547,9 @@
     "s": "e1",
     "d": "www.e1.ru",
     "t": "e1",
+    "ts": [
+      "е1"
+    ],
     "u": "https://www.e1.ru/news/search/?search={{{s}}}",
     "c": "News",
     "sc": "Online"
@@ -22532,7 +22590,7 @@
     "s": "e926",
     "d": "e926.net",
     "t": "e926",
-    "u": "https://e926.net/post/search?tags={{{s}}}",
+    "u": "https://e926.net/posts?tags={{{s}}}",
     "c": "Multimedia",
     "sc": "Images"
   },
@@ -22584,6 +22642,9 @@
     "s": "Google Earth",
     "d": "earth.google.com",
     "t": "earth",
+    "ts": [
+      "земля"
+    ],
     "u": "https://earth.google.com/web/search/{{{s}}}",
     "c": "Online Services",
     "sc": "Google"
@@ -25610,9 +25671,9 @@
   },
   {
     "s": "ESV Bible",
-    "d": "www.esvbible.org",
+    "d": "www.esv.org",
     "t": "esv",
-    "u": "https://www.esvbible.org/search/?q={{{s}}}",
+    "u": "https://www.esv.org/search/?q={{{s}}}",
     "c": "Multimedia",
     "sc": "Books"
   },
@@ -26517,6 +26578,9 @@
     "s": "Google Images (Faces)",
     "d": "www.google.com",
     "t": "faces",
+    "ts": [
+      "лица"
+    ],
     "u": "https://www.google.com/search?tbm=isch&tbs=itp:face&q={{{s}}}",
     "c": "Online Services",
     "sc": "Google"
@@ -26813,6 +26877,9 @@
     "s": "Лаборатория Фантастики",
     "d": "fantlab.ru",
     "t": "fantlab",
+    "ts": [
+      "фантлаб"
+    ],
     "u": "https://fantlab.ru/searchmain?searchstr={{{s}}}",
     "c": "Multimedia",
     "sc": "Books"
@@ -28434,7 +28501,9 @@
     "t": "fl",
     "ts": [
       "gluck",
-      "lucky"
+      "lucky",
+      "гмп",
+      "фл"
     ],
     "u": "https://www.google.com/search?btnI&q={{{s}}}",
     "c": "Online Services",
@@ -30121,6 +30190,9 @@
     "s": "Google Search 100 Results",
     "d": "www.google.com",
     "t": "g100",
+    "ts": [
+      "г100"
+    ],
     "u": "https://www.google.com/search?q={{{s}}}&tbo=1&num=100",
     "c": "Online Services",
     "sc": "Search"
@@ -30577,6 +30649,14 @@
     "sc": "Big box/department"
   },
   {
+    "s": "Kobo UK",
+    "d": "www.kobo.com",
+    "t": "kobouk",
+    "u": "https://www.kobo.com/gb/en/search?Query={{{s}}}",
+    "c": "Shopping",
+    "sc": "Online"
+  },
+  {
     "s": "Librerías Gandhi",
     "d": "www.gandhi.com.mx",
     "t": "gandhi",
@@ -30612,7 +30692,10 @@
       "gp",
       "gplay",
       "play",
-      "playstore"
+      "playstore",
+      "гплей",
+      "плей",
+      "плейстор"
     ],
     "u": "https://play.google.com/store/search?q={{{s}}}",
     "c": "Online Services",
@@ -30856,6 +30939,9 @@
     "s": "Books.google.com",
     "d": "www.google.com",
     "t": "gbooks",
+    "ts": [
+      "гкниги"
+    ],
     "u": "https://www.google.com/search?nfpr=1&tbm=bks&q={{{s}}}",
     "c": "Research",
     "sc": "Reference"
@@ -31110,7 +31196,7 @@
   {
     "s": "Godot Engine Documentation",
     "d": "docs.godotengine.org",
-    "t": "gdd",
+    "t": "godotl",
     "u": "https://docs.godotengine.org/en/latest/search.html?q={{{s}}}&check_keywords=yes&area=default",
     "c": "Tech",
     "sc": "Programming"
@@ -31168,7 +31254,11 @@
     "d": "docs.google.com",
     "t": "gd",
     "ts": [
-      "gdocs"
+      "gdocs",
+      "гд",
+      "гдок",
+      "гдокс",
+      "гдокументы"
     ],
     "u": "https://docs.google.com/document/u/0/?q={{{s}}}",
     "c": "Online Services",
@@ -31338,14 +31428,6 @@
     "u": "https://www.geeks-curiosity.net/?s={{{s}}}",
     "c": "Entertainment",
     "sc": "Misc"
-  },
-  {
-    "s": "GeeksforGeeks",
-    "d": "www.geeksforgeeks.org",
-    "t": "geeks",
-    "u": "https://www.geeksforgeeks.org/?s={{{s}}}",
-    "c": "Research",
-    "sc": "Learning"
   },
   {
     "s": "GeekSided",
@@ -31833,7 +31915,10 @@
     "s": "geeksforgeeks",
     "d": "www.geeksforgeeks.org",
     "t": "gfg",
-    "u": "https://www.geeksforgeeks.org/?q={{{s}}}",
+    "ts": [
+      "geeks"
+    ],
+    "u": "https://www.geeksforgeeks.org/search/?gq={{{s}}}",
     "c": "Tech",
     "sc": "Programming"
   },
@@ -31986,7 +32071,8 @@
     "d": "groups.google.com",
     "t": "gg",
     "ts": [
-      "ggroups"
+      "ggroups",
+      "гг"
     ],
     "u": "https://groups.google.com/groups/search?q={{{s}}}&qt_s=Search+Groups",
     "c": "Online Services",
@@ -31996,6 +32082,9 @@
     "s": "Google Images (Animated)",
     "d": "www.google.com",
     "t": "ggif",
+    "ts": [
+      "ггиф"
+    ],
     "u": "https://www.google.com/search?q={{{s}}}&site=webhp&tbm=isch&tbs=itp:animated",
     "c": "Multimedia",
     "sc": "Images"
@@ -32351,6 +32440,9 @@
     "s": "Google Images Classic",
     "d": "www.google.com",
     "t": "gic",
+    "ts": [
+      "гкк"
+    ],
     "u": "https://www.google.com/search?q={{{s}}}&tbm=isch&sout=1",
     "c": "Online Services",
     "sc": "Google"
@@ -32963,6 +33055,7 @@
     "ts": [
       "gmaps",
       "gm",
+      "гкарты",
       "googlemap",
       "googlemaps"
     ],
@@ -33375,6 +33468,9 @@
     "s": "Google News RU",
     "d": "www.google.ru",
     "t": "gnru",
+    "ts": [
+      "гн"
+    ],
     "u": "https://www.google.ru/search?q={{{s}}}&tbm=nws&cad=h",
     "c": "News",
     "sc": "Aggregators"
@@ -33487,6 +33583,9 @@
     "s": "Godot Docs",
     "d": "docs.godotengine.org",
     "t": "godot",
+    "ts": [
+      "gdd"
+    ],
     "u": "https://docs.godotengine.org/en/stable/search.html?q={{{s}}}&check_keywords=yes&area=default",
     "c": "Tech",
     "sc": "Programming"
@@ -34156,6 +34255,9 @@
     "s": "Google Photos",
     "d": "photos.google.com",
     "t": "gphotos",
+    "ts": [
+      "гфото"
+    ],
     "u": "https://photos.google.com/search/{{{s}}}",
     "c": "Multimedia",
     "sc": "Images"
@@ -34333,6 +34435,9 @@
     "s": "gramota.ru",
     "d": "gramota.ru",
     "t": "gramota",
+    "ts": [
+      "грамота"
+    ],
     "u": "https://gramota.ru/slovari/dic/?word={{{s}}}&all=x",
     "c": "Research",
     "sc": "Reference (words)"
@@ -34705,7 +34810,11 @@
     "ts": [
       "gsheets",
       "gsh",
-      "gspreadsheets"
+      "gspreadsheets",
+      "гш",
+      "гтаблицы",
+      "гшит",
+      "гшитс"
     ],
     "u": "https://docs.google.com/spreadsheets/u/0/?q={{{s}}}",
     "c": "Online Services",
@@ -34747,6 +34856,13 @@
     "s": "Google Slides",
     "d": "slides.google.com",
     "t": "gslides",
+    "ts": [
+      "гслайд",
+      "гслайдс",
+      "гс",
+      "гпрез",
+      "гпрезентации"
+    ],
     "u": "https://slides.google.com/presentation/u/0/?q={{{s}}}",
     "c": "Online Services",
     "sc": "Google"
@@ -35145,7 +35261,8 @@
       "gt-english",
       "gtenglish",
       "gt",
-      "gtranslate"
+      "gtranslate",
+      "гп"
     ],
     "u": "https://translate.google.com/#auto/en/{{{s}}}",
     "c": "Translation",
@@ -36410,6 +36527,9 @@
     "s": "Google Video",
     "d": "www.google.com",
     "t": "gv",
+    "ts": [
+      "гв"
+    ],
     "u": "https://www.google.com/search?tbm=vid&q={{{s}}}",
     "c": "Online Services",
     "sc": "Google"
@@ -36742,6 +36862,9 @@
     "s": "HabraHabr",
     "d": "habr.com",
     "t": "habr",
+    "ts": [
+      "хабр"
+    ],
     "u": "https://habr.com/ru/search/?&q={{{s}}}",
     "c": "Tech",
     "sc": "Blogs"
@@ -37817,6 +37940,10 @@
     "s": "Hi-News.ru",
     "d": "hi-news.ru",
     "t": "hinews",
+    "ts": [
+      "хайн",
+      "хайньюс"
+    ],
     "u": "https://hi-news.ru/?s={{{s}}}",
     "c": "News",
     "sc": "Specialty"
@@ -38758,6 +38885,9 @@
     "s": "htmlbook.ru",
     "d": "htmlbook.ru",
     "t": "htmlbook",
+    "ts": [
+      "хтмлбук"
+    ],
     "u": "https://htmlbook.ru/search/?as_q={{{s}}}",
     "c": "Tech",
     "sc": "Languages (html)"
@@ -40627,6 +40757,10 @@
     "s": "Inbox by Gmail",
     "d": "inbox.google.com",
     "t": "inbox",
+    "ts": [
+      "гмейл",
+      "гпочта"
+    ],
     "u": "https://inbox.google.com/search/{{{s}}}",
     "c": "Online Services",
     "sc": "Google"
@@ -41403,6 +41537,10 @@
     "s": "IRecommend",
     "d": "irecommend.ru",
     "t": "irecommend",
+    "ts": [
+      "айрекомменд",
+      "айрек"
+    ],
     "u": "https://irecommend.ru/srch?query={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
@@ -43876,6 +44014,10 @@
     "s": "Google Keep",
     "d": "keep.google.com",
     "t": "keep",
+    "ts": [
+      "гзаметки",
+      "гз"
+    ],
     "u": "https://keep.google.com/#search/text={{{s}}}",
     "c": "Online Services",
     "sc": "Google"
@@ -44004,6 +44146,9 @@
     "s": "KG-Portal",
     "d": "kg-portal.ru",
     "t": "kg",
+    "ts": [
+      "кг"
+    ],
     "u": "https://kg-portal.ru/?search&s_str={{{s}}}",
     "c": "Entertainment",
     "sc": "Movies"
@@ -44265,7 +44410,9 @@
     "d": "www.kinopoisk.ru",
     "t": "kino",
     "ts": [
-      "kpoisk"
+      "kpoisk",
+      "кп",
+      "кинопоиск"
     ],
     "u": "https://www.kinopoisk.ru/index.php?first=no&what=&kp_query={{{s}}}",
     "c": "Multimedia",
@@ -44874,6 +45021,14 @@
     "u": "https://www.korrekturen.de/suche/searcher.php?q={{{s}}}",
     "c": "Online Services",
     "sc": "Tools"
+  },
+  {
+    "s": "King Arthur Baking",
+    "d": "www.kingarthurbaking.com",
+    "t": "kingarthur",
+    "u": "https://www.kingarthurbaking.com/search?query={{{s}}}#all_indices",
+    "c": "Research",
+    "sc": "Food"
   },
   {
     "s": "KingOfSat",
@@ -45818,6 +45973,17 @@
     "sc": "Law"
   },
   {
+    "s": "legacy cplusplus.com ",
+    "d": "legacy.cplusplus.com",
+    "t": "lc++",
+    "ts": [
+      "lcpp"
+    ],
+    "u": "https://legacy.cplusplus.com/search.do?q={{{s}}}",
+    "c": "Tech",
+    "sc": "Languages (c++)"
+  },
+  {
     "s": "Lawphil.net",
     "d": "cse.google.com",
     "t": "lawphil",
@@ -46383,7 +46549,8 @@
     "d": "dict.leo.org",
     "t": "leoru",
     "ts": [
-      "leor"
+      "leor",
+      "лео"
     ],
     "u": "https://dict.leo.org/russisch-deutsch/{{{s}}}",
     "c": "Online Services",
@@ -47225,6 +47392,9 @@
     "s": "Lingvo Live",
     "d": "lingvolive.ru",
     "t": "lingvo",
+    "ts": [
+      "лингво"
+    ],
     "u": "https://lingvolive.ru/translate/en-ru/{{{s}}}",
     "c": "Online Services",
     "sc": "Tools"
@@ -47489,6 +47659,9 @@
     "s": "Litres",
     "d": "www.litres.ru",
     "t": "litres",
+    "ts": [
+      "литрес"
+    ],
     "u": "https://www.litres.ru/pages/rmd_search/?q={{{s}}}",
     "c": "Shopping",
     "sc": "Online (marketplace)"
@@ -47989,6 +48162,9 @@
     "s": "Linux.org.ru",
     "d": "www.linux.org.ru",
     "t": "lor",
+    "ts": [
+      "лор"
+    ],
     "u": "https://www.linux.org.ru/search.jsp?q={{{s}}}&range=ALL&interval=ALL&user=&_usertopic=on",
     "c": "Tech",
     "sc": "Sysadmin"
@@ -49198,6 +49374,9 @@
     "s": "go.mail.ru",
     "d": "go.mail.ru",
     "t": "mailru",
+    "ts": [
+      "мейлру"
+    ],
     "u": "https://go.mail.ru/search?fm=1&q={{{s}}}",
     "c": "Online Services",
     "sc": "Search"
@@ -54218,7 +54397,10 @@
     "t": "mya",
     "ts": [
       "yama",
-      "yandexm"
+      "yandexm",
+      "ям",
+      "яма",
+      "ямаркет"
     ],
     "u": "https://market.yandex.ru/search?text={{{s}}}",
     "c": "Shopping",
@@ -54391,6 +54573,9 @@
     "s": "myshows.ru",
     "d": "myshows.me",
     "t": "myshows",
+    "ts": [
+      "мш"
+    ],
     "u": "https://myshows.me/search/?q={{{s}}}",
     "c": "Entertainment",
     "sc": "TV"
@@ -54435,7 +54620,8 @@
     "ts": [
       "ytmusic",
       "ytmu",
-      "ytm"
+      "ytm",
+      "ютм"
     ],
     "u": "https://music.youtube.com/search?q={{{s}}}",
     "c": "Multimedia",
@@ -54664,6 +54850,14 @@
     "d": "www.biblegateway.com",
     "t": "nasb",
     "u": "https://www.biblegateway.com/quicksearch/?quicksearch={{{s}}}&qs_version=NASB",
+    "c": "Research",
+    "sc": "Reference (religion)"
+  },
+  {
+    "s": "netbible",
+    "d": "netbible.org",
+    "t": "netbible",
+    "u": "https://netbible.org/bible/search?q={{{s}}}",
     "c": "Research",
     "sc": "Reference (religion)"
   },
@@ -58683,6 +58877,9 @@
     "s": "OpenNET",
     "d": "www.opennet.ru",
     "t": "opennet",
+    "ts": [
+      "опеннет"
+    ],
     "u": "https://www.opennet.ru/search.shtml?exclude=index|/man.shtml&words={{{s}}}",
     "c": "Tech",
     "sc": "Blogs"
@@ -59929,6 +60126,9 @@
     "s": "OZON",
     "d": "www.ozon.ru",
     "t": "ozon",
+    "ts": [
+      "озон"
+    ],
     "u": "https://www.ozon.ru/search/?text={{{s}}}",
     "c": "Shopping",
     "sc": "Online"
@@ -61863,7 +62063,9 @@
     "d": "pikabu.ru",
     "t": "pikabu",
     "ts": [
-      "pkb"
+      "pkb",
+      "пикабу",
+      "пкб"
     ],
     "u": "https://pikabu.ru/search.php?q={{{s}}}",
     "c": "Entertainment",
@@ -66117,6 +66319,9 @@
     "s": "Bab.la Russian Verbs Conjugation",
     "d": "bab.la",
     "t": "rconj",
+    "ts": [
+      "спряжение"
+    ],
     "u": "https://bab.la/conjugaison/russe/{{{s}}}",
     "c": "Research",
     "sc": "Reference (words intl)"
@@ -66157,6 +66362,10 @@
     "s": "Reverso Context Russian-English",
     "d": "context.reverso.net",
     "t": "rcruen",
+    "ts": [
+      "реверсо",
+      "рк"
+    ],
     "u": "https://context.reverso.net/translation/russian-english/{{{s}}}",
     "c": "Translation",
     "sc": "General"
@@ -68593,7 +68802,9 @@
     "d": "translate.google.com",
     "t": "ruen",
     "ts": [
-      "кгут"
+      "кгут",
+      "руан",
+      "руен"
     ],
     "u": "https://translate.google.com/#ru/en/{{{s}}}",
     "c": "Research",
@@ -68603,6 +68814,10 @@
     "s": "Google Translate RU-FR",
     "d": "translate.google.com",
     "t": "rufr",
+    "ts": [
+      "кгак",
+      "руфр"
+    ],
     "u": "https://translate.google.com/#ru/fr/{{{s}}}",
     "c": "Online Services",
     "sc": "Google"
@@ -68744,6 +68959,10 @@
     "s": "RuTube",
     "d": "rutube.ru",
     "t": "rutube",
+    "ts": [
+      "рт",
+      "рутуб"
+    ],
     "u": "https://rutube.ru/search.html?page=index&search={{{s}}}&search_type=track",
     "c": "Multimedia",
     "sc": "Video"
@@ -68800,6 +69019,10 @@
     "s": "Ruxpert",
     "d": "ruxpert.ru",
     "t": "rxp",
+    "ts": [
+      "рукс",
+      "руксперт"
+    ],
     "u": "https://ruxpert.ru/index.php?search={{{s}}}",
     "c": "Research",
     "sc": "Reference"
@@ -68991,27 +69214,6 @@
     "u": "https://safebooru.org/index.php?page=post&s=list&tags={{{s}}}",
     "c": "Multimedia",
     "sc": "Images"
-  },
-  {
-    "s": "DDG Safesearch On",
-    "d": "kagi.com",
-    "ad": "",
-    "t": "safe",
-    "ts": [
-      "safeon"
-    ],
-    "u": "/search?q={{{s}}}&kp=1",
-    "c": "Online Services",
-    "sc": "Search (DDG)"
-  },
-  {
-    "s": "Safe search off",
-    "d": "kagi.com",
-    "ad": "",
-    "t": "safeoff",
-    "u": "/search?q={{{s}}}&kp=-2",
-    "c": "Online Services",
-    "sc": "Search (DDG)"
   },
   {
     "s": "SageMath Docs (Kagi Search)",
@@ -70095,6 +70297,9 @@
     "s": "SCP foundation --- Russian branch",
     "d": "scpfoundation.net",
     "t": "scpru",
+    "ts": [
+      "сцп"
+    ],
     "u": "https://scpfoundation.net/search:site/q/{{{s}}}",
     "c": "Entertainment",
     "sc": "Misc"
@@ -72942,6 +73147,9 @@
     "s": "Sokr.ru - словарь сокращений",
     "d": "sokr.ru",
     "t": "sokr",
+    "ts": [
+      "сокр"
+    ],
     "u": "https://sokr.ru/{{{s}}}/",
     "c": "Research",
     "sc": "Reference (words intl)"
@@ -73863,6 +74071,9 @@
     "s": "Square Faction",
     "d": "squarefaction.ru",
     "t": "sqfa",
+    "ts": [
+      "скфа"
+    ],
     "u": "https://squarefaction.ru/main/search/google?searchQuery={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (general)"
@@ -77231,6 +77442,10 @@
     "s": "Теплица социальных технологий",
     "d": "te-st.ru",
     "t": "te-st",
+    "ts": [
+      "тст",
+      "теплица"
+    ],
     "u": "https://te-st.ru/?s={{{s}}}",
     "c": "Tech",
     "sc": "Blogs (intl)"
@@ -80528,6 +80743,8 @@
       "youtube",
       "you",
       "ytb",
+      "ют",
+      "ютуб",
       "υτ"
     ],
     "u": "https://www.youtube.com/results?search_query={{{s}}}",
@@ -83601,6 +83818,9 @@
     "s": "Vkontakte",
     "d": "vk.com",
     "t": "vk",
+    "ts": [
+      "вк"
+    ],
     "u": "https://vk.com/search?c[q]={{{s}}}&c[section]=auto",
     "c": "Online Services",
     "sc": "Social"
@@ -83609,6 +83829,9 @@
     "s": "Vkontakte video",
     "d": "vk.com",
     "t": "vkv",
+    "ts": [
+      "вкв"
+    ],
     "u": "https://vk.com/video?q={{{s}}}",
     "c": "Multimedia",
     "sc": "Video"
@@ -84387,6 +84610,9 @@
     "s": "Google Images (wallpapers)",
     "d": "google.com",
     "t": "wallpaper",
+    "ts": [
+      "обои"
+    ],
     "u": "https://google.com/search?tbm=isch&imgsz=xxlarge&gbv=2&safe=off&q={{{s}}}+wallpaper&btnG=Search+Images&tbs=imgo:1",
     "c": "Online Services",
     "sc": "Google"
@@ -84498,7 +84724,8 @@
     "d": "www.world-art.ru",
     "t": "waru",
     "ts": [
-      "worldart"
+      "worldart",
+      "ворлдарт"
     ],
     "u": "https://www.world-art.ru/search.php?public_search={{{s}}}&global_sector=all",
     "c": "Entertainment",
@@ -85025,6 +85252,10 @@
     "s": "WebReference",
     "d": "webref.ru",
     "t": "webref",
+    "ts": [
+      "вебреф",
+      "вэбреф"
+    ],
     "u": "https://webref.ru/search/?s={{{s}}}",
     "c": "Tech",
     "sc": "Languages (html)"
@@ -86093,6 +86324,9 @@
     "s": "Wikivoyage (Русский)",
     "d": "ru.wikivoyage.org",
     "t": "wikivoyageru",
+    "ts": [
+      "викивояж"
+    ],
     "u": "https://ru.wikivoyage.org/wiki/Special:Search?search={{{s}}}&go=Go",
     "c": "Research",
     "sc": "Travel"
@@ -86406,6 +86640,18 @@
     "d": "wpdev.uservoice.com",
     "t": "windev",
     "u": "https://wpdev.uservoice.com/search?query={{{s}}}",
+    "c": "Tech",
+    "sc": "Programming"
+  },
+  {
+    "s": "wpt.fyi",
+    "d": "wpt.fyi",
+    "t": "wptfyi",
+    "ts": [
+      "wpts",
+      "wptf"
+    ],
+    "u": "https://wpt.fyi/results/?q={{{s}}}",
     "c": "Tech",
     "sc": "Programming"
   },
@@ -86931,6 +87177,9 @@
     "s": "WooordHunt",
     "d": "wooordhunt.ru",
     "t": "woo",
+    "ts": [
+      "воо"
+    ],
     "u": "https://wooordhunt.ru/word/{{{s}}}",
     "c": "Multimedia",
     "sc": "General"
@@ -88747,16 +88996,20 @@
   },
   {
     "s": "Yandex Maps",
-    "d": "yandex.ru",
+    "d": "ya.ru",
     "t": "yandexmaps",
     "ts": [
       "yamaps",
       "yxmaps",
       "якарты"
     ],
-    "u": "https://yandex.ru/maps/?text={{{s}}}",
+    "u": "https://ya.ru/maps/?text={{{s}}}",
     "c": "Online Services",
-    "sc": "Maps"
+    "sc": "Maps",
+    "fmt": [
+      "url_encode_placeholder",
+      "url_encode_space_to_plus"
+    ]
   },
   {
     "s": "Yahoo! Answers",
@@ -88806,21 +89059,28 @@
   },
   {
     "s": "Yandex Video",
-    "d": "yandex.ru",
+    "d": "ya.ru",
     "t": "yav",
-    "u": "https://yandex.ru/video/search?text={{{s}}}",
+    "ts": [
+      "яв"
+    ],
+    "u": "https://ya.ru/video/search?text={{{s}}}",
     "c": "Online Services",
-    "sc": "Search (non-US)"
+    "sc": "Search (non-US)",
+    "fmt": [
+      "url_encode_placeholder",
+      "url_encode_space_to_plus"
+    ]
   },
   {
     "s": "Yandex",
-    "d": "yandex.ru",
+    "d": "ya.ru",
     "t": "ya",
     "ts": [
       "yandex",
       "я"
     ],
-    "u": "https://yandex.ru/search?text={{{s}}}",
+    "u": "https://ya.ru/search?text={{{s}}}",
     "c": "Online Services",
     "sc": "Search (non-US)"
   },
@@ -89248,6 +89508,9 @@
     "s": "Youla / Юла",
     "d": "youla.ru",
     "t": "youla",
+    "ts": [
+      "юла"
+    ],
     "u": "https://youla.ru/?q={{{s}}}",
     "c": "Shopping",
     "sc": "Online (marketplace)"
@@ -89544,7 +89807,9 @@
       "ys",
       "yad",
       "slov",
-      "yaslovari"
+      "yaslovari",
+      "яп",
+      "яс"
     ],
     "u": "https://translate.yandex.ru/?text={{{s}}}",
     "c": "Online Services",
@@ -89554,6 +89819,9 @@
     "s": "YouTube TV",
     "d": "tv.youtube.com",
     "t": "yttv",
+    "ts": [
+      "юттв"
+    ],
     "u": "https://tv.youtube.com/search/{{{s}}}",
     "c": "Entertainment",
     "sc": "TV"
@@ -90346,15 +90614,19 @@
   },
   {
     "s": "Yandex Images",
-    "d": "yandex.ru",
+    "d": "ya.ru",
     "t": "yai",
     "ts": [
       "yak",
       "як"
     ],
-    "u": "https://yandex.ru/images/search?text={{{s}}}",
+    "u": "https://ya.ru/images/search?text={{{s}}}",
     "c": "Online Services",
-    "sc": "Search (non-US)"
+    "sc": "Search (non-US)",
+    "fmt": [
+      "url_encode_placeholder",
+      "url_encode_space_to_plus"
+    ]
   },
   {
     "s": "Nayiri",
@@ -90384,6 +90656,9 @@
     "s": "Storygraph",
     "d": "app.thestorygraph.com",
     "t": "storygraph",
+    "ts": [
+      "tsg"
+    ],
     "u": "https://app.thestorygraph.com/browse?search_term={{{s}}}",
     "c": "Multimedia",
     "sc": "Books"
