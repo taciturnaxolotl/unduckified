@@ -49,6 +49,8 @@ const customBangs: {
 	};
 } = JSON.parse(localStorage.getItem("custom-bangs") || "{}");
 
+let editingShortcut: string | null = null;
+
 function getFocusableElements(
 	root: HTMLElement = document.body,
 ): HTMLElement[] {
@@ -177,7 +179,10 @@ const createTemplate = (data: {
    											</tr>
    									</table>
   										<div class="custom-bang-url">${bang.u}</div>
-  										<button class="remove-bang" data-shortcut="${shortcut}">Remove</button>
+  										<div class="custom-bang-actions">
+  											<button class="edit-bang" data-shortcut="${shortcut}">Edit</button>
+  											<button class="remove-bang" data-shortcut="${shortcut}">Remove</button>
+  										</div>
   									</div>
   								`,
 										)
@@ -250,8 +255,11 @@ function noSearchDefaultPageRender() {
 		bangBaseUrl: app.querySelector<HTMLInputElement>(".bang-base-url"),
 		addBang: app.querySelector<HTMLButtonElement>(".add-bang"),
 		removeBangs: app.querySelectorAll<HTMLButtonElement>(".remove-bang"),
+		editBangs: app.querySelectorAll<HTMLButtonElement>(".edit-bang"),
 		bangSearch: app.querySelector<HTMLInputElement>("#bang-search"),
-		bangSearchResults: app.querySelector<HTMLDivElement>("#bang-search-results"),
+		bangSearchResults: app.querySelector<HTMLDivElement>(
+			"#bang-search-results",
+		),
 		exportSettings: app.querySelector<HTMLButtonElement>(".export-settings"),
 		importSettings: app.querySelector<HTMLButtonElement>(".import-settings"),
 		importFile: app.querySelector<HTMLInputElement>("#import-file"),
@@ -478,11 +486,15 @@ function noSearchDefaultPageRender() {
 
 		if (!name || !searchUrl || !baseUrl) return;
 
+		if (editingShortcut && editingShortcut !== shortcut) {
+			delete customBangs[editingShortcut];
+		}
 		customBangs[shortcut] = {
 			s: name,
 			u: searchUrl,
 			d: baseUrl,
 		};
+		editingShortcut = null;
 		storage.set(
 			CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS,
 			JSON.stringify(customBangs),
@@ -493,6 +505,22 @@ function noSearchDefaultPageRender() {
 				window.location.reload();
 			}, 375);
 		else window.location.reload();
+	});
+
+	validatedElements.editBangs.forEach((button) => {
+		button.addEventListener("click", (event) => {
+			const shortcut = (event.target as HTMLButtonElement).dataset
+				.shortcut as string;
+			const bang = customBangs[shortcut];
+			if (!bang) return;
+
+			editingShortcut = shortcut;
+			validatedElements.bangName.value = bang.s;
+			validatedElements.bangShortcut.value = `!${shortcut}`;
+			validatedElements.bangSearchUrl.value = bang.u;
+			validatedElements.bangBaseUrl.value = bang.d;
+			validatedElements.addBang.textContent = "Update Bang";
+		});
 	});
 
 	validatedElements.removeBangs.forEach((button) => {
@@ -528,14 +556,19 @@ function noSearchDefaultPageRender() {
 			const allBangs = { ...bangs, ...customBangs };
 			const results = Object.entries(allBangs)
 				.filter(([shortcut, bang]) => {
-					const searchableText = `${shortcut} ${bang.s} ${bang.d}`.toLowerCase();
+					const searchableText =
+						`${shortcut} ${bang.s} ${bang.d}`.toLowerCase();
 					return searchableText.includes(query);
 				})
 				.sort((a, b) => {
 					const [shortcutA, bangA] = a;
 					const [shortcutB, bangB] = b;
-					const aStartsWithQuery = shortcutA.toLowerCase().startsWith(query) || bangA.s.toLowerCase().startsWith(query);
-					const bStartsWithQuery = shortcutB.toLowerCase().startsWith(query) || bangB.s.toLowerCase().startsWith(query);
+					const aStartsWithQuery =
+						shortcutA.toLowerCase().startsWith(query) ||
+						bangA.s.toLowerCase().startsWith(query);
+					const bStartsWithQuery =
+						shortcutB.toLowerCase().startsWith(query) ||
+						bangB.s.toLowerCase().startsWith(query);
 					if (aStartsWithQuery && !bStartsWithQuery) return -1;
 					if (!aStartsWithQuery && bStartsWithQuery) return 1;
 					return shortcutA.length - shortcutB.length;
@@ -543,23 +576,24 @@ function noSearchDefaultPageRender() {
 				.slice(0, 20);
 
 			if (results.length === 0) {
-				resultsContainer.innerHTML = '<div class="bang-search-empty">No bangs found</div>';
+				resultsContainer.innerHTML =
+					'<div class="bang-search-empty">No bangs found</div>';
 				return;
 			}
 
 			resultsContainer.innerHTML = results
-				.map(
-					([shortcut, bang]) => {
-						const displayName = bang.s.replace(/\s*\(Kagi Search\)\s*$/i, " (default search)") || bang.s;
-						return `
+				.map(([shortcut, bang]) => {
+					const displayName =
+						bang.s.replace(/\s*\(Kagi Search\)\s*$/i, " (default search)") ||
+						bang.s;
+					return `
 						<div class="bang-search-item">
 							<code>!${shortcut}</code>
 							<span class="bang-search-name">${displayName}</span>
 							<span class="bang-search-domain">${bang.d}</span>
 						</div>
 					`;
-					},
-				)
+				})
 				.join("");
 		}, 150);
 	});
@@ -644,7 +678,7 @@ function getBangredirectUrl() {
 	const query = url.searchParams.get("q")?.trim() ?? "";
 
 	switch (url.pathname.replace(/\/$/, "")) {
-		case "": 
+		case "":
 		case "/search": {
 			if (!query || query === "!" || query === "!settings") {
 				noSearchDefaultPageRender();
@@ -652,7 +686,7 @@ function getBangredirectUrl() {
 			}
 
 			const match = query.toLowerCase().match(/^!(\S+)|!(\S+)$/i);
-			const bangShortcut = match ? (match[1] || match[2]) : LS_DEFAULT_BANG;
+			const bangShortcut = match ? match[1] || match[2] : LS_DEFAULT_BANG;
 			const selectedBang = match
 				? customBangs[bangShortcut] || bangs[bangShortcut]
 				: defaultBang;
@@ -667,7 +701,10 @@ function getBangredirectUrl() {
 
 			// Check if this is a "(Kagi Search)" bang that should use the default search provider
 			let bangUrl = selectedBang?.u || "";
-			if (selectedBang?.s?.includes("(Kagi Search)") && selectedBang?.u?.match(/^\/search\?q=\{\{\{s\}\}\}\+site:/)) {
+			if (
+				selectedBang?.s?.includes("(Kagi Search)") &&
+				selectedBang?.u?.match(/^\/search\?q=\{\{\{s\}\}\}\+site:/)
+			) {
 				const siteMatch = selectedBang.u.match(/\+site:([^\s&]+)/);
 				if (siteMatch && defaultBang?.u) {
 					const siteDomain = siteMatch[1];

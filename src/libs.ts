@@ -16,8 +16,14 @@ function addToSearchHistory(
 	query: string,
 	bang: { bang: string; name: string; url: string },
 ) {
-	const history: Array<{ query: string; bang: string; name: string; timestamp: number }> =
-		JSON.parse(storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY) || "[]");
+	const history: Array<{
+		query: string;
+		bang: string;
+		name: string;
+		timestamp: number;
+	}> = JSON.parse(
+		storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY) || "[]",
+	);
 
 	history.unshift({
 		query,
