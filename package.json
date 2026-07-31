@@ -4,8 +4,8 @@
   "version": "0.3.1",
   "type": "module",
   "scripts": {
-    "dev": "bunx --bun vite",
-    "build": "bunx --bun vite build",
+    "dev": "bun run hash && bun run src/bangs/packbang.ts && bunx --bun vite",
+    "build": "bun run hash && bun run src/bangs/packbang.ts && bunx --bun vite build && bun build src/sw/sw.ts --outdir=dist --entry-naming=sw.js --minify --target=browser",
     "preview": "bunx --bun vite preview",
     "hash": "bun run src/bangs/hashbanggen.ts",
     "check": "bun run src/bangs/test-bangs.ts"

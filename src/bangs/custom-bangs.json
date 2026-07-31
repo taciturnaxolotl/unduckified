@@ -1,0 +1,20 @@
+[
+	{
+		"t": "image",
+		"d": "duckduckgo.com",
+		"s": "Duckduckgo images",
+		"u": "https://duckduckgo.com/?q={{{s}}}&ia=images&iax=images&atb=v375-1"
+	},
+	{
+		"t": "k",
+		"d": "kagi.com",
+		"s": "Kagi Search",
+		"u": "https://kagi.com/search?q={{{s}}}"
+	},
+	{
+		"t": "kagi",
+		"d": "kagi.com",
+		"s": "Kagi Search",
+		"u": "https://kagi.com/search?q={{{s}}}"
+	}
+]
