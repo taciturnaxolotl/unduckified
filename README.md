@@ -14,13 +14,13 @@ https://s.dunkirk.sh?q=%s
 
 ## How is it that much faster?
 
-DuckDuckGo does their redirects server side. Their DNS is...not always great. Result is that it often takes ages.
+DuckDuckGo does their redirects server side. Depending on how fast your internet connection is this can mean a network round trip that could cause a noticable delay vs directly loading the other website.
 
-I solved this by doing all of the work client side. Once you've went to https://s.dunkirk.sh once, the JS is all cached and will never need to be downloaded again. Your device does the redirects, not me or any other server.
+This is solved by doing all of the work client side. Once you've went to https://s.dunkirk.sh once, the JS is all cached and will never need to be downloaded again. Your device does the redirects, not unduck or any other server.
 
 ## How is this different from Theo's version again?
 
-This is primarily my personal fork to experiment with PWAs but I do have a few ideas that I would love to add to this.
+This is primarily my personal fork to experiment with PWAs but I do have a few ideas that I have added to this which make it a bit more fun :)
 
 <img align="right" width="140" height="140" src="https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/public/goose.gif" alt="goose walking animation"/>
 
