@@ -215,7 +215,7 @@ const createTemplate = (data: { LS_DEFAULT_BANG: string }) => `
 					<div class="settings-section">
 							<h3>Settings Import/Export</h3>
 							<p class="help-text">Export your settings and custom bangs to a file, or import them from a previously saved file.</p>
-							<div style="display: flex; gap: 8px; margin-top: 8px;">
+							<div class="settings-actions">
 								<button class="export-settings">Export Settings</button>
 								<button class="import-settings">Import Settings</button>
 								<input type="file" id="import-file" accept=".json" style="display: none;">
