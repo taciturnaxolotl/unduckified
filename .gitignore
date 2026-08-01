@@ -25,3 +25,5 @@ dist-ssr
 bangs.bin
 hashbang.ts
 data-version.ts
+suggest-data.ts
+.wrangler

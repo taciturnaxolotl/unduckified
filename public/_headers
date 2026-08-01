@@ -47,8 +47,10 @@
 /opensearch.xml
   Cache-Control: public, no-cache
 
-# Suggestions are computed per query by the service worker. If a request ever
-# reaches the network, it must not be cached or shared.
+# Suggestions are computed per request by the Pages Function, which sets its
+# own no-store header. This entry covers the case where the request reaches the
+# asset server instead: queries are personal, so never cache them and never let
+# one user's response reach another.
 /suggest
   Cache-Control: private, no-store
 

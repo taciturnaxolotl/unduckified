@@ -43,9 +43,21 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 
 ## Search Suggestions
 
-On firefox based browsers you can use the dedicated search suggestions url field but on most other browsers unless they have global search suggestions you are kind of out of luck. Thanks to [`KobeW50`](https://github.com/KobeW50) for bringing this to my attention! I added the urls for duckduckgo and chrome below and you can pick your poison on which one you would rather have see what you type in the url bar.
+On firefox based browsers you can use the dedicated search suggestions url field but on most other browsers unless they have global search suggestions you are kind of out of luck. Thanks to [`KobeW50`](https://github.com/KobeW50) for bringing this to my attention!
 
 ![search suggestions field on firefox](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/search-suggestions.jpeg)
+
+Unduck now completes bangs itself. Point the suggestions field at:
+
+```
+https://s.dunkirk.sh/suggest?q=%s
+```
+
+Type `!git` and you get `!github`, `!githubdocs`, and so on, ordered by how often people actually use them.
+
+This is the one piece that cannot run on your device. Browsers fetch suggestions from the browser process rather than from a page, so a service worker never sees the request ([crbug 41389229](https://issues.chromium.org/issues/41389229)), and Firefox works the same way. So while suggestions are on, what you type in the address bar reaches the edge function that answers them. Nothing is logged or stored, and only text that already looks like a bang gets a lookup at all, but the request does leave your machine. Redirects are unaffected and still happen entirely on device.
+
+If you would rather not have that, leave the field empty, or use somebody else's:
 
 ```
 https://duckduckgo.com/ac/?q=%s&type=list

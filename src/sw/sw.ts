@@ -32,7 +32,6 @@ let SOFF_PTR = 0;
 let SBLOB_PTR = 0;
 let TOFF_PTR = 0;
 let TBLOB_PTR = 0;
-let RANK_PTR = 0;
 
 // Custom bangs cache: Map<shortcut, {prefix, suffix}>
 let customBangsCache = new Map<string, { prefix: string; suffix: string | null }>();
@@ -145,13 +144,9 @@ function initBangData(buf: ArrayBuffer) {
 	TOFF_PTR = p;
 	p += 4 * (N + 1);
 	TBLOB_PTR = p;
-	// Skip trigger blob
-	const triggerBlobEnd = (() => {
-		const base = TOFF_PTR + N * 4;
-		return (HEAP![base] | (HEAP![base+1]<<8) | (HEAP![base+2]<<16) | (HEAP![base+3]<<24)) >>> 0;
-	})();
-	p += triggerBlobEnd;
-	RANK_PTR = p;
+	// The rank bytes that follow the trigger blob are only used by the
+	// suggestion endpoint, which runs at the edge (see functions/suggest.ts),
+	// so nothing here reads past this point.
 
 	loaded = true;
 }
@@ -250,110 +245,6 @@ function getTrigger(entryIdx: number): string {
 	const start = TBLOB_PTR + getTriggerOffset(entryIdx);
 	const end = TBLOB_PTR + getTriggerOffset(entryIdx + 1);
 	return new TextDecoder().decode(HEAP!.subarray(start, end));
-}
-
-// Compare trigger[i] against prefix bytes without decoding the string.
-// Returns 0 when the trigger starts with the prefix, <0 when it sorts before.
-function cmpTriggerPrefix(i: number, pb: Uint8Array): number {
-	const start = TBLOB_PTR + getTriggerOffset(i);
-	const len = getTriggerOffset(i + 1) - getTriggerOffset(i);
-	for (let j = 0; j < pb.length; j++) {
-		if (j >= len) return -1;
-		const d = HEAP![start + j] - pb[j];
-		if (d !== 0) return d < 0 ? -1 : 1;
-	}
-	return 0;
-}
-
-// Triggers are stored sorted, so every prefix match is a contiguous range.
-// Binary search for its start (~14 steps over 13.5k entries).
-function lowerBound(pb: Uint8Array): number {
-	let lo = 0;
-	let hi = N;
-	while (lo < hi) {
-		const mid = (lo + hi) >> 1;
-		if (cmpTriggerPrefix(mid, pb) < 0) lo = mid + 1;
-		else hi = mid;
-	}
-	return lo;
-}
-
-const SUGGEST_LIMIT = 8;
-
-// Compare two candidates by (rank desc, trigger length asc, index asc).
-// Index ascending is equivalent to alphabetical, since triggers are sorted.
-function candidateBeats(
-	aRank: number, aLen: number, aIdx: number,
-	bRank: number, bLen: number, bIdx: number,
-): boolean {
-	if (aRank !== bRank) return aRank > bRank;
-	if (aLen !== bLen) return aLen < bLen;
-	return aIdx < bIdx;
-}
-
-// Prefix suggestions ordered by popularity, then trigger length, then
-// alphabetically. Custom bangs always sort first.
-//
-// A prefix match is a contiguous range (triggers are sorted), but that range
-// can be large: "!s" matches ~1000 entries and an empty prefix matches all
-// 13.5k. So we keep a bounded top-K list over the raw rank bytes and only
-// decode the handful of triggers that actually survive.
-function suggestTriggers(prefix: string, limit = SUGGEST_LIMIT): string[] {
-	if (!loaded || !HEAP) return [];
-
-	const custom: string[] = [];
-	for (const trigger of customBangsCache.keys()) {
-		if (trigger.startsWith(prefix)) custom.push(trigger);
-	}
-	custom.sort((a, b) => a.length - b.length || (a < b ? -1 : 1));
-	if (custom.length >= limit) return custom.slice(0, limit);
-
-	const slots = limit - custom.length;
-	const topIdx: number[] = [];
-	const topRank: number[] = [];
-	const topLen: number[] = [];
-
-	const pb = new TextEncoder().encode(prefix);
-	for (let i = lowerBound(pb); i < N; i++) {
-		if (cmpTriggerPrefix(i, pb) !== 0) break;
-
-		const rank = HEAP[RANK_PTR + i];
-		const len = getTriggerOffset(i + 1) - getTriggerOffset(i);
-
-		// Skip early if this cannot displace the current worst entry.
-		if (topIdx.length === slots) {
-			const w = topIdx.length - 1;
-			if (!candidateBeats(rank, len, i, topRank[w], topLen[w], topIdx[w])) {
-				continue;
-			}
-		}
-
-		// Insertion sort into the bounded top list.
-		let pos = topIdx.length < slots ? topIdx.length : slots - 1;
-		topIdx[pos] = i;
-		topRank[pos] = rank;
-		topLen[pos] = len;
-		while (
-			pos > 0 &&
-			candidateBeats(
-				topRank[pos], topLen[pos], topIdx[pos],
-				topRank[pos - 1], topLen[pos - 1], topIdx[pos - 1],
-			)
-		) {
-			const ti = topIdx[pos]; topIdx[pos] = topIdx[pos - 1]; topIdx[pos - 1] = ti;
-			const tr = topRank[pos]; topRank[pos] = topRank[pos - 1]; topRank[pos - 1] = tr;
-			const tl = topLen[pos]; topLen[pos] = topLen[pos - 1]; topLen[pos - 1] = tl;
-			pos--;
-		}
-	}
-
-	const out = custom;
-	for (const i of topIdx) {
-		const trigger = getTrigger(i);
-		if (customBangsCache.has(trigger)) continue; // already listed above
-		out.push(trigger);
-	}
-	return out.slice(0, limit);
 }
 
 function fnv1a(str: string): number {
@@ -556,50 +447,6 @@ self.addEventListener("activate", (event) => {
 	);
 });
 
-// Parse a partial bang out of a suggestion query. Handles a leading bang
-// ("!git", "!g cats") and a trailing one ("cats !git"), mirroring how the
-// redirect handler accepts both orders.
-function parsePartialBang(
-	query: string,
-): { prefix: string; partial: string } | null {
-	const leading = query.match(/^!(\S*)$/);
-	if (leading) return { prefix: "", partial: leading[1].toLowerCase() };
-
-	const trailing = query.match(/^(.*\s)!(\S*)$/);
-	if (trailing) return { prefix: trailing[1], partial: trailing[2].toLowerCase() };
-
-	return null;
-}
-
-const OPENSEARCH_JSON_HEADERS = {
-	"Content-Type": "application/x-suggestions+json",
-	"Cache-Control": "no-store",
-};
-
-function suggestionsResponse(query: string, completions: string[]): Response {
-	// OpenSearch suggestion format: [query, [completions], [descriptions], [urls]]
-	return new Response(JSON.stringify([query, completions, [], []]), {
-		headers: OPENSEARCH_JSON_HEADERS,
-	});
-}
-
-async function handleSuggest(url: URL): Promise<Response> {
-	const query = url.searchParams.get("q") ?? "";
-	const bang = parsePartialBang(query.trim());
-	if (!bang) return suggestionsResponse(query, []);
-
-	try {
-		await loadBangs();
-	} catch {
-		return suggestionsResponse(query, []);
-	}
-
-	const completions = suggestTriggers(bang.partial).map(
-		(trigger) => `${bang.prefix}!${trigger}`,
-	);
-	return suggestionsResponse(query, completions);
-}
-
 self.addEventListener("fetch", (event: FetchEvent) => {
 	const url = new URL(event.request.url);
 
@@ -614,6 +461,7 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 		return;
 	}
 
+	if (event.request.mode !== "navigate") return;
 
 	const q = url.searchParams.get("q");
 	if (!q || q.trim() === "") return;
@@ -623,8 +471,8 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 	if (trimmed === "!" || trimmed === "!settings") return;
 
 	// Accept a leading bang ("!g cats"), a trailing bang ("cats !g"), and the
-	// suffix form ("cats g!"). The suggestion parser offers all three, so the
-	// redirect path has to understand all three.
+	// suffix form ("cats g!"). Address-bar suggestions offer the first two, and
+	// people type the third by hand, so all three have to resolve here.
 	const leading = trimmed.match(/^!(\S+)\s*([\s\S]*)$/);
 	const trailingBang = trimmed.match(/^([\s\S]*?)\s+!(\S+)$/);
 	const trailingSuffix = trimmed.match(/^([\s\S]*?)\s*(\S+)!$/);
