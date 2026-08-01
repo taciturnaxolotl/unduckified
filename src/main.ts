@@ -57,6 +57,16 @@ function syncCustomBangsToSW() {
 	}
 }
 
+// Tell the worker which bang to use for queries typed without one.
+function syncDefaultBangToSW(trigger: string) {
+	if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+		navigator.serviceWorker.controller.postMessage({
+			type: "SET_DEFAULT_BANG",
+			trigger,
+		});
+	}
+}
+
 // Get the active service worker, waiting for it to be ready if needed.
 async function getReadySW(): Promise<ServiceWorker | null> {
 	if (!("serviceWorker" in navigator)) return null;
@@ -429,6 +439,7 @@ function noSearchDefaultPageRender() {
 			new CustomEvent("bangSuccess"),
 		);
 		storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.DEFAULT_BANG, newDefaultBang);
+		syncDefaultBangToSW(newDefaultBang);
 		validatedElements.description.innerText = "Default Bang: !" + newDefaultBang;
 	});
 
@@ -559,6 +570,16 @@ function noSearchDefaultPageRender() {
 
 const LS_DEFAULT_BANG =
 	storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.DEFAULT_BANG) ?? "ddg";
+
+// Push settings to the worker once it is available. Existing users have these
+// in localStorage only, which the worker cannot read.
+getReadySW().then((sw) => {
+	if (!sw) return;
+	sw.postMessage({ type: "SET_DEFAULT_BANG", trigger: LS_DEFAULT_BANG });
+	if (Object.keys(customBangs).length > 0) {
+		sw.postMessage({ type: "UPDATE_CUSTOM_BANGS", bangs: customBangs });
+	}
+});
 
 function checkForRedirect() {
 	const url = new URL(window.location.href);

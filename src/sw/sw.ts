@@ -70,6 +70,19 @@ async function incrementSearchCount(): Promise<void> {
 	}
 }
 
+const DEFAULT_BANG_KEY = "default-bang";
+let defaultBang = "ddg";
+
+async function loadDefaultBang() {
+	try {
+		const cache = await caches.open(USER_CACHE);
+		const resp = await cache.match(DEFAULT_BANG_KEY);
+		if (resp) defaultBang = (await resp.text()) || "ddg";
+	} catch {
+		// Keep the built-in default.
+	}
+}
+
 async function loadCustomBangs() {
 	try {
 		const cache = await caches.open(USER_CACHE);
@@ -149,7 +162,7 @@ function initBangData(buf: ArrayBuffer) {
 async function seedBangData(buf: ArrayBuffer) {
 	if (loaded) return;
 	initBangData(buf);
-	await loadCustomBangs();
+	await Promise.all([loadCustomBangs(), loadDefaultBang()]);
 	// Persist so later worker starts skip the network entirely.
 	try {
 		const cache = await caches.open(CACHE_NAME);
@@ -181,7 +194,7 @@ async function loadBangsUncached() {
 	}
 
 	initBangData(await resp.arrayBuffer());
-	await loadCustomBangs();
+	await Promise.all([loadCustomBangs(), loadDefaultBang()]);
 }
 
 function loadBangs(): Promise<void> {
@@ -449,6 +462,19 @@ self.addEventListener("message", async (event) => {
 		});
 	}
 
+	if (event.data?.type === "SET_DEFAULT_BANG") {
+		const next = String(event.data.trigger ?? "").toLowerCase();
+		if (next) {
+			defaultBang = next;
+			try {
+				const cache = await caches.open(USER_CACHE);
+				await cache.put(DEFAULT_BANG_KEY, new Response(next));
+			} catch {
+				// In-memory value still applies for this session.
+			}
+		}
+	}
+
 	if (event.data?.type === "HAS_BANG_DATA") {
 		const port = event.ports?.[0];
 		const reply = (ready: boolean) => {
@@ -590,22 +616,43 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 	if (!q || q.trim() === "") return;
 
 	const trimmed = q.trim();
-	const match = trimmed.match(/^!(\S+)/i) || trimmed.match(/(\S+)!$/i);
-	const bangTrigger = match ? match[1].toLowerCase() : null;
-	const cleanQuery = bangTrigger
-		? trimmed.replace(/^!\S+\s*|\S+!$/i, "").trim()
-		: trimmed;
+	// Leave the settings shortcut to the page.
+	if (trimmed === "!" || trimmed === "!settings") return;
+
+	// Accept a leading bang ("!g cats"), a trailing bang ("cats !g"), and the
+	// suffix form ("cats g!"). The suggestion parser offers all three, so the
+	// redirect path has to understand all three.
+	const leading = trimmed.match(/^!(\S+)\s*([\s\S]*)$/);
+	const trailingBang = trimmed.match(/^([\s\S]*?)\s+!(\S+)$/);
+	const trailingSuffix = trimmed.match(/^([\s\S]*?)\s*(\S+)!$/);
+
+	let bangTrigger: string | null = null;
+	let cleanQuery = trimmed;
+	if (leading) {
+		bangTrigger = leading[1].toLowerCase();
+		cleanQuery = leading[2].trim();
+	} else if (trailingBang) {
+		bangTrigger = trailingBang[2].toLowerCase();
+		cleanQuery = trailingBang[1].trim();
+	} else if (trailingSuffix) {
+		bangTrigger = trailingSuffix[2].toLowerCase();
+		cleanQuery = trailingSuffix[1].trim();
+	}
 
 	event.respondWith(
 		(async () => {
-			await loadBangs();
-			if (bangTrigger) {
-				const dest = resolve(bangTrigger, cleanQuery);
+			try {
+				await loadBangs();
+				// A query with no explicit bang still goes to the user's default.
+				const trigger = bangTrigger ?? defaultBang;
+				const dest = resolve(trigger, cleanQuery);
 				if (dest) {
-					// Track search count in the background
-					incrementSearchCount();
+					incrementSearchCount(); // background, non-blocking
 					return Response.redirect(dest, 302);
 				}
+			} catch {
+				// Fall through to the network so a data failure degrades into
+				// the normal page instead of a dead tab.
 			}
 			return fetch(event.request);
 		})(),

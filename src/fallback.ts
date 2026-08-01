@@ -171,19 +171,33 @@ export async function resolveFallback(query: string, buffer?: ArrayBuffer): Prom
 		await initializeBangData(buffer);
 	}
 
-	// Parse query for bang syntax
+	// Parse bang syntax. Must match the service worker exactly: leading
+	// ("!g cats"), trailing ("cats !g"), and suffix ("cats g!") forms.
 	const trimmed = query.trim();
-	const match = trimmed.match(/^!(\S+)/i) || trimmed.match(/(\S+)!$/i);
-	const bangTrigger = match ? match[1].toLowerCase() : null;
-	const cleanQuery = bangTrigger
-		? trimmed.replace(/^!\S+\s*|\S+!$/i, "").trim()
-		: trimmed;
+	const leading = trimmed.match(/^!(\S+)\s*([\s\S]*)$/);
+	const trailingBang = trimmed.match(/^([\s\S]*?)\s+!(\S+)$/);
+	const trailingSuffix = trimmed.match(/^([\s\S]*?)\s*(\S+)!$/);
 
-	if (!bangTrigger) return null;
+	let bangTrigger: string | null = null;
+	let cleanQuery = trimmed;
+	if (leading) {
+		bangTrigger = leading[1].toLowerCase();
+		cleanQuery = leading[2].trim();
+	} else if (trailingBang) {
+		bangTrigger = trailingBang[2].toLowerCase();
+		cleanQuery = trailingBang[1].trim();
+	} else if (trailingSuffix) {
+		bangTrigger = trailingSuffix[2].toLowerCase();
+		cleanQuery = trailingSuffix[1].trim();
+	}
+
+	// A query typed without a bang still goes to the user's default.
+	const trigger =
+		bangTrigger ?? (localStorage.getItem("default-bang") || "ddg").toLowerCase();
 
 	// Check custom bangs from localStorage first
 	const customBangs = JSON.parse(localStorage.getItem("custom-bangs") || "{}");
-	const customEntry = customBangs[bangTrigger];
+	const customEntry = customBangs[trigger];
 	if (customEntry) {
 		const url = customEntry.u;
 		const idx = url.indexOf("{{{s}}}");
@@ -192,7 +206,7 @@ export async function resolveFallback(query: string, buffer?: ArrayBuffer): Prom
 	}
 
 	// Fall back to built-in bangs
-	return resolve(bangTrigger, cleanQuery);
+	return resolve(trigger, cleanQuery);
 }
 
 // Expose globally for inline script

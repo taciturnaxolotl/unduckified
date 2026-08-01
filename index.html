@@ -198,9 +198,9 @@
 				// The worker is already in charge; let it answer.
 				if (navigator.serviceWorker && navigator.serviceWorker.controller) return;
 
-				// Only bang queries can be resolved locally.
+				// The settings shortcut belongs to the page, not a redirect.
 				var trimmed = query.trim();
-				if (!/^!(\S+)/i.test(trimmed) && !/(\S+)!$/i.test(trimmed)) return;
+				if (trimmed === "!" || trimmed === "!settings") return;
 
 				fetch("/bangs.bin")
 					.then(function (r) { return r.arrayBuffer(); })
