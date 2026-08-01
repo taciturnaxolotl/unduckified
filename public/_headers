@@ -20,8 +20,15 @@
 
 # Bang data: revalidate every time, but a 304 costs a few hundred bytes
 # instead of re-sending the whole payload.
+#
+# The Content-Type override is load-bearing. Cloudflare picks compression by
+# response type and skips application/octet-stream entirely, which would put
+# the full ~773 KiB on the wire. Declaring a type it does compress lets brotli
+# run and cuts the transfer to roughly a third. The bytes served are
+# unchanged; only the transfer encoding differs.
 /bangs.bin
   Cache-Control: public, no-cache
+  Content-Type: application/wasm
 
 # Service worker and the fallback module it coordinates with. These decide
 # which build a client is running, so they must never be served stale.
