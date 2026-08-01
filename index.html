@@ -152,14 +152,44 @@
 						.catch(function () {});
 				}
 
+				// Ask the worker whether it already holds bang data, so warming
+				// never re-downloads something that is already cached.
+				function workerNeedsData() {
+					if (!("serviceWorker" in navigator)) return Promise.resolve(false);
+					return navigator.serviceWorker.ready
+						.then(function (reg) {
+							var target = reg.active || navigator.serviceWorker.controller;
+							if (!target) return false;
+							return new Promise(function (resolve) {
+								var channel = new MessageChannel();
+								var settled = false;
+								channel.port1.onmessage = function (event) {
+									settled = true;
+									resolve(!event.data || !event.data.ready);
+								};
+								target.postMessage({ type: "HAS_BANG_DATA" }, [channel.port2]);
+								// Old workers won't reply; don't warm on their behalf.
+								setTimeout(function () {
+									if (!settled) resolve(false);
+								}, 1000);
+							});
+						})
+						.catch(function () {
+							return false;
+						});
+				}
+
 				// No query: warm the worker in the background so the next search is instant.
 				if (!query || query.trim() === "") {
-					if ("serviceWorker" in navigator && !navigator.serviceWorker.controller) {
+					if ("serviceWorker" in navigator) {
 						window.addEventListener("load", function () {
-							fetch("/bangs.bin")
-								.then(function (r) { return r.arrayBuffer(); })
-								.then(seedServiceWorker)
-								.catch(function () {});
+							workerNeedsData().then(function (needed) {
+								if (!needed) return;
+								fetch("/bangs.bin")
+									.then(function (r) { return r.arrayBuffer(); })
+									.then(seedServiceWorker)
+									.catch(function () {});
+							});
 						});
 					}
 					return;

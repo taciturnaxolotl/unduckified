@@ -449,6 +449,26 @@ self.addEventListener("message", async (event) => {
 		});
 	}
 
+	if (event.data?.type === "HAS_BANG_DATA") {
+		const port = event.ports?.[0];
+		const reply = (ready: boolean) => {
+			const msg = { type: "BANG_DATA_STATUS", ready };
+			if (port) port.postMessage(msg);
+			else event.source?.postMessage(msg);
+		};
+		if (loaded) {
+			reply(true);
+		} else {
+			// Not parsed yet, but a cached copy still means no download is needed.
+			try {
+				const cache = await caches.open(CACHE_NAME);
+				reply(Boolean(await cache.match(BANGS_BIN)));
+			} catch {
+				reply(false);
+			}
+		}
+	}
+
 	if (event.data?.type === "CHECK_BANG_EXISTS") {
 		const port = event.ports?.[0];
 		const trigger = String(event.data.trigger ?? "").toLowerCase();
