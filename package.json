@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "bun run hash && bun run src/bangs/packbang.ts && bunx --bun vite",
-    "build": "bun run hash && bun run src/bangs/packbang.ts && bunx --bun vite build && bun build src/sw/sw.ts --outdir=dist --entry-naming=sw.js --minify --target=browser && bun build src/fallback.ts --outdir=dist --entry-naming=fallback.js --minify --target=browser",
+    "build": "bun run hash && bun run src/bangs/packbang.ts && bunx --bun vite build && bun run src/build-workers.ts",
     "preview": "bunx --bun vite preview",
     "hash": "bun run src/bangs/hashbanggen.ts",
     "ranks": "bun run src/bangs/fetch-ranks.ts",
-    "check": "bun run src/bangs/test-bangs.ts"
+    "check": "bun run src/bangs/test-bangs.ts",
+    "typecheck": "bunx tsc --noEmit"
   },
   "devDependencies": {
     "typescript": "~5.7.3",

@@ -49,17 +49,17 @@ function openStatsDB(): Promise<IDBDatabase> {
 	});
 }
 
-async function incrementSearchCount(): Promise<void> {
+async function incrementSearchCount(key: string = SEARCH_COUNT_KEY): Promise<void> {
 	try {
 		const db = await openStatsDB();
 		const tx = db.transaction(DB_STORE, "readwrite");
 		const store = tx.objectStore(DB_STORE);
 		const current = await new Promise<number>((resolve) => {
-			const getReq = store.get(SEARCH_COUNT_KEY);
+			const getReq = store.get(key);
 			getReq.onsuccess = () => resolve(getReq.result ?? 0);
 			getReq.onerror = () => resolve(0);
 		});
-		store.put(current + 1, SEARCH_COUNT_KEY);
+		store.put(current + 1, key);
 		await new Promise<void>((resolve, reject) => {
 			tx.oncomplete = () => resolve();
 			tx.onerror = () => reject(tx.error);
@@ -603,14 +603,17 @@ async function handleSuggest(url: URL): Promise<Response> {
 self.addEventListener("fetch", (event: FetchEvent) => {
 	const url = new URL(event.request.url);
 
+	// `url.pathname` is a getter that re-serializes on every read, which costs
+	// far more than the comparisons below. Read it once.
+	const path = url.pathname;
+
 	// Address-bar suggestions (OpenSearch). Served locally so the query never
 	// leaves the device.
-	if (url.pathname === "/suggest" && url.origin === self.location.origin) {
+	if (path === "/suggest" && url.origin === self.location.origin) {
 		event.respondWith(handleSuggest(url));
 		return;
 	}
 
-	if (event.request.mode !== "navigate") return;
 
 	const q = url.searchParams.get("q");
 	if (!q || q.trim() === "") return;
