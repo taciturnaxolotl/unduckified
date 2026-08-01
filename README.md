@@ -53,7 +53,13 @@ Unduck now completes bangs itself. Point the suggestions field at:
 https://s.dunkirk.sh/suggest?q=%s
 ```
 
-Type `!git` and you get `!github`, `!githubdocs`, and so on, ordered by how often people actually use them.
+Type `!git` and you get `!github`, `!githubdocs`, and so on, ordered by how often people actually use them. Each one shows the service it goes to and its favicon in the dropdown.
+
+If your browser or search client would rather have the bare completions, drop the descriptions and favicons with `&rich=0`:
+
+```
+https://s.dunkirk.sh/suggest?q=%s&rich=0
+```
 
 This is the one piece that cannot run on your device. Browsers fetch suggestions from the browser process rather than from a page, so a service worker never sees the request ([crbug 41389229](https://issues.chromium.org/issues/41389229)), and Firefox works the same way. So while suggestions are on, what you type in the address bar reaches the edge function that answers them. Nothing is logged or stored, and only text that already looks like a bang gets a lookup at all, but the request does leave your machine. Redirects are unaffected and still happen entirely on device.
 
