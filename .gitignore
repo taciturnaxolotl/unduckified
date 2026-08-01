@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 bangs.bin
 hashbang.ts
+data-version.ts

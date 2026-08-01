@@ -1,0 +1,54 @@
+# Cloudflare Pages cache rules.
+#
+# Two categories matter here:
+#
+#   - Content-addressed files (Vite's /assets/*, which carry a hash in the
+#     filename) can be cached forever: a change produces a new filename.
+#   - Everything else keeps a stable URL, so it must revalidate. We still want
+#     revalidation to be cheap, meaning a 304 with an empty body rather than a
+#     fresh download.
+#
+# bangs.bin is the interesting one. It is ~773 KiB, updates roughly monthly,
+# and keeps a stable URL. The service worker already avoids requesting it at
+# all while its cached copy is current (the cache key carries the data's
+# content hash), so the header below only governs the update visit and any
+# request that bypasses the worker.
+
+# Hashed build output: safe to keep indefinitely.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Bang data: revalidate every time, but a 304 costs a few hundred bytes
+# instead of re-sending the whole payload.
+/bangs.bin
+  Cache-Control: public, no-cache
+
+# Service worker and the fallback module it coordinates with. These decide
+# which build a client is running, so they must never be served stale.
+/sw.js
+  Cache-Control: public, no-cache
+/fallback.js
+  Cache-Control: public, no-cache
+
+# Entry point and metadata: small, and they point at everything else.
+/
+  Cache-Control: public, no-cache
+/index.html
+  Cache-Control: public, no-cache
+/manifest.json
+  Cache-Control: public, no-cache
+/opensearch.xml
+  Cache-Control: public, no-cache
+
+# Suggestions are computed per query by the service worker. If a request ever
+# reaches the network, it must not be cached or shared.
+/suggest
+  Cache-Control: private, no-store
+
+# Static media that only changes when renamed.
+/*.opus
+  Cache-Control: public, max-age=604800
+/*.svg
+  Cache-Control: public, max-age=604800
+/*.gif
+  Cache-Control: public, max-age=604800

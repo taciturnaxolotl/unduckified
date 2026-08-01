@@ -3,9 +3,12 @@ import { createAudio, storage } from "./libs.ts";
 
 import notFoundPageRender from "./404.ts";
 
-// Register service worker (non-blocking)
+// Register service worker (non-blocking). updateViaCache:"none" keeps the
+// browser from serving a stale sw.js and pinning users to an old build.
 if ("serviceWorker" in navigator) {
-	navigator.serviceWorker.register("/sw.js").catch(() => {});
+	navigator.serviceWorker
+		.register("/sw.js", { updateViaCache: "none" })
+		.catch(() => {});
 }
 
 export const CONSTANTS = {

@@ -1,6 +1,17 @@
 // Service Worker: MPHF-based redirect with zero-decode binary artifact.
 
-const CACHE_NAME = "unduck-sw-v3";
+import { BANG_DATA_VERSION } from "../bangs/data-version.ts";
+
+// Cache name carries the bang data's content hash, so a deploy that changes
+// the bangs invalidates client caches automatically, and a deploy that doesn't
+// leaves them warm.
+const CACHE_NAME = `unduck-${BANG_DATA_VERSION}`;
+const CACHE_PREFIX = "unduck-";
+// User data lives in its own unversioned cache so bang updates never wipe it.
+const USER_CACHE = "unduck-user";
+// Caches that must survive a bang data update. Everything else under the
+// prefix is a superseded data cache and gets cleaned up on activate.
+const PERSISTENT_CACHES = new Set([CACHE_NAME, USER_CACHE]);
 const BANGS_BIN = "/bangs.bin";
 const CUSTOM_BANGS_KEY = "custom-bangs-cache";
 const DB_NAME = "unduck-stats";
@@ -61,7 +72,7 @@ async function incrementSearchCount(): Promise<void> {
 
 async function loadCustomBangs() {
 	try {
-		const cache = await caches.open(CACHE_NAME);
+		const cache = await caches.open(USER_CACHE);
 		const resp = await cache.match(CUSTOM_BANGS_KEY);
 		if (!resp) return;
 		// Data is already in {prefix, suffix} format from message handler
@@ -430,7 +441,7 @@ self.addEventListener("message", async (event) => {
 		}
 		customBangsCache = new Map(Object.entries(processedBangs));
 		// Persist to Cache API for SW restarts
-		caches.open(CACHE_NAME).then((cache) => {
+		caches.open(USER_CACHE).then((cache) => {
 			const response = new Response(JSON.stringify(processedBangs), {
 				headers: { "Content-Type": "application/json" },
 			});
@@ -481,7 +492,22 @@ self.addEventListener("message", async (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-	event.waitUntil(self.clients.claim());
+	event.waitUntil(
+		(async () => {
+			// Drop bang data from earlier deploys; keep the current one and all
+			// user data.
+			const names = await caches.keys();
+			await Promise.all(
+				names
+					.filter(
+						(name) =>
+							name.startsWith(CACHE_PREFIX) && !PERSISTENT_CACHES.has(name),
+					)
+					.map((name) => caches.delete(name)),
+			);
+			await self.clients.claim();
+		})(),
+	);
 });
 
 // Parse a partial bang out of a suggestion query. Handles a leading bang
