@@ -129,47 +129,76 @@
 		<div id="app"></div>
 		<script type="module" src="/src/main.ts"></script>
 		<script>
-			// Fallback redirect when SW isn't active yet
-			(function() {
-				const url = new URL(window.location.href);
-				const query = url.searchParams.get("q");
-				if (!query || query.trim() === "") return;
+			// First-load bang redirect.
+			//
+			// The service worker handles redirects once it controls the page, but on a
+			// cold visit it isn't running yet. Rather than make the user wait for it to
+			// install, we resolve the query here and hand the downloaded bang data over
+			// to the worker so it never has to fetch the same file twice.
+			(function () {
+				var url = new URL(window.location.href);
+				var query = url.searchParams.get("q");
 
-				// Check if SW is already controlling this page
-				if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-					return; // SW will handle it
+				// Give the worker the bang data we just downloaded.
+				function seedServiceWorker(buffer) {
+					if (!("serviceWorker" in navigator)) return;
+					navigator.serviceWorker.ready
+						.then(function (reg) {
+							var target = reg.active || navigator.serviceWorker.controller;
+							if (!target) return;
+							// Send a copy; the caller still needs the original.
+							target.postMessage({ type: "SEED_BANG_DATA", buffer: buffer.slice(0) });
+						})
+						.catch(function () {});
 				}
 
-				// SW not ready, use fallback
-				const trimmed = query.trim();
-				const match = trimmed.match(/^!(\S+)/i) || trimmed.match(/(\S+)!$/i);
-				if (!match) return; // No bang syntax, let main thread handle it
+				// No query: warm the worker in the background so the next search is instant.
+				if (!query || query.trim() === "") {
+					if ("serviceWorker" in navigator && !navigator.serviceWorker.controller) {
+						window.addEventListener("load", function () {
+							fetch("/bangs.bin")
+								.then(function (r) { return r.arrayBuffer(); })
+								.then(seedServiceWorker)
+								.catch(function () {});
+						});
+					}
+					return;
+				}
 
-				// Fetch bangs.bin and resolve in-page
+				// The worker is already in charge; let it answer.
+				if (navigator.serviceWorker && navigator.serviceWorker.controller) return;
+
+				// Only bang queries can be resolved locally.
+				var trimmed = query.trim();
+				if (!/^!(\S+)/i.test(trimmed) && !/(\S+)!$/i.test(trimmed)) return;
+
 				fetch("/bangs.bin")
-					.then(r => r.arrayBuffer())
-					.then(data => {
-						// Dynamic import to avoid Vite bundling
-						const script = document.createElement("script");
+					.then(function (r) { return r.arrayBuffer(); })
+					.then(function (data) {
+						var script = document.createElement("script");
 						script.type = "module";
 						script.src = "/fallback.js";
 						document.head.appendChild(script);
-						
-						return new Promise((resolve, reject) => {
-							window.addEventListener("fallbackReady", () => {
-								window.resolveFallback(query, data)
-									.then(resolve)
+
+						return new Promise(function (resolve, reject) {
+							window.addEventListener("fallbackReady", function () {
+								window
+									.resolveFallback(query, data)
+									.then(function (dest) {
+										// Pass the bytes along before we navigate away.
+										seedServiceWorker(data);
+										resolve(dest);
+									})
 									.catch(reject);
 							});
 						});
 					})
-					.then(dest => {
-						if (dest) {
-							window.location.replace(dest);
-						}
+					.then(function (dest) {
+						if (dest) window.location.replace(dest);
 					})
-					.catch(err => console.error("Fallback redirect failed:", err));
+					.catch(function (err) {
+						console.error("Fallback redirect failed:", err);
+					});
 			})();
-		</script>
-	</body>
+		</script>	</body>
 </html>

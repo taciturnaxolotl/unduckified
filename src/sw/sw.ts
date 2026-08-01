@@ -72,12 +72,8 @@ async function loadCustomBangs() {
 	}
 }
 
-async function loadBangs() {
-	if (loaded) return;
-	const cache = await caches.open(CACHE_NAME);
-	const resp = await cache.match(BANGS_BIN);
-	if (!resp) throw new Error("bangs.bin not in cache");
-	const buf = await resp.arrayBuffer();
+// Parse the binary header and set up section pointers over the given bytes.
+function initBangData(buf: ArrayBuffer) {
 	HEAP = new Uint8Array(buf);
 
 	let p = 0;
@@ -134,7 +130,59 @@ async function loadBangs() {
 	RANK_PTR = p;
 
 	loaded = true;
+}
+
+// Adopt bang data handed over by the page. The page-level fallback downloads
+// bangs.bin to answer the very first query, so it passes the bytes along
+// instead of making the worker fetch the same file a second time.
+async function seedBangData(buf: ArrayBuffer) {
+	if (loaded) return;
+	initBangData(buf);
 	await loadCustomBangs();
+	// Persist so later worker starts skip the network entirely.
+	try {
+		const cache = await caches.open(CACHE_NAME);
+		await cache.put(BANGS_BIN, new Response(buf.slice(0), {
+			headers: { "Content-Type": "application/octet-stream" },
+		}));
+	} catch {
+		// Cache writes are best-effort; the in-memory copy still works.
+	}
+}
+
+let bangDataPromise: Promise<void> | null = null;
+
+// Load bang data: cache first, network on miss, then populate the cache.
+// Never assumes install succeeded, so a failed or skipped precache is
+// recoverable instead of wedging the worker permanently.
+async function loadBangsUncached() {
+	const cache = await caches.open(CACHE_NAME);
+
+	let resp = await cache.match(BANGS_BIN);
+	if (!resp) {
+		resp = await fetch(BANGS_BIN);
+		if (!resp.ok) throw new Error(`bangs.bin fetch failed: ${resp.status}`);
+		try {
+			await cache.put(BANGS_BIN, resp.clone());
+		} catch {
+			// Best-effort; proceed with the response we already hold.
+		}
+	}
+
+	initBangData(await resp.arrayBuffer());
+	await loadCustomBangs();
+}
+
+function loadBangs(): Promise<void> {
+	if (loaded) return Promise.resolve();
+	// Share one in-flight load so concurrent navigations don't stampede.
+	if (!bangDataPromise) {
+		bangDataPromise = loadBangsUncached().catch((err) => {
+			bangDataPromise = null; // allow a retry on the next request
+			throw err;
+		});
+	}
+	return bangDataPromise;
 }
 
 function getDisp(bucketId: number): number {
@@ -353,16 +401,22 @@ function resolve(trigger: string, query: string): string | null {
 	return url;
 }
 
-self.addEventListener("install", (event) => {
-	event.waitUntil(
-		caches.open(CACHE_NAME).then(async (cache) => {
-			await cache.addAll([BANGS_BIN]);
-		}),
-	);
+self.addEventListener("install", () => {
+	// Activate immediately and download nothing here. Bang data arrives either
+	// from the page (which already fetched it to answer the first query) or
+	// lazily on demand, so installation never stalls on a 700+ KiB transfer.
 	self.skipWaiting();
 });
 
 self.addEventListener("message", async (event) => {
+	if (event.data?.type === "SEED_BANG_DATA" && event.data.buffer) {
+		try {
+			await seedBangData(event.data.buffer as ArrayBuffer);
+		} catch {
+			// Bad payload: fall back to loading it ourselves on next use.
+		}
+	}
+
 	if (event.data?.type === "UPDATE_CUSTOM_BANGS") {
 		const bangs = event.data.bangs;
 		// Convert {shortcut: {u: "https://example.com?q={{{s}}}"}} to Map<shortcut, {prefix, suffix}>
