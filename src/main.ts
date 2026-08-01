@@ -1,22 +1,16 @@
 import "./global.css";
-import { bangs } from "./bangs/hashbang.ts";
-import {
-	addToSearchHistory,
-	clearSearchHistory,
-	createAudio,
-	getSearchHistory,
-	storage,
-} from "./libs.ts";
+import { createAudio, storage } from "./libs.ts";
 
 import notFoundPageRender from "./404.ts";
 
+// Register service worker (non-blocking)
+if ("serviceWorker" in navigator) {
+	navigator.serviceWorker.register("/sw.js").catch(() => {});
+}
+
 export const CONSTANTS = {
-	MAX_HISTORY: 500,
 	ANIMATION_DURATION: 375,
 	LOCAL_STORAGE_KEYS: {
-		SEARCH_HISTORY: "search-history",
-		SEARCH_COUNT: "search-count",
-		HISTORY_ENABLED: "history-enabled",
 		DEFAULT_BANG: "default-bang",
 		CUSTOM_BANGS: "custom-bangs",
 	},
@@ -40,6 +34,7 @@ export const CONSTANTS = {
 		DOWN: ["(↓°□°)↓", "(´◕‿◕)↓", "↓(´・ω・)↓"],
 	},
 };
+
 const customBangs: {
 	[key: string]: {
 		d: string;
@@ -48,6 +43,57 @@ const customBangs: {
 		u: string;
 	};
 } = JSON.parse(localStorage.getItem("custom-bangs") || "{}");
+
+// Sync custom bangs to service worker
+function syncCustomBangsToSW() {
+	if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+		navigator.serviceWorker.controller.postMessage({
+			type: "UPDATE_CUSTOM_BANGS",
+			bangs: customBangs,
+		});
+	}
+}
+
+// Get the active service worker, waiting for it to be ready if needed.
+async function getReadySW(): Promise<ServiceWorker | null> {
+	if (!("serviceWorker" in navigator)) return null;
+	if (navigator.serviceWorker.controller) return navigator.serviceWorker.controller;
+	try {
+		const reg = await Promise.race([
+			navigator.serviceWorker.ready,
+			new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+		]);
+		return reg?.active ?? null;
+	} catch {
+		return null;
+	}
+}
+
+// Ask the service worker for the current search count
+async function requestSearchCount(): Promise<number> {
+	const sw = await getReadySW();
+	if (!sw) return 0;
+	return new Promise((resolve) => {
+		const channel = new MessageChannel();
+		channel.port1.onmessage = (event) => {
+			resolve(event.data?.count ?? 0);
+		};
+		sw.postMessage({ type: "GET_SEARCH_COUNT" }, [channel.port2]);
+	});
+}
+
+// Ask the service worker whether a bang trigger exists (built-in or custom)
+async function checkBangExists(trigger: string): Promise<boolean> {
+	const sw = await getReadySW();
+	if (!sw) return false;
+	return new Promise((resolve) => {
+		const channel = new MessageChannel();
+		channel.port1.onmessage = (event) => {
+			resolve(Boolean(event.data?.exists));
+		};
+		sw.postMessage({ type: "CHECK_BANG_EXISTS", trigger }, [channel.port2]);
+	});
+}
 
 let editingShortcut: string | null = null;
 
@@ -72,21 +118,11 @@ function setOutsideElementsTabindex(modal: HTMLElement, tabindex: number) {
 	}
 }
 
-const createTemplate = (data: {
-	searchCount: string;
-	historyEnabled: boolean;
-	searchHistory: Array<{
-		bang: string;
-		query: string;
-		name: string;
-		timestamp: number;
-	}>;
-	LS_DEFAULT_BANG: string;
-}) => `
+const createTemplate = (data: { LS_DEFAULT_BANG: string }) => `
 	<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
 		<header style="position: absolute; top: 1rem; width: 100%;">
 			<div style="display: flex; justify-content: space-between; padding: 0 1rem;">
-				<span>${data.searchCount} ${data.searchCount === "1" ? "search" : "searches"}</span>
+				<span id="search-count">…</span>
 				<button class="settings-button">
 					<img src="/gear.svg" alt="Settings" class="settings" />
 				</button>
@@ -106,31 +142,6 @@ const createTemplate = (data: {
 					<img src="/clipboard.svg" alt="Copy" />
 				</button>
 			</div>
-				${
-					data.historyEnabled
-						? `
-							<h2 style="margin-top: 24px;">Recent Searches</h2>
-							<div style="max-height: 200px; overflow-y: auto; text-align: left;">
-							${
-								data.searchHistory.length === 0
-									? `<div style="padding: 8px; text-align: center;">No search history</div>`
-									: data.searchHistory
-											.map(
-												(search) => `
-													<div style="padding: 8px; border-bottom: 1px solid var(--border-color);">
-														<a href="?q=!${search.bang} ${search.query}">${search.name}: ${search.query}</a>
-														<span style="float: right; color: var(--text-color-secondary);">
-															${new Date(search.timestamp).toLocaleString()}
-														</span>
-													</div>
-											`,
-											)
-											.join("")
-							}
-							</div>
-						`
-						: ""
-				}
 		</div>
 		<footer class="footer">
 			made with ♥ by <a href="https://github.com/taciturnaxolotl" target="_blank">Kieran Klukas</a> as <a href="https://github.com/taciturnaxolotl/unduck" target="_blank">open source</a> software
@@ -141,16 +152,11 @@ const createTemplate = (data: {
 					<h2>Settings</h2>
 					<div class="settings-section">
 					    <h3>Bangs</h3>
-							<label for="default-bang" id="bang-description">Default Bang: ${(customBangs[data.LS_DEFAULT_BANG] || bangs[data.LS_DEFAULT_BANG])?.s || "Unknown bang"}</label>
+							<label for="default-bang" id="bang-description">Default Bang: !${data.LS_DEFAULT_BANG}</label>
 							<div class="bang-select-container">
 									<input type="text" id="default-bang" class="bang-select" value="${data.LS_DEFAULT_BANG}">
 							</div>
 							<p class="help-text">The best way to add new bangs is by submitting them on <a href="https://duckduckgo.com/newbang" target="_blank">DuckDuckGo</a> but you can also add them below</p>
-							<div style="margin-top: 16px;">
-								<h4>Search Bangs</h4>
-								<input type="text" placeholder="Search bangs by name or shortcut..." id="bang-search" class="bang-search">
-								<div id="bang-search-results" class="bang-search-results"></div>
-							</div>
 							<div style="margin-top: 16px;">
 								<h4>Add Custom Bang</h4>
 								<div class="custom-bang-inputs">
@@ -194,17 +200,6 @@ const createTemplate = (data: {
 							</div>
 					</div>
 					<div class="settings-section">
-							<h3>Search History (${data.searchHistory.length}/500)</h3>
-							<div style="display: flex; justify-content: space-between; align-items: center;">
-								<label class="switch">
-										<label for="history-toggle">Enable Search History</label>
-										<input type="checkbox" id="history-toggle" ${data.historyEnabled ? "checked" : ""}>
-										<span class="slider round"></span>
-									</label>
-									<button class="clear-history">Clear History</button>
-							</div>
-					</div>
-					<div class="settings-section">
 							<h3>Settings Import/Export</h3>
 							<p class="help-text">Export your settings and custom bangs to a file, or import them from a previously saved file.</p>
 							<div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -220,24 +215,15 @@ const createTemplate = (data: {
 `;
 
 function noSearchDefaultPageRender() {
-	const searchCount =
-		storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT) || "0";
-	const historyEnabled =
-		storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED) === "true";
-	const searchHistory = getSearchHistory();
 	const app = document.querySelector<HTMLDivElement>("#app");
 	if (!app) throw new Error("App element not found");
 
-	app.innerHTML = createTemplate({
-		searchCount,
-		historyEnabled,
-		searchHistory,
-		LS_DEFAULT_BANG,
-	});
+	app.innerHTML = createTemplate({ LS_DEFAULT_BANG });
 
 	const elements = {
 		app,
 		cutie: app.querySelector<HTMLHeadingElement>("#cutie"),
+		searchCount: app.querySelector<HTMLSpanElement>("#search-count"),
 		copyInput: app.querySelector<HTMLInputElement>(".url-input"),
 		copyButton: app.querySelector<HTMLButtonElement>(".copy-button"),
 		copyIcon: app.querySelector<HTMLImageElement>(".copy-button img"),
@@ -245,10 +231,8 @@ function noSearchDefaultPageRender() {
 		settingsButton: app.querySelector<HTMLButtonElement>(".settings-button"),
 		modal: app.querySelector<HTMLDivElement>("#settings-modal"),
 		closeModal: app.querySelector<HTMLSpanElement>(".close-modal"),
-		defaultBangSelect: app.querySelector<HTMLSelectElement>("#default-bang"),
-		description: app.querySelector<HTMLParagraphElement>("#bang-description"),
-		historyToggle: app.querySelector<HTMLInputElement>("#history-toggle"),
-		clearHistory: app.querySelector<HTMLButtonElement>(".clear-history"),
+		defaultBangSelect: app.querySelector<HTMLInputElement>("#default-bang"),
+		description: app.querySelector<HTMLLabelElement>("#bang-description"),
 		bangName: app.querySelector<HTMLInputElement>(".bang-name"),
 		bangShortcut: app.querySelector<HTMLInputElement>(".bang-shortcut"),
 		bangSearchUrl: app.querySelector<HTMLInputElement>(".bang-search-url"),
@@ -256,10 +240,6 @@ function noSearchDefaultPageRender() {
 		addBang: app.querySelector<HTMLButtonElement>(".add-bang"),
 		removeBangs: app.querySelectorAll<HTMLButtonElement>(".remove-bang"),
 		editBangs: app.querySelectorAll<HTMLButtonElement>(".edit-bang"),
-		bangSearch: app.querySelector<HTMLInputElement>("#bang-search"),
-		bangSearchResults: app.querySelector<HTMLDivElement>(
-			"#bang-search-results",
-		),
 		exportSettings: app.querySelector<HTMLButtonElement>(".export-settings"),
 		importSettings: app.querySelector<HTMLButtonElement>(".import-settings"),
 		importFile: app.querySelector<HTMLInputElement>("#import-file"),
@@ -276,6 +256,11 @@ function noSearchDefaultPageRender() {
 	};
 
 	validatedElements.urlInput.value = `${window.location.protocol}//${window.location.host}?q=%s`;
+
+	// Populate search count from the service worker
+	requestSearchCount().then((count) => {
+		validatedElements.searchCount.textContent = `${count} ${count === 1 ? "search" : "searches"}`;
+	});
 
 	const prefersReducedMotion = window.matchMedia(
 		"(prefers-reduced-motion: reduce)",
@@ -317,8 +302,6 @@ function noSearchDefaultPageRender() {
 
 		const audio = {
 			spin: createAudio("/heavier-tick-sprite.opus"),
-			toggleOff: createAudio("/toggle-button-off.opus"),
-			toggleOn: createAudio("/toggle-button-on.opus"),
 			click: createAudio("/click-button.opus"),
 			warning: createAudio("/double-button.opus"),
 			copy: createAudio("/foot-switch.opus"),
@@ -336,24 +319,6 @@ function noSearchDefaultPageRender() {
 		validatedElements.settingsButton.addEventListener("mouseleave", () => {
 			audio.spin.pause();
 			audio.spin.currentTime = 0;
-		});
-
-		validatedElements.historyToggle.addEventListener("change", () => {
-			if (validatedElements.historyToggle.checked) {
-				audio.toggleOff.pause();
-				audio.toggleOff.currentTime = 0;
-				audio.toggleOn.currentTime = 0;
-				audio.toggleOn.play();
-			} else {
-				audio.toggleOn.pause();
-				audio.toggleOn.currentTime = 0;
-				audio.toggleOff.currentTime = 0;
-				audio.toggleOff.play();
-			}
-		});
-
-		validatedElements.clearHistory.addEventListener("click", () => {
-			audio.warning.play();
 		});
 
 		validatedElements.defaultBangSelect.addEventListener("bangError", () => {
@@ -422,23 +387,15 @@ function noSearchDefaultPageRender() {
 	validatedElements.closeModal.addEventListener("closed", () => {
 		validatedElements.modal.style.display = "none";
 		setOutsideElementsTabindex(validatedElements.modal, 0);
-
-		if (validatedElements.historyToggle.checked !== historyEnabled)
-			if (!prefersReducedMotion)
-				setTimeout(() => {
-					window.location.reload();
-				}, 300);
-			else window.location.reload();
 	});
 
-	validatedElements.defaultBangSelect.addEventListener("change", (event) => {
-		const newDefaultBang = (event.target as HTMLSelectElement).value.replace(
+	validatedElements.defaultBangSelect.addEventListener("change", async (event) => {
+		const newDefaultBang = (event.target as HTMLInputElement).value.replace(
 			/^!+/,
 			"",
 		);
-		const bang = customBangs[newDefaultBang] || bangs[newDefaultBang];
 
-		if (!bang) {
+		const reject = () => {
 			validatedElements.defaultBangSelect.value = LS_DEFAULT_BANG;
 			validatedElements.defaultBangSelect.classList.add("shake", "flash-red");
 			validatedElements.defaultBangSelect.dispatchEvent(
@@ -450,6 +407,18 @@ function noSearchDefaultPageRender() {
 					"flash-red",
 				);
 			}, 300);
+		};
+
+		// Reject empty shortcuts
+		if (!newDefaultBang) {
+			reject();
+			return;
+		}
+
+		// Validate against the SW's bang catalog (built-in + custom)
+		const exists = await checkBangExists(newDefaultBang);
+		if (!exists) {
+			reject();
 			return;
 		}
 
@@ -457,23 +426,7 @@ function noSearchDefaultPageRender() {
 			new CustomEvent("bangSuccess"),
 		);
 		storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.DEFAULT_BANG, newDefaultBang);
-		validatedElements.description.innerText = "Default Bang: " + bang.s;
-	});
-
-	validatedElements.historyToggle.addEventListener("change", (event) => {
-		storage.set(
-			CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED,
-			(event.target as HTMLInputElement).checked.toString(),
-		);
-	});
-
-	validatedElements.clearHistory.addEventListener("click", () => {
-		clearSearchHistory();
-		if (!prefersReducedMotion)
-			setTimeout(() => {
-				window.location.reload();
-			}, 375);
-		else window.location.reload();
+		validatedElements.description.innerText = "Default Bang: !" + newDefaultBang;
 	});
 
 	validatedElements.addBang.addEventListener("click", () => {
@@ -499,6 +452,7 @@ function noSearchDefaultPageRender() {
 			CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS,
 			JSON.stringify(customBangs),
 		);
+		syncCustomBangsToSW();
 
 		if (!prefersReducedMotion)
 			setTimeout(() => {
@@ -532,6 +486,7 @@ function noSearchDefaultPageRender() {
 				CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS,
 				JSON.stringify(customBangs),
 			);
+			syncCustomBangsToSW();
 
 			if (!prefersReducedMotion)
 				setTimeout(() => {
@@ -541,68 +496,10 @@ function noSearchDefaultPageRender() {
 		});
 	});
 
-	let searchDebounceTimer: ReturnType<typeof setTimeout>;
-	validatedElements.bangSearch.addEventListener("input", (event) => {
-		clearTimeout(searchDebounceTimer);
-		const resultsContainer = validatedElements.bangSearchResults;
-		const query = (event.target as HTMLInputElement).value.trim().toLowerCase();
-
-		if (!query) {
-			resultsContainer.innerHTML = "";
-			return;
-		}
-
-		searchDebounceTimer = setTimeout(() => {
-			const allBangs = { ...bangs, ...customBangs };
-			const results = Object.entries(allBangs)
-				.filter(([shortcut, bang]) => {
-					const searchableText =
-						`${shortcut} ${bang.s} ${bang.d}`.toLowerCase();
-					return searchableText.includes(query);
-				})
-				.sort((a, b) => {
-					const [shortcutA, bangA] = a;
-					const [shortcutB, bangB] = b;
-					const aStartsWithQuery =
-						shortcutA.toLowerCase().startsWith(query) ||
-						bangA.s.toLowerCase().startsWith(query);
-					const bStartsWithQuery =
-						shortcutB.toLowerCase().startsWith(query) ||
-						bangB.s.toLowerCase().startsWith(query);
-					if (aStartsWithQuery && !bStartsWithQuery) return -1;
-					if (!aStartsWithQuery && bStartsWithQuery) return 1;
-					return shortcutA.length - shortcutB.length;
-				})
-				.slice(0, 20);
-
-			if (results.length === 0) {
-				resultsContainer.innerHTML =
-					'<div class="bang-search-empty">No bangs found</div>';
-				return;
-			}
-
-			resultsContainer.innerHTML = results
-				.map(([shortcut, bang]) => {
-					const displayName =
-						bang.s.replace(/\s*\(Kagi Search\)\s*$/i, " (default search)") ||
-						bang.s;
-					return `
-						<div class="bang-search-item">
-							<code>!${shortcut}</code>
-							<span class="bang-search-name">${displayName}</span>
-							<span class="bang-search-domain">${bang.d}</span>
-						</div>
-					`;
-				})
-				.join("");
-		}, 150);
-	});
-
 	validatedElements.exportSettings.addEventListener("click", () => {
 		const settingsData = {
 			defaultBang: storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.DEFAULT_BANG),
 			customBangs: storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS),
-			historyEnabled: storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED),
 			exportDate: new Date().toISOString(),
 		};
 
@@ -639,12 +536,9 @@ function noSearchDefaultPageRender() {
 					CONSTANTS.LOCAL_STORAGE_KEYS.CUSTOM_BANGS,
 					settingsData.customBangs,
 				);
-			}
-			if (settingsData.historyEnabled !== undefined) {
-				storage.set(
-					CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED,
-					settingsData.historyEnabled,
-				);
+				// Update local customBangs object and sync to SW
+				Object.assign(customBangs, JSON.parse(settingsData.customBangs));
+				syncCustomBangsToSW();
 			}
 
 			alert("Settings imported successfully!");
@@ -662,99 +556,28 @@ function noSearchDefaultPageRender() {
 
 const LS_DEFAULT_BANG =
 	storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.DEFAULT_BANG) ?? "ddg";
-const defaultBang = bangs[LS_DEFAULT_BANG];
 
-function ensureProtocol(url: string, defaultProtocol = "https://") {
-	try {
-		const parsedUrl = new URL(url);
-		return parsedUrl.href; // If valid, return as is
-	} catch (e) {
-		return `${defaultProtocol}${url}`;
-	}
-}
-
-function getBangredirectUrl() {
+function checkForRedirect() {
 	const url = new URL(window.location.href);
+	const pathname = url.pathname.replace(/\/$/, "");
 	const query = url.searchParams.get("q")?.trim() ?? "";
 
-	switch (url.pathname.replace(/\/$/, "")) {
-		case "":
-		case "/search": {
-			if (!query || query === "!" || query === "!settings") {
-				noSearchDefaultPageRender();
-				return null;
-			}
-
-			const match = query.toLowerCase().match(/^!(\S+)|!(\S+)$/i);
-			const bangShortcut = match ? match[1] || match[2] : LS_DEFAULT_BANG;
-			const selectedBang = match
-				? customBangs[bangShortcut] || bangs[bangShortcut]
-				: defaultBang;
-			const cleanQuery = match
-				? query.replace(/!\S+\s*|^(\S+!|!\S+)$/i, "").trim()
-				: query;
-
-			// Redirect to base domain if cleanQuery is empty
-			if (!cleanQuery && selectedBang?.d) {
-				return ensureProtocol(selectedBang.ad || selectedBang.d);
-			}
-
-			// Check if this is a "(Kagi Search)" bang that should use the default search provider
-			let bangUrl = selectedBang?.u || "";
-			if (
-				selectedBang?.s?.includes("(Kagi Search)") &&
-				selectedBang?.u?.match(/^\/search\?q=\{\{\{s\}\}\}\+site:/)
-			) {
-				const siteMatch = selectedBang.u.match(/\+site:([^\s&]+)/);
-				if (siteMatch && defaultBang?.u) {
-					const siteDomain = siteMatch[1];
-					const queryWithSite = `${cleanQuery} site:${siteDomain}`;
-					const redirectUrl = defaultBang.u.replace(
-						"{{{s}}}",
-						encodeURIComponent(queryWithSite).replace(/%2F/g, "/"),
-					);
-					return ensureProtocol(redirectUrl);
-				}
-			}
-
-			const redirectUrl = bangUrl.replace(
-				"{{{s}}}",
-				encodeURIComponent(cleanQuery).replace(/%2F/g, "/"),
-			);
-
-			// Do these operations after determining redirect URL to minimize delay
-			setTimeout(() => {
-				const count = (
-					Number.parseInt(
-						storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT) || "0",
-					) + 1
-				).toString();
-				storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_COUNT, count);
-
-				if (
-					storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.HISTORY_ENABLED) === "true"
-				) {
-					addToSearchHistory(cleanQuery, {
-						bang: bangShortcut,
-						name: selectedBang?.s || "",
-						url: selectedBang?.u || "",
-					});
-				}
-			}, 0);
-
-			return redirectUrl;
-		}
-		default: {
-			notFoundPageRender();
-			return null;
-		}
+	// Unknown path → 404
+	if (pathname !== "" && pathname !== "/search") {
+		notFoundPageRender();
+		return;
 	}
+
+	// No query → render homepage
+	if (!query || query === "!" || query === "!settings") {
+		noSearchDefaultPageRender();
+		return;
+	}
+
+	// Query exists → SW should handle it (or fallback script already did)
+	// If we reach here, something went wrong with SW/fallback
+	console.warn("SW/fallback didn't handle redirect, rendering homepage");
+	noSearchDefaultPageRender();
 }
 
-function doRedirect() {
-	const searchUrl = getBangredirectUrl();
-	if (!searchUrl) return;
-	window.location.replace(searchUrl);
-}
-
-doRedirect();
+checkForRedirect();

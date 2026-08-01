@@ -329,56 +329,6 @@ input {
 	margin-bottom: 1rem;
 }
 
-.switch {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	margin: 8px 0;
-}
-
-.switch input {
-	width: 40px;
-	height: 20px;
-	appearance: none;
-	background-color: var(--bg-color-secondary);
-	border-radius: 20px;
-	position: relative;
-	cursor: pointer;
-	transition: background-color 0.3s;
-}
-
-.switch input:checked {
-	background-color: var(--text-color);
-}
-
-.switch input:before {
-	content: "";
-	width: 16px;
-	height: 16px;
-	background-color: var(--text-color);
-	position: absolute;
-	border-radius: 50%;
-	top: 2px;
-	left: 2px;
-	transition:
-		left 0.3s,
-		background-color 0.3s;
-}
-
-.switch input:checked:before {
-	background-color: var(--bg-color-secondary);
-	left: 22px;
-}
-
-.clear-history {
-	margin-top: 8px;
-	padding: 8px 16px;
-	background-color: var(--bg-color-danger);
-	color: var(--text-color);
-	border-radius: 4px;
-	transition: all 0.2s;
-}
-
 .remove-bang {
 	margin-top: 0;
 	padding: 4px 6px;
@@ -411,12 +361,10 @@ input {
 	transform: scale(0.98);
 }
 
-.clear-history:hover,
 .remove-bang:hover {
 	background-color: var(--bg-color-hover);
 }
 
-.clear-history:active,
 .remove-bang:active {
 	background-color: var(--bg-color-active);
 	transform: scale(0.98);
@@ -483,58 +431,4 @@ input {
 	color: var(--text-color-secondary);
 }
 
-.bang-search {
-	width: 100%;
-	padding: 8px 12px;
-	border: 1px solid var(--border-color);
-	border-radius: 4px;
-	background-color: var(--bg-color-secondary);
-	color: var(--text-color);
-	font-size: 14px;
-}
 
-.bang-search-results {
-	max-height: 200px;
-	overflow-y: auto;
-	margin-top: 8px;
-	border-radius: 4px;
-}
-
-.bang-search-item {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	padding: 8px 12px;
-	border-bottom: 1px solid var(--border-color);
-	background-color: var(--bg-color-secondary);
-}
-
-.bang-search-item:last-child {
-	border-bottom: none;
-}
-
-.bang-search-item code {
-	padding: 2px 6px;
-	border-radius: 4px;
-	background-color: var(--bg-color-active);
-	font-size: 12px;
-	min-width: 60px;
-}
-
-.bang-search-name {
-	flex: 1;
-	font-weight: 500;
-}
-
-.bang-search-domain {
-	color: var(--text-color-secondary);
-	font-size: 12px;
-}
-
-.bang-search-empty {
-	padding: 12px;
-	text-align: center;
-	color: var(--text-color-secondary);
-	background-color: var(--bg-color-secondary);
-	border-radius: 4px;
-}

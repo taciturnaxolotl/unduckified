@@ -1,5 +1,3 @@
-import { CONSTANTS } from "./main";
-
 const createAudio = (src: string) => {
 	const audio = new Audio();
 	audio.src = src;
@@ -12,55 +10,4 @@ const storage = {
 	remove: (key: string) => localStorage.removeItem(key),
 };
 
-function addToSearchHistory(
-	query: string,
-	bang: { bang: string; name: string; url: string },
-) {
-	const history: Array<{
-		query: string;
-		bang: string;
-		name: string;
-		timestamp: number;
-	}> = JSON.parse(
-		storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY) || "[]",
-	);
-
-	history.unshift({
-		query,
-		bang: bang.bang,
-		name: bang.name,
-		timestamp: Date.now(),
-	});
-	history.splice(CONSTANTS.MAX_HISTORY);
-	storage.set(
-		CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY,
-		JSON.stringify(history),
-	);
-}
-
-function getSearchHistory(): Array<{
-	query: string;
-	bang: string;
-	name: string;
-	timestamp: number;
-}> {
-	try {
-		return JSON.parse(
-			storage.get(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY) || "[]",
-		);
-	} catch {
-		return [];
-	}
-}
-
-function clearSearchHistory() {
-	storage.set(CONSTANTS.LOCAL_STORAGE_KEYS.SEARCH_HISTORY, "[]");
-}
-
-export {
-	createAudio,
-	storage,
-	addToSearchHistory,
-	getSearchHistory,
-	clearSearchHistory,
-};
+export { createAudio, storage };
