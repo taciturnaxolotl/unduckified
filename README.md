@@ -47,26 +47,54 @@ On firefox based browsers you can use the dedicated search suggestions url field
 
 ![search suggestions field on firefox](https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/.github/images/search-suggestions.jpeg)
 
-Unduck now completes bangs itself. Point the suggestions field at:
+Unduck now completes bangs itself! Point the suggestions field at:
 
 ```
 https://s.dunkirk.sh/suggest?q=%s
 ```
 
-Type `!git` and you get `!github`, `!githubdocs`, and so on, ordered by how often people actually use them. Each one shows the service it goes to and its favicon in the dropdown.
+Type `!git` and you get `!github`, `!githubdocs`, and so on, ordered by the duckduckgo bangs rank field. By default that is the only suggestions it provides however you can opt into two more features that expose your searches to other providers.
 
-If your browser or search client would rather have the bare completions, drop the descriptions and favicons with `&rich=0`:
+### Options
+
+#### Plain-query forwarding.
+
+With `&forwarder=<provider>`, a query with no bang is sent to the named engine. Providers are `ddg`, `google`, `bing`, `brave`, `yahoo`, `kagi`, `qwant`, and `startpage`. By default without this option a plain query gets no suggestions and leaves this service untouched. This also enables search suggestions when using a bang for a search engine like google, duckduckgo, or kagi.
+
+```
+https://s.dunkirk.sh/suggest?q=%s&forwarder=ddg
+```
+
+#### Site-specific suggestions.
+
+With `&site_specific_forward=1`, a bang followed by a space forwards the rest to that service's own autocomplete where we have a suggestion url. For example `!github react` searches GitHub's repo search, `!wikipedia rust` searches Wikipedia. This does not include search engines if you have set `&forwarder=<provider>` as those will use your configured provider.
+
+```
+https://s.dunkirk.sh/suggest?q=%s&site_specific_forward=1
+```
+#### Plain completions
+
+Both compose with each other and with the dropdown formatting. If your browser or search client would rather have the bare completions, drop the descriptions and favicons with `&rich=0`:
 
 ```
 https://s.dunkirk.sh/suggest?q=%s&rich=0
 ```
 
-This is the one piece that cannot run on your device. Browsers fetch suggestions from the browser process rather than from a page, so a service worker never sees the request ([crbug 41389229](https://issues.chromium.org/issues/41389229)), and Firefox works the same way. So while suggestions are on, what you type in the address bar reaches the edge function that answers them. Nothing is logged or stored, and only text that already looks like a bang gets a lookup at all, but the request does leave your machine. Redirects are unaffected and still happen entirely on device.
+### Privacy
 
-If you would rather not have that, leave the field empty, or use somebody else's:
+Unfortunately this is the one piece of unduckified that cannot run on your device. Browsers fetch suggestions from the browser process rather than from a page, so a service worker never sees the request. There is an open [crbug 41389229](https://issues.chromium.org/issues/41389229) for Chrome (Firefox also behaves the same) but it looks unlikely to change anytime soon.
+
+While suggestions are on, what you type in the address bar reaches the hosted edge function. Nothing is logged or stored but the request does leave your machine and there isn't a good way to audit the worker itself.
+
+If you are strongly worried about privacy then I would disable search suggestions or self host them yourself. You can always use a suggestion provider that is different from the search engine. DuckDuckGo, Kagi, and Google's urls are included below.
+
 
 ```
 https://duckduckgo.com/ac/?q=%s&type=list
+```
+
+```
+https://kagisuggest.com/api/autosuggest?q=%s
 ```
 
 ```
