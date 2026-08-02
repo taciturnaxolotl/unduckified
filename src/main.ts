@@ -250,7 +250,7 @@ const createTemplate = (data: { LS_DEFAULT_BANG: string }) => `
 	</div>
 `;
 
-function noSearchDefaultPageRender() {
+function noSearchDefaultPageRender(openSettings = false) {
 	const app = document.querySelector<HTMLDivElement>("#app");
 	if (!app) throw new Error("App element not found");
 
@@ -610,6 +610,14 @@ function noSearchDefaultPageRender() {
 			console.error("Import error:", error);
 		}
 	});
+
+	// Open the settings panel immediately when reached via the `!settings`
+	// shortcut, mirroring what a click on the gear button does.
+	if (openSettings) {
+		validatedElements.settingsButton.classList.add("rotate");
+		validatedElements.modal.style.display = "block";
+		setOutsideElementsTabindex(validatedElements.modal, -1);
+	}
 }
 
 const LS_DEFAULT_BANG =
@@ -636,9 +644,9 @@ function checkForRedirect() {
 		return;
 	}
 
-	// No query → render homepage
+	// No query → render homepage; `!settings` also pops the panel open.
 	if (!query || query === "!" || query === "!settings") {
-		noSearchDefaultPageRender();
+		noSearchDefaultPageRender(query === "!settings");
 		return;
 	}
 
