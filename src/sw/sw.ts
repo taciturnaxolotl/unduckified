@@ -17,6 +17,9 @@ const CUSTOM_BANGS_KEY = "custom-bangs-cache";
 const DB_NAME = "unduck-stats";
 const DB_STORE = "counters";
 const SEARCH_COUNT_KEY = "search-count";
+// Set once the legacy localStorage search count has been folded in, so the
+// one-time migration can never double-count across reloads or multiple tabs.
+const LS_MIGRATED_KEY = "ls-search-count-migrated";
 
 let loaded = false;
 let HEAP: Uint8Array | null = null;
@@ -390,6 +393,46 @@ self.addEventListener("message", async (event) => {
 		} catch {
 			reply(0);
 		}
+	}
+
+	if (event.data?.type === "MIGRATE_SEARCH_COUNT") {
+		// The old page-based version kept the search count in localStorage, which
+		// the worker cannot read. The page hands it over here on first load after
+		// the upgrade. Guarded by LS_MIGRATED_KEY so reloads or a second tab can
+		// never fold it in twice.
+		const port = event.ports?.[0];
+		const ack = () => port?.postMessage({ type: "SEARCH_COUNT_MIGRATED" });
+		const legacy = Number(event.data.count);
+		try {
+			const db = await openStatsDB();
+			const tx = db.transaction(DB_STORE, "readwrite");
+			const store = tx.objectStore(DB_STORE);
+			// Issue both reads before awaiting so the transaction stays active.
+			const read = (key: string) =>
+				new Promise<number | undefined>((resolve) => {
+					const req = store.get(key);
+					req.onsuccess = () => resolve(req.result);
+					req.onerror = () => resolve(undefined);
+				});
+			const [already, current] = await Promise.all([
+				read(LS_MIGRATED_KEY),
+				read(SEARCH_COUNT_KEY),
+			]);
+			if (!already) {
+				if (Number.isFinite(legacy) && legacy > 0) {
+					store.put((current ?? 0) + legacy, SEARCH_COUNT_KEY);
+				}
+				store.put(1, LS_MIGRATED_KEY);
+			}
+			await new Promise<void>((resolve, reject) => {
+				tx.oncomplete = () => resolve();
+				tx.onerror = () => reject(tx.error);
+			});
+			db.close();
+		} catch {
+			// Non-critical; the page keeps the localStorage value and retries.
+		}
+		ack();
 	}
 });
 

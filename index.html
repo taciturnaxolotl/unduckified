@@ -55,6 +55,55 @@
 						.catch(function () {});
 				}
 
+				// Install the worker on every path, including a bare redirect (which
+				// no longer loads main.js). Without this a search-only user — one who
+				// never opens the settings page — would never install the worker or
+				// migrate their data. register() is idempotent, so main.js registering
+				// again on the landing page is harmless.
+				if ("serviceWorker" in navigator) {
+					navigator.serviceWorker
+						.register("/sw.js", { updateViaCache: "none" })
+						.catch(function () {});
+				}
+
+				// Hand the worker the settings the old page-based version kept in
+				// localStorage and fold in its legacy search count (worker-side
+				// idempotent). The landing page does this from main.ts; this covers the
+				// redirect path, where main.js never loads. Best-effort: on a brand-new
+				// install the worker may not be active before we navigate away, but the
+				// cold fallback reads localStorage directly and this completes on a
+				// later load.
+				function seedWorker() {
+					if (!("serviceWorker" in navigator)) return;
+					navigator.serviceWorker.ready
+						.then(function (reg) {
+							var sw = reg.active;
+							if (!sw) return;
+							var def = localStorage.getItem("default-bang");
+							if (def) sw.postMessage({ type: "SET_DEFAULT_BANG", trigger: def });
+							try {
+								var cb = JSON.parse(localStorage.getItem("custom-bangs") || "{}");
+								if (cb && Object.keys(cb).length)
+									sw.postMessage({ type: "UPDATE_CUSTOM_BANGS", bangs: cb });
+							} catch (e) {}
+							var raw = localStorage.getItem("search-count");
+							if (raw === null) return;
+							var n = parseInt(raw, 10);
+							if (!(n > 0)) {
+								localStorage.removeItem("search-count");
+								return;
+							}
+							var ch = new MessageChannel();
+							ch.port1.onmessage = function () {
+								localStorage.removeItem("search-count");
+							};
+							sw.postMessage({ type: "MIGRATE_SEARCH_COUNT", count: n }, [
+								ch.port2,
+							]);
+						})
+						.catch(function () {});
+				}
+
 				// Ask the worker whether it already holds bang data, so warming
 				// never re-downloads something that is already cached.
 				function workerNeedsData() {
@@ -113,6 +162,10 @@
 				fb.type = "module";
 				fb.src = "/fallback.js";
 				document.head.appendChild(fb);
+
+				// Migrate settings + search count to the worker on the redirect path;
+				// main.js (which does this on the landing page) never loads here.
+				seedWorker();
 
 				Promise.all([dataPromise, readyPromise])
 					.then(function (parts) {

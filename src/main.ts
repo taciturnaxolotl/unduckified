@@ -95,6 +95,29 @@ async function requestSearchCount(): Promise<number> {
 	});
 }
 
+// The old page-based version kept the search count in localStorage ("search-count");
+// the worker now owns it in IndexedDB. On the first load after upgrading, hand the
+// legacy value to the worker so the tally carries over, then clear it. The worker
+// side is idempotent, so a timed-out ack or a second tab never double-counts.
+async function migrateLegacySearchCount(): Promise<void> {
+	const raw = localStorage.getItem("search-count");
+	if (raw === null) return;
+	const count = parseInt(raw, 10);
+	if (!Number.isFinite(count) || count <= 0) {
+		localStorage.removeItem("search-count");
+		return;
+	}
+	const sw = await getReadySW();
+	if (!sw) return; // worker not ready; retry on the next load
+	await new Promise<void>((resolve) => {
+		const channel = new MessageChannel();
+		channel.port1.onmessage = () => resolve();
+		setTimeout(resolve, 1000); // don't hang on an old worker that won't reply
+		sw.postMessage({ type: "MIGRATE_SEARCH_COUNT", count }, [channel.port2]);
+	});
+	localStorage.removeItem("search-count");
+}
+
 // Ask the service worker whether a bang trigger exists (built-in or custom)
 async function checkBangExists(trigger: string): Promise<boolean> {
 	const sw = await getReadySW();
@@ -270,10 +293,13 @@ function noSearchDefaultPageRender() {
 
 	validatedElements.urlInput.value = `${window.location.protocol}//${window.location.host}?q=%s`;
 
-	// Populate search count from the service worker
-	requestSearchCount().then((count) => {
-		validatedElements.searchCount.textContent = `${count} ${count === 1 ? "search" : "searches"}`;
-	});
+	// Populate search count from the service worker, folding in any legacy
+	// localStorage count from the old page-based version first.
+	migrateLegacySearchCount()
+		.then(requestSearchCount)
+		.then((count) => {
+			validatedElements.searchCount.textContent = `${count} ${count === 1 ? "search" : "searches"}`;
+		});
 
 	const prefersReducedMotion = window.matchMedia(
 		"(prefers-reduced-motion: reduce)",
