@@ -320,6 +320,24 @@ function noSearchDefaultPageRender() {
 			copy: createAudio("/foot-switch.opus"),
 		};
 
+		// Warm all four sound files as one batch, but off the critical path.
+		// None is needed until the user interacts, so we defer the fetch to idle
+		// time rather than letting each `src` assignment download eagerly during
+		// page load (a cold redirect never reaches idle, so it never pays for
+		// sounds it won't use). Batching them together preserves the "all cached
+		// at once" guarantee — the reason they aren't lazy-loaded individually.
+		const warmAudio = () => {
+			for (const a of Object.values(audio)) {
+				a.preload = "auto";
+				a.load();
+			}
+		};
+		if ("requestIdleCallback" in window) {
+			requestIdleCallback(warmAudio, { timeout: 3000 });
+		} else {
+			setTimeout(warmAudio, 1200);
+		}
+
 		validatedElements.copyButton.addEventListener("click", () => {
 			audio.copy.currentTime = 0;
 			audio.copy.play();
