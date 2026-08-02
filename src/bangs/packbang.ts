@@ -302,51 +302,88 @@ for (const [, bang] of entries) {
 	entrySids.push(sid);
 }
 
-function packBlobOffsets(strings: string[]): { offsets: Uint32Array; blob: Uint8Array } {
-	const parts = strings.map(s => enc.encode(s));
-	const offsets = new Uint32Array(parts.length + 1);
-	const total = parts.reduce((a, p, i) => { offsets[i] = a; return a + p.length; }, 0);
-	offsets[parts.length] = total;
-	const blob = new Uint8Array(total);
-	let p = 0;
-	for (const part of parts) { blob.set(part, p); p += part.length; }
-	return { offsets, blob };
+// --- v6 binary layout -------------------------------------------------------
+//
+// v5 stored a slotToEntry permutation, a per-entry prefix index (pid) into an
+// interned prefix table, and u32 absolute offset arrays for every blob. v6
+// removes all three sources of overhead, because brotli — not the container —
+// is where transfer size is decided:
+//
+//   * Data is written in MPHF *slot* order, so the slot a lookup computes is
+//     itself the entry index. That drops the slotToEntry array entirely.
+//   * Prefixes are inlined per entry instead of interned behind a pid array.
+//     There are almost as many distinct prefixes as entries, so interning
+//     barely dedups; brotli already collapses the shared URL substrings, and
+//     dropping the pid indirection is a net win over the wire.
+//   * Blob boundaries ship as varint length streams, not u32 offset tables.
+//     The reader prefix-sums them into offset arrays once at load, keeping O(1)
+//     lookups while the wire carries tiny, highly-repetitive lengths.
+//   * The rank byte per entry is gone: only the edge suggestion function reads
+//     ranks, and it gets them from suggest-data.ts, never from bangs.bin. v5
+//     shipped ~13 KiB of ranks to every client that never touched them.
+//
+// Suffixes stay interned (they are few and heavily shared) but their offset
+// table also becomes a varint length stream.
+
+// LEB128 unsigned varint. Lengths are small and repetitive, so this is both
+// compact on the wire and trivial to decode sequentially at load time.
+function varint(values: number[]): Uint8Array {
+	const out: number[] = [];
+	for (let v of values) {
+		while (v >= 0x80) { out.push((v & 0x7f) | 0x80); v >>>= 7; }
+		out.push(v);
+	}
+	return Uint8Array.from(out);
 }
 
-const prefixData = packBlobOffsets(prefixes);
-const suffixData = packBlobOffsets(suffixes);
+// Per-entry data, reordered into slot order so the MPHF slot doubles as the
+// entry index and no permutation array is needed.
+const slotTrigger: Uint8Array[] = new Array(n);
+const slotPrefix: Uint8Array[] = new Array(n);
+const slotSid = new Uint16Array(n); // 0xffff = no suffix
+const SID_NONE = 0xffff;
+for (let slot = 0; slot < n; slot++) {
+	const e = slotToEntry[slot];
+	slotTrigger[slot] = enc.encode(entries[e][0]);
+	slotPrefix[slot] = enc.encode(prefixes[entryPids[e]]);
+	slotSid[slot] = entrySids[e] < 0 ? SID_NONE : entrySids[e];
+}
 
-// Pack trigger strings in entry order for verification / existence checks
-const triggerData = packBlobOffsets(entries.map(([t]) => t));
+const suffixBytes = suffixes.map((s) => enc.encode(s));
+
+const triLenBytes = varint(slotTrigger.map((b) => b.length));
+const preLenBytes = varint(slotPrefix.map((b) => b.length));
+const sufLenBytes = varint(suffixBytes.map((b) => b.length));
+const triBlobLen = slotTrigger.reduce((a, b) => a + b.length, 0);
+const preBlobLen = slotPrefix.reduce((a, b) => a + b.length, 0);
+const sufBlobLen = suffixBytes.reduce((a, b) => a + b.length, 0);
 
 const MAGIC = 0x554e4455;
-const VERSION = 5;
+const VERSION = 6;
 const dispBytes = displacements.BYTES_PER_ELEMENT * bucketCount;
-const headerBytes = 24;
+const headerBytes = 20; // MAGIC, VERSION, n, bucketCount, suffixes.length
 
 const total =
-	headerBytes + dispBytes + 2*n + 2*n + 2*n +
-	4*(prefixes.length+1) + prefixData.blob.byteLength +
-	4*(suffixes.length+1) + suffixData.blob.byteLength +
-	4*(n+1) + triggerData.blob.byteLength +
-	n;
+	headerBytes + dispBytes +
+	triLenBytes.byteLength + triBlobLen +
+	preLenBytes.byteLength + preBlobLen +
+	2 * n +
+	sufLenBytes.byteLength + sufBlobLen;
 
 const flat = new Uint8Array(total);
 {
 	let p = 0;
 	const w32 = (v: number) => { flat[p++]=v&0xff; flat[p++]=(v>>8)&0xff; flat[p++]=(v>>16)&0xff; flat[p++]=(v>>24)&0xff; };
-	w32(MAGIC); w32(VERSION); w32(n); w32(bucketCount); w32(prefixes.length); w32(suffixes.length);
-	flat.set(new Uint8Array(displacements.buffer), p); p += dispBytes;
-	flat.set(new Uint8Array(slotToEntry.buffer), p); p += 2*n;
-	for(let i=0;i<n;i++){flat[p++]=entryPids[i]&0xff;flat[p++]=(entryPids[i]>>8)&0xff;}
-	for(let i=0;i<n;i++){const v=entrySids[i];flat[p++]=v&0xff;flat[p++]=(v>>8)&0xff;}
-	flat.set(new Uint8Array(prefixData.offsets.buffer), p); p += 4*(prefixes.length+1);
-	flat.set(prefixData.blob, p); p += prefixData.blob.byteLength;
-	flat.set(new Uint8Array(suffixData.offsets.buffer), p); p += 4*(suffixes.length+1);
-	flat.set(suffixData.blob, p); p += suffixData.blob.byteLength;
-	flat.set(new Uint8Array(triggerData.offsets.buffer), p); p += 4*(n+1);
-	flat.set(triggerData.blob, p); p += triggerData.blob.byteLength;
-	flat.set(rankBytes, p);
+	const blob = (parts: Uint8Array[]) => { for (const part of parts) { flat.set(part, p); p += part.length; } };
+	w32(MAGIC); w32(VERSION); w32(n); w32(bucketCount); w32(suffixes.length);
+	flat.set(new Uint8Array(displacements.buffer, displacements.byteOffset, dispBytes), p); p += dispBytes;
+	flat.set(triLenBytes, p); p += triLenBytes.byteLength;
+	blob(slotTrigger);
+	flat.set(preLenBytes, p); p += preLenBytes.byteLength;
+	blob(slotPrefix);
+	for (let i = 0; i < n; i++) { flat[p++] = slotSid[i] & 0xff; flat[p++] = (slotSid[i] >> 8) & 0xff; }
+	flat.set(sufLenBytes, p); p += sufLenBytes.byteLength;
+	blob(suffixBytes);
 }
 
 writeFileSync("public/bangs.bin", flat);
@@ -356,9 +393,9 @@ writeFileSync("public/bangs.bin", flat);
 // leaves them alone when they don't.
 const dataHash = createHash("sha256").update(flat).digest("hex").slice(0, 12);
 writeFileSync("src/bangs/data-version.ts", `// Generated by packbang.ts. Do not edit.\nexport const BANG_DATA_VERSION = "${dataHash}";\n`);
-console.log(`MPHF v5: ${(total/1024).toFixed(0)} KiB raw`);
+console.log(`MPHF v6: ${(total/1024).toFixed(0)} KiB raw`);
 console.log(`  Upstream: ${rawBangs.length}, Custom: ${customBangs.length}, Total: ${n}`);
 console.log(`  Buckets: ${bucketCount}, max disp: ${maxDisplacement}`);
-console.log(`  Prefixes: ${prefixes.length}, Suffixes: ${suffixes.length}`);
+console.log(`  Prefixes: ${prefixes.length} (inlined), Suffixes: ${suffixes.length} (interned)`);
 console.log(`  Ranked for suggestions: ${rankedCount}/${n} (${(rankedCount/n*100).toFixed(1)}%)`);
 console.log(`  Data version: ${dataHash}`);
