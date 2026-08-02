@@ -2,6 +2,136 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
+		<script>
+			// First-load bang redirect — the cold path, before the service worker
+			// controls the page. This runs first, ahead of every landing-page asset,
+			// so the catalog fetch starts immediately with nothing competing for the
+			// connection. On a real bang query we fetch bangs.bin + the fallback
+			// resolver and redirect, and we deliberately do NOT load the landing UI
+			// (main.js and the sounds it pulls) — that only matters on the settings
+			// page. The build hands us the bundle URLs in window.__APP__; loadApp()
+			// brings the UI up only when we are not redirecting.
+			(function () {
+				var url = new URL(window.location.href);
+				var query = url.searchParams.get("q");
+				var trimmed = query ? query.trim() : "";
+				var hasController =
+					navigator.serviceWorker && navigator.serviceWorker.controller;
+				// A real bang to resolve right now, with no worker to do it for us.
+				var isRedirect =
+					trimmed !== "" &&
+					trimmed !== "!" &&
+					trimmed !== "!settings" &&
+					!hasController;
+
+				// Bring up the landing/settings UI. The build strips the module tag
+				// and hands its URL(s) here; in dev the original tag loads it instead
+				// (window.__APP__ is undefined there, so this is a no-op).
+				function loadApp() {
+					var app = window.__APP__;
+					if (!app || !app.js) return;
+					app.js.forEach(function (src) {
+						var s = document.createElement("script");
+						s.type = "module";
+						s.src = src;
+						document.head.appendChild(s);
+					});
+				}
+				function whenReady(fn) {
+					if (document.readyState === "loading")
+						document.addEventListener("DOMContentLoaded", fn);
+					else fn();
+				}
+
+				// Give the worker the bang data we just downloaded.
+				function seedServiceWorker(buffer) {
+					if (!("serviceWorker" in navigator)) return;
+					navigator.serviceWorker.ready
+						.then(function (reg) {
+							var target = reg.active || navigator.serviceWorker.controller;
+							if (!target) return;
+							target.postMessage({ type: "SEED_BANG_DATA", buffer: buffer.slice(0) });
+						})
+						.catch(function () {});
+				}
+
+				// Ask the worker whether it already holds bang data, so warming
+				// never re-downloads something that is already cached.
+				function workerNeedsData() {
+					if (!("serviceWorker" in navigator)) return Promise.resolve(false);
+					return navigator.serviceWorker.ready
+						.then(function (reg) {
+							var target = reg.active || navigator.serviceWorker.controller;
+							if (!target) return false;
+							return new Promise(function (resolve) {
+								var channel = new MessageChannel();
+								var settled = false;
+								channel.port1.onmessage = function (event) {
+									settled = true;
+									resolve(!event.data || !event.data.ready);
+								};
+								target.postMessage({ type: "HAS_BANG_DATA" }, [channel.port2]);
+								setTimeout(function () {
+									if (!settled) resolve(false);
+								}, 1000);
+							});
+						})
+						.catch(function () {
+							return false;
+						});
+				}
+
+				if (!isRedirect) {
+					// Landing, settings, or the worker is already in charge: show the UI.
+					whenReady(loadApp);
+					// On a bare landing visit, warm the worker so the next search is instant.
+					if (trimmed === "" && "serviceWorker" in navigator) {
+						window.addEventListener("load", function () {
+							workerNeedsData().then(function (needed) {
+								if (!needed) return;
+								fetch("/bangs.bin")
+									.then(function (r) { return r.arrayBuffer(); })
+									.then(seedServiceWorker)
+									.catch(function () {});
+							});
+						});
+					}
+					return;
+				}
+
+				// Fast redirect path: no landing bundle, and the catalog and the
+				// fallback resolver load *in parallel* — the resolver is ~1 KiB and
+				// finishes long before the catalog, so its round-trip is fully hidden
+				// behind the catalog download instead of running after it.
+				var dataPromise = fetch("/bangs.bin").then(function (r) {
+					return r.arrayBuffer();
+				});
+				var readyPromise = new Promise(function (resolve) {
+					window.addEventListener("fallbackReady", resolve, { once: true });
+				});
+				var fb = document.createElement("script");
+				fb.type = "module";
+				fb.src = "/fallback.js";
+				document.head.appendChild(fb);
+
+				Promise.all([dataPromise, readyPromise])
+					.then(function (parts) {
+						var data = parts[0];
+						return window.resolveFallback(query, data).then(function (dest) {
+							seedServiceWorker(data);
+							return dest;
+						});
+					})
+					.then(function (dest) {
+						if (dest) window.location.replace(dest);
+						else whenReady(loadApp);
+					})
+					.catch(function (err) {
+						console.error("Fallback redirect failed:", err);
+						whenReady(loadApp); // don't strand the user on a blank page
+					});
+			})();
+		</script>
 		<link rel="icon" type="image/gif" href="/goose.gif" />
 		<link
 			rel="search"
@@ -127,108 +257,9 @@
 	</head>
 	<body>
 		<div id="app"></div>
+		<!-- Vite entry. In production the defer-app-bundle plugin strips this tag
+		     and hands its URL to the inline loader above, so it never loads on the
+		     redirect path. In dev it loads normally. -->
 		<script type="module" src="/src/main.ts"></script>
-		<script>
-			// First-load bang redirect.
-			//
-			// The service worker handles redirects once it controls the page, but on a
-			// cold visit it isn't running yet. Rather than make the user wait for it to
-			// install, we resolve the query here and hand the downloaded bang data over
-			// to the worker so it never has to fetch the same file twice.
-			(function () {
-				var url = new URL(window.location.href);
-				var query = url.searchParams.get("q");
-
-				// Give the worker the bang data we just downloaded.
-				function seedServiceWorker(buffer) {
-					if (!("serviceWorker" in navigator)) return;
-					navigator.serviceWorker.ready
-						.then(function (reg) {
-							var target = reg.active || navigator.serviceWorker.controller;
-							if (!target) return;
-							// Send a copy; the caller still needs the original.
-							target.postMessage({ type: "SEED_BANG_DATA", buffer: buffer.slice(0) });
-						})
-						.catch(function () {});
-				}
-
-				// Ask the worker whether it already holds bang data, so warming
-				// never re-downloads something that is already cached.
-				function workerNeedsData() {
-					if (!("serviceWorker" in navigator)) return Promise.resolve(false);
-					return navigator.serviceWorker.ready
-						.then(function (reg) {
-							var target = reg.active || navigator.serviceWorker.controller;
-							if (!target) return false;
-							return new Promise(function (resolve) {
-								var channel = new MessageChannel();
-								var settled = false;
-								channel.port1.onmessage = function (event) {
-									settled = true;
-									resolve(!event.data || !event.data.ready);
-								};
-								target.postMessage({ type: "HAS_BANG_DATA" }, [channel.port2]);
-								// Old workers won't reply; don't warm on their behalf.
-								setTimeout(function () {
-									if (!settled) resolve(false);
-								}, 1000);
-							});
-						})
-						.catch(function () {
-							return false;
-						});
-				}
-
-				// No query: warm the worker in the background so the next search is instant.
-				if (!query || query.trim() === "") {
-					if ("serviceWorker" in navigator) {
-						window.addEventListener("load", function () {
-							workerNeedsData().then(function (needed) {
-								if (!needed) return;
-								fetch("/bangs.bin")
-									.then(function (r) { return r.arrayBuffer(); })
-									.then(seedServiceWorker)
-									.catch(function () {});
-							});
-						});
-					}
-					return;
-				}
-
-				// The worker is already in charge; let it answer.
-				if (navigator.serviceWorker && navigator.serviceWorker.controller) return;
-
-				// The settings shortcut belongs to the page, not a redirect.
-				var trimmed = query.trim();
-				if (trimmed === "!" || trimmed === "!settings") return;
-
-				fetch("/bangs.bin")
-					.then(function (r) { return r.arrayBuffer(); })
-					.then(function (data) {
-						var script = document.createElement("script");
-						script.type = "module";
-						script.src = "/fallback.js";
-						document.head.appendChild(script);
-
-						return new Promise(function (resolve, reject) {
-							window.addEventListener("fallbackReady", function () {
-								window
-									.resolveFallback(query, data)
-									.then(function (dest) {
-										// Pass the bytes along before we navigate away.
-										seedServiceWorker(data);
-										resolve(dest);
-									})
-									.catch(reject);
-							});
-						});
-					})
-					.then(function (dest) {
-						if (dest) window.location.replace(dest);
-					})
-					.catch(function (err) {
-						console.error("Fallback redirect failed:", err);
-					});
-			})();
-		</script>	</body>
+	</body>
 </html>
