@@ -18,9 +18,25 @@ DuckDuckGo does their redirects server side. Depending on how fast your internet
 
 This is solved by doing all of the work client side. Once you've went to https://s.dunkirk.sh once, the JS is all cached and will never need to be downloaded again. Your device does the redirects, not unduck or any other server.
 
+## Performance
+
+A Service Worker intercepts the search before any page loads, so once the bang catalog is cached the redirect resolves on your device in **about a millisecond** with no network at all. Here are a few comparison benchmarks — median time from pressing Enter to the redirect committing, all measured the same way (see [BENCHMARK.md](BENCHMARK.md)). Absolute numbers vary a lot with your distance to each service's servers and your hardware but the ordering should be fairly stable.
+
+| tool | how it redirects | warm search | cold first search | bytes on the redirect |
+|---|---|--:|--:|--:|
+| **unduckified** | Service Worker + packed binary catalog | **~1 ms** | ~215 ms | **~200 KiB** |
+| [flashbang](https://github.com/ph1losof/flashbang) | Service Worker + MPHF catalog | ~1 ms | ~245 ms | ~285 KiB |
+| unduck (Theo's original) | page load, then JS redirect | ~165 ms | ~435 ms | ~485 KiB |
+| rebang | Cloudflare edge worker | ~45 ms | **~170 ms** | ~13 KiB |
+| DuckDuckGo | server-side redirect | ~65 ms | ~345 ms | ~2 KiB |
+
+- **warm** is after the Service Worker is installed; **cold** is a brand-new profile that has to redownload everything.
+- Service Worker tools (unduckified, flashbang) resolve every search locally in about a millisecond at the cost of a one-time catalog download. Edge tools like rebang win the *first* search since the browser downloads nothing, but then pay a network round-trip on **every** search after that.
+- unduckified vs flashbang warm is a statistical tie (~1 ms both); cold, unduckified wins by ~30 ms across a paired run (p < 0.001).
+
 ## How is this different from Theo's version again?
 
-This is primarily my personal fork to experiment with PWAs but I do have a few ideas that I have added to this which make it a bit more fun :)
+Great question! There are a lotttt of new features in addition to the crazy performance optimization that has been done. Here is a short list:
 
 <img align="right" width="140" height="140" src="https://raw.githubusercontent.com/taciturnaxolotl/unduckified/main/public/goose.gif" alt="goose walking animation"/>
 
@@ -29,17 +45,18 @@ This is primarily my personal fork to experiment with PWAs but I do have a few i
 - [x] Settings (for things like enabling search history, changing default bang, and creating custom bangs)
 - [x] Search counter
 - [x] [OpenSearch](https://developer.mozilla.org/en-US/docs/Web/XML/Guides/OpenSearch) support
-- [x] Search History (clearable, all local, and disabled by default ofc)
 - [x] Fancy sounds (disabled if you have `prefers-reduced-motion` set and they are only `28kb`)
 - [x] Cute little text animations
 - [x] Auto updating bangs file! (I'm using a [GitHub Action](https://github.com/taciturnaxolotl/unduckified/actions/workflows/update-bangs.yaml) to update the bangs file every 24 hours)
-- [x] Hashmapped bangs for faster searching
+- [x] Compact binary format for the bang catelog that requires no decode step
 - [x] local font file to avoid google fonts
 - [x] redirects to the base page of a bang if there is no query (e.g. `!g` will take you to google.com and `!yt` will take you to youtube.com)
 - [x] Suffix bangs (e.g. `ghr! taciturnaxolotl/unduckified` will take you to this github repo)
 - [x] Quick settings (e.g. `!settings` or `!` will take you to the settings page)
 - [x] Custom local bangs! (thanks to [@ayoubabedrabbo@mastodon.social](https://mastodon.social/@ayoubabedrabbo/114114311682366314) for the suggestion)
 - [x] Kagi bangs! We are able to grab the bangs from [kagisearch/bangs](https://github.com/kagisearch/bangs/) and Kagi is far more responsive than DuckDuckGo when it comes to updating their bangs.
+- [x] A service worker! This lets us respond in as little time as possible directly intercepting the browser's network requests
+- [x] Configurable search suggestions!
 
 ## Search Suggestions
 
