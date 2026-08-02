@@ -20,7 +20,7 @@ This is solved by doing all of the work client side. Once you've went to https:/
 
 ## Performance
 
-A Service Worker intercepts the search before any page loads, so once the bang catalog is cached the redirect resolves on your device in **about a millisecond** with no network at all. Here are a few comparison benchmarks — median time from pressing Enter to the redirect committing, all measured the same way (see [BENCHMARK.md](BENCHMARK.md)). Absolute numbers vary a lot with your distance to each service's servers and your hardware but the ordering should be fairly stable.
+A Service Worker intercepts the search before any page loads, so once the bang catalog is cached the redirect resolves on your device in **about a millisecond** with no network at all. Here are a few comparison benchmarks: median time from pressing Enter to the redirect committing, all measured the same way (see [BENCHMARK.md](BENCHMARK.md)). Absolute numbers vary a lot with your distance to each service's servers and your hardware but the ordering should be fairly stable.
 
 | tool | how it redirects | warm search | cold first search | bytes on the redirect |
 |---|---|--:|--:|--:|
