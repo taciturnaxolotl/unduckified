@@ -205,72 +205,91 @@ for (const h of hashes) {
 	hashSet.add(h);
 }
 
-// Bucketed MPHF with adjustable load factor
-function buildMPHF(n: number, hashes: Uint32Array, maxAttempts = 3) {
-	for (let lf = 3; lf <= 6; lf += 0.5) {
-		const bucketCount = (() => {
-			let v = Math.max(2, Math.ceil(n / lf));
-			v--; v |= v >> 1; v |= v >> 2; v |= v >> 4; v |= v >> 8; v |= v >> 16; v++;
-			return v;
-		})();
-		const bucketMask = bucketCount - 1;
-		
-		const buckets: number[][] = Array.from({ length: bucketCount }, () => []);
-		for (let i = 0; i < n; i++) buckets[hashes[i] & bucketMask].push(i);
+// CHD minimal perfect hash (Botelho, Pagh, Ziviani 2007).
+//
+// Each displacement mixes the bucket's hashes through a lowbias32 finalizer
+// so consecutive attempts scatter entries to uncorrelated positions. Linear
+// probing ((hash + d) % n) shifts every entry by one slot per attempt, which
+// degenerates on large buckets; secondary hashing keeps placement attempts
+// independent and converges in O(n) total work.
+const SLOT_MIX_A = 0x21f0aaad;
+const SLOT_MIX_B = 0x735a2d97;
+const GOLDEN = 0x9e3779b9;
 
-		const orderedBuckets = buckets
-			.map((entries, id) => ({ entries, id }))
-			.filter((b) => b.entries.length > 1)
-			.sort((a, b) => b.entries.length - a.entries.length || a.id - b.id);
+function mphSlot(hash: number, displacement: number, size: number): number {
+	let x = (hash + Math.imul(displacement + 1, GOLDEN)) >>> 0;
+	x ^= x >>> 16;
+	x = Math.imul(x, SLOT_MIX_A) >>> 0;
+	x ^= x >>> 15;
+	x = Math.imul(x, SLOT_MIX_B) >>> 0;
+	x ^= x >>> 15;
+	return (x >>> 0) % size;
+}
 
-		const occupied = new Uint8Array(n);
-		const slotToEntry = new Uint16Array(n);
-		const wideDisplacements = new Int32Array(bucketCount);
-		wideDisplacements.fill(-1);
-		let maxDisplacement = 0;
-		let failed = false;
+function nextPow2(v: number): number {
+	v--;
+	v |= v >> 1; v |= v >> 2; v |= v >> 4; v |= v >> 8; v |= v >> 16;
+	return v + 1;
+}
 
-		for (const bucket of orderedBuckets) {
-			let displacement = 0;
-			for (; displacement <= 100_000; displacement++) {
-				let ok = true;
-				const seen = new Set<number>();
-				for (const entry of bucket.entries) {
-					const slot = (hashes[entry] + displacement) % n;
-					if (occupied[slot] || seen.has(slot)) { ok = false; break; }
-					seen.add(slot);
-				}
-				if (ok) break;
+function buildMPHF(n: number, hashes: Uint32Array) {
+	const bucketCount = nextPow2(Math.max(2, Math.ceil(n / 4)));
+	const bucketMask = bucketCount - 1;
+
+	const buckets: number[][] = Array.from({ length: bucketCount }, () => []);
+	for (let i = 0; i < n; i++) buckets[hashes[i] & bucketMask].push(i);
+
+	// Largest buckets are hardest to place; try them first.
+	const heavy = buckets
+		.map((members, id) => ({ members, id }))
+		.filter((b) => b.members.length > 1)
+		.sort((a, b) => b.members.length - a.members.length || a.id - b.id);
+
+	const placed = new Uint8Array(n);
+	const slotToEntry = new Uint16Array(n);
+	const displacements = new Int32Array(bucketCount).fill(-1);
+
+	// Generation counter avoids allocating a Set per attempt.
+	const seenStamp = new Uint32Array(n);
+	let generation = 0;
+	let maxDisplacement = 0;
+
+	for (const { members, id } of heavy) {
+		let d = 0;
+		for (;; d++) {
+			generation++;
+			let fits = true;
+			for (const entry of members) {
+				const s = mphSlot(hashes[entry], d, n);
+				if (placed[s] || seenStamp[s] === generation) { fits = false; break; }
+				seenStamp[s] = generation;
 			}
-			if (displacement > 100_000) { failed = true; break; }
-			wideDisplacements[bucket.id] = displacement;
-			maxDisplacement = Math.max(maxDisplacement, displacement);
-			for (const entry of bucket.entries) {
-				const slot = (hashes[entry] + displacement) % n;
-				occupied[slot] = 1;
-				slotToEntry[slot] = entry;
-			}
+			if (fits) break;
+			if (d > 1_000_000) throw new Error(`MPHF bucket ${id} unplaceable`);
 		}
-
-		if (failed) continue;
-
-		// Place singletons
-		const freeSlots: number[] = [];
-		for (let s = 0; s < n; s++) if (!occupied[s]) freeSlots.push(s);
-		let fi = 0;
-		for (let bid = 0; bid < bucketCount; bid++) {
-			if (buckets[bid].length !== 1) continue;
-			const slot = freeSlots[fi++];
-			wideDisplacements[bid] = -(slot + 1);
-			slotToEntry[slot] = buckets[bid][0];
+		displacements[id] = d;
+		if (d > maxDisplacement) maxDisplacement = d;
+		for (const entry of members) {
+			const s = mphSlot(hashes[entry], d, n);
+			placed[s] = 1;
+			slotToEntry[s] = entry;
 		}
-
-		const displacements = n <= 0x7fff && maxDisplacement <= 0x7fff
-			? Int16Array.from(wideDisplacements) : wideDisplacements;
-		
-		return { displacements, slotToEntry, bucketCount, maxDisplacement };
 	}
-	throw new Error("MPHF construction failed for all load factors");
+
+	// Singleton buckets take whatever slots remain.
+	const remaining: number[] = [];
+	for (let s = 0; s < n; s++) if (!placed[s]) remaining.push(s);
+	let ri = 0;
+	for (let bid = 0; bid < bucketCount; bid++) {
+		if (buckets[bid].length !== 1) continue;
+		const s = remaining[ri++];
+		displacements[bid] = -(s + 1);
+		slotToEntry[s] = buckets[bid][0];
+	}
+
+	const narrow = n <= 0x7fff && maxDisplacement <= 0x7fff
+		? Int16Array.from(displacements) : displacements;
+	return { displacements: narrow, slotToEntry, bucketCount, maxDisplacement };
 }
 
 const { displacements, slotToEntry, bucketCount, maxDisplacement } = buildMPHF(n, new Uint32Array(hashes));
@@ -368,7 +387,7 @@ const preBlobLen = slotPrefix.reduce((a, b) => a + b.length, 0);
 const sufBlobLen = suffixBytes.reduce((a, b) => a + b.length, 0);
 
 const MAGIC = 0x554e4455;
-const VERSION = 7;
+const VERSION = 8;
 const dispBytes = displacements.BYTES_PER_ELEMENT * bucketCount;
 const headerBytes = 20; // MAGIC, VERSION, n, bucketCount, suffixes.length
 
@@ -402,7 +421,7 @@ writeFileSync("public/bangs.bin", flat);
 // leaves them alone when they don't.
 const dataHash = createHash("sha256").update(flat).digest("hex").slice(0, 12);
 writeFileSync("src/bangs/data-version.ts", `// Generated by packbang.ts. Do not edit.\nexport const BANG_DATA_VERSION = "${dataHash}";\n`);
-console.log(`MPHF v7: ${(total/1024).toFixed(0)} KiB raw`);
+console.log(`MPHF v8: ${(total/1024).toFixed(0)} KiB raw`);
 console.log(`  Upstream: ${rawBangs.length}, Custom: ${customBangs.length}, Total: ${n}`);
 console.log(`  Buckets: ${bucketCount}, max disp: ${maxDisplacement}`);
 console.log(`  Prefixes: ${prefixes.length} (inlined), Suffixes: ${suffixes.length} (interned)`);

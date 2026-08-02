@@ -111,7 +111,7 @@ function initBangData(buf: ArrayBuffer) {
 
 	const magic = r32();
 	const version = r32();
-	if (magic !== 0x554e4455 || version !== 7) throw new Error("bad bangs.bin");
+	if (magic !== 0x554e4455 || version !== 8) throw new Error("bad bangs.bin");
 
 	N = r32();
 	BUCKET_COUNT = r32();
@@ -227,6 +227,22 @@ function fnv1a(str: string): number {
 	return h >>> 0;
 }
 
+// Slot mixing must match the packing step (packbang.ts): each displacement
+// finalizes a mixed hash so placement attempts scatter independently.
+const SLOT_MIX_A = 0x21f0aaad;
+const SLOT_MIX_B = 0x735a2d97;
+const GOLDEN = 0x9e3779b9;
+
+function mphSlot(hash: number, displacement: number): number {
+	let x = (hash + Math.imul(displacement + 1, GOLDEN)) >>> 0;
+	x ^= x >>> 16;
+	x = Math.imul(x, SLOT_MIX_A) >>> 0;
+	x ^= x >>> 15;
+	x = Math.imul(x, SLOT_MIX_B) >>> 0;
+	x ^= x >>> 15;
+	return (x >>> 0) % N;
+}
+
 function resolveCustom(trigger: string, query: string): string | null {
 	const entry = customBangsCache.get(trigger);
 	if (!entry) return null;
@@ -244,7 +260,7 @@ function lookupEntry(trigger: string): number | null {
 
 	// Data is stored in slot order, so the MPHF slot is the entry index.
 	const entryIdx = displacement >= 0
-		? (hash + displacement) % N
+		? mphSlot(hash, displacement)
 		: -(displacement + 1);
 
 	// Verify against the stored checksum (high 16 bits of the hash). Guards
