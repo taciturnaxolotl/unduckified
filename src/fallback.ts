@@ -29,7 +29,7 @@ export async function initializeBangData(buffer: ArrayBuffer): Promise<void> {
 
 	const magic = r32();
 	const version = r32();
-	if (magic !== 0x554e4455 || version !== 8) throw new Error("bad bangs.bin");
+	if (magic !== 0x554e4455 || version !== 9) throw new Error("bad bangs.bin");
 
 	N = r32();
 	BUCKET_COUNT = r32();
@@ -51,7 +51,7 @@ export async function initializeBangData(buffer: ArrayBuffer): Promise<void> {
 	};
 
 	DISP_PTR = p;
-	p += 2 * BUCKET_COUNT;
+	p += 4 * BUCKET_COUNT; // Int32 displacements
 	CHK_PTR = p;
 	p += 2 * N;
 	POFF = readOffsets(N);
@@ -66,9 +66,9 @@ export async function initializeBangData(buffer: ArrayBuffer): Promise<void> {
 }
 
 function getDisp(bucketId: number): number {
-	const base = DISP_PTR + bucketId * 2;
-	const v = HEAP![base] | (HEAP![base + 1] << 8);
-	return v < 0x8000 ? v : v - 0x10000;
+	const base = DISP_PTR + bucketId * 4;
+	// Little-endian signed Int32; the `<< 24` restores the sign bit.
+	return HEAP![base] | (HEAP![base + 1] << 8) | (HEAP![base + 2] << 16) | (HEAP![base + 3] << 24);
 }
 
 function getSid(entryIdx: number): number {
