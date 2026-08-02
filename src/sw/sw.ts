@@ -23,13 +23,12 @@ let HEAP: Uint8Array | null = null;
 let N = 0;
 let BUCKET_COUNT = 0;
 let DISP_PTR = 0;
+let CHK_PTR = 0;
 let SID_PTR = 0;
 let PBLOB_PTR = 0;
 let SBLOB_PTR = 0;
-let TBLOB_PTR = 0;
 // Offset tables reconstructed at load from the wire's varint length streams.
 // Entry order is MPHF-slot order, so an entry index is also its slot.
-let TOFF: Uint32Array | null = null;
 let POFF: Uint32Array | null = null;
 let SOFF: Uint32Array | null = null;
 const SID_NONE = 0xffff;
@@ -109,7 +108,7 @@ function initBangData(buf: ArrayBuffer) {
 
 	const magic = r32();
 	const version = r32();
-	if (magic !== 0x554e4455 || version !== 6) throw new Error("bad bangs.bin");
+	if (magic !== 0x554e4455 || version !== 7) throw new Error("bad bangs.bin");
 
 	N = r32();
 	BUCKET_COUNT = r32();
@@ -132,9 +131,8 @@ function initBangData(buf: ArrayBuffer) {
 
 	DISP_PTR = p;
 	p += 2 * BUCKET_COUNT; // Int16 displacements
-	TOFF = readOffsets(N);
-	TBLOB_PTR = p;
-	p += TOFF[N];
+	CHK_PTR = p;
+	p += 2 * N; // u16 verification checksum per entry
 	POFF = readOffsets(N);
 	PBLOB_PTR = p;
 	p += POFF[N];
@@ -211,10 +209,9 @@ function getSid(entryIdx: number): number {
 	return HEAP![base] | (HEAP![base+1]<<8);
 }
 
-function getTrigger(entryIdx: number): string {
-	const start = TBLOB_PTR + TOFF![entryIdx];
-	const end = TBLOB_PTR + TOFF![entryIdx + 1];
-	return new TextDecoder().decode(HEAP!.subarray(start, end));
+function getChecksum(entryIdx: number): number {
+	const base = CHK_PTR + entryIdx * 2;
+	return HEAP![base] | (HEAP![base+1]<<8);
 }
 
 function fnv1a(str: string): number {
@@ -247,7 +244,9 @@ function lookupEntry(trigger: string): number | null {
 		? (hash + displacement) % N
 		: -(displacement + 1);
 
-	if (getTrigger(entryIdx) !== trigger) return null;
+	// Verify against the stored checksum (high 16 bits of the hash). Guards
+	// against an unknown trigger landing on some real entry's slot.
+	if (getChecksum(entryIdx) !== ((hash >>> 16) & 0xffff)) return null;
 	return entryIdx;
 }
 
