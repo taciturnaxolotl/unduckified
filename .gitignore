@@ -23,7 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 bangs.bin
-hashbang.ts
 data-version.ts
 suggest-data.ts
 .wrangler

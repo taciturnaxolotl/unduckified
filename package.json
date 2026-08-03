@@ -4,10 +4,9 @@
   "version": "0.3.1",
   "type": "module",
   "scripts": {
-    "dev": "bun run hash && bun run src/bangs/packbang.ts && bunx --bun vite",
-    "build": "bun run hash && bun run src/bangs/packbang.ts && bunx --bun vite build && bun run src/build-workers.ts",
+    "dev": "bun run src/bangs/packbang.ts && bunx --bun vite",
+    "build": "bun run src/bangs/packbang.ts && bunx --bun vite build && bun run src/build-workers.ts",
     "preview": "bunx --bun vite preview",
-    "hash": "bun run src/bangs/hashbanggen.ts",
     "ranks": "bun run src/bangs/fetch-ranks.ts",
     "check": "bun run src/bangs/test-bangs.ts",
     "typecheck": "bunx tsc --noEmit"

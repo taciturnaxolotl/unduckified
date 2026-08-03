@@ -36,9 +36,6 @@ jobs:
           mkdir -p src/bangs
           mv bangs.json src/bangs/bangs.json
 
-      - name: 🥔 hash
-        run: bun run hash
-
       - name: Configure Git
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -47,7 +44,7 @@ jobs:
       - name: Check for changes and commit
         id: check_changes
         run: |
-          git add src/bangs/bangs.json src/bangs/hashbang.ts
+          git add src/bangs/bangs.json
 
           # Check if there are changes to commit
           if git diff --staged --quiet; then
