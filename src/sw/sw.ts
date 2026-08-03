@@ -488,7 +488,7 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 	if (event.request.mode !== "navigate") return;
 
 	const q = url.searchParams.get("q");
-	if (!q || q.trim() === "") return;
+	if (q === null || q.trim() === "") return;
 
 	const trimmed = q.trim();
 	// Leave the settings shortcut to the page.
@@ -519,8 +519,14 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 			try {
 				await loadBangs();
 				// A query with no explicit bang still goes to the user's default.
+				// An unknown bang is stripped and the remaining text goes there too,
+				// rather than dropping the user on the homepage.
+				const explicit = bangTrigger !== null;
 				const trigger = bangTrigger ?? defaultBang;
-				const dest = resolve(trigger, cleanQuery);
+				let dest = resolve(trigger, cleanQuery);
+				if (!dest && explicit) {
+					dest = resolve(defaultBang, trimmed);
+				}
 				if (dest) {
 					incrementSearchCount(); // background, non-blocking
 					return Response.redirect(dest, 302);

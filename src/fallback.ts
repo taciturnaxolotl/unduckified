@@ -176,9 +176,14 @@ export async function resolveFallback(query: string, buffer?: ArrayBuffer): Prom
 		cleanQuery = trailingSuffix[1].trim();
 	}
 
-	// A query typed without a bang still goes to the user's default.
-	const trigger =
-		bangTrigger ?? (localStorage.getItem("default-bang") || "ddg").toLowerCase();
+	// A query typed without a bang still goes to the user's default. An
+	// unknown bang is stripped and the whole text goes there too, rather
+	// than dropping the user on the homepage.
+	const defaultTrigger = (
+		localStorage.getItem("default-bang") || "ddg"
+	).toLowerCase();
+	const explicit = bangTrigger !== null;
+	const trigger = bangTrigger ?? defaultTrigger;
 
 	// Check custom bangs from localStorage first
 	const customBangs = JSON.parse(localStorage.getItem("custom-bangs") || "{}");
@@ -191,7 +196,9 @@ export async function resolveFallback(query: string, buffer?: ArrayBuffer): Prom
 	}
 
 	// Fall back to built-in bangs
-	return resolve(trigger, cleanQuery);
+	const dest = resolve(trigger, cleanQuery);
+	if (dest) return dest;
+	return explicit ? resolve(defaultTrigger, trimmed) : null;
 }
 
 // Expose globally for inline script
