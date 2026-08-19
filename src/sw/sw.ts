@@ -246,6 +246,9 @@ function mphSlot(hash: number, displacement: number): number {
 function resolveCustom(trigger: string, query: string): string | null {
 	const entry = customBangsCache.get(trigger);
 	if (!entry) return null;
+	if (!query) {
+		try { return new URL(entry.prefix).origin; } catch {}
+	}
 	return entry.prefix + encodeURIComponent(query) + (entry.suffix || "");
 }
 
@@ -288,6 +291,11 @@ function resolve(trigger: string, query: string): string | null {
 	const pStart = PBLOB_PTR + POFF![entryIdx];
 	const pEnd = PBLOB_PTR + POFF![entryIdx + 1];
 	let url = new TextDecoder().decode(HEAP!.subarray(pStart, pEnd));
+
+	if (!query) {
+		try { return new URL(url).origin; } catch {}
+	}
+
 	url += encodeURIComponent(query);
 
 	const sid = getSid(entryIdx);

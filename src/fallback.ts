@@ -134,6 +134,11 @@ function resolve(trigger: string, query: string): string | null {
 	const pStart = PBLOB_PTR + POFF![entryIdx];
 	const pEnd = PBLOB_PTR + POFF![entryIdx + 1];
 	let url = new TextDecoder().decode(HEAP!.subarray(pStart, pEnd));
+
+	if (!query) {
+		try { return new URL(url).origin; } catch {}
+	}
+
 	url += encodeURIComponent(query);
 
 	const sid = getSid(entryIdx);
@@ -192,6 +197,9 @@ export async function resolveFallback(query: string, buffer?: ArrayBuffer): Prom
 		const url = customEntry.u;
 		const idx = url.indexOf("{{{s}}}");
 		if (idx === -1) return url;
+		if (!cleanQuery) {
+			try { return new URL(url.substring(0, idx)).origin; } catch {}
+		}
 		return url.substring(0, idx) + encodeURIComponent(cleanQuery) + url.substring(idx + 7);
 	}
 
