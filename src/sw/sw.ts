@@ -27,16 +27,37 @@ let catalog: Catalog | null = null;
 // Custom bangs cache: Map<shortcut, {prefix, suffix}>
 let customBangsCache = new Map<string, { prefix: string; suffix: string | null }>();
 
-// Search count tracking via IndexedDB
+// Search count tracking via IndexedDB.
+//
+// The connection is held open for the life of the worker rather than opened
+// per search. Opening and closing one costs ~57 µs against ~89 µs for the
+// transaction itself, and a warm redirect is only ~500 µs end to end, so the
+// churn was a measurable share of every search for a counter nobody is waiting
+// on. A failed open is not cached, so a later search can try again.
+let statsDB: Promise<IDBDatabase> | null = null;
 function openStatsDB(): Promise<IDBDatabase> {
-	return new Promise((resolve, reject) => {
-		const req = indexedDB.open(DB_NAME, 1);
-		req.onupgradeneeded = () => {
-			req.result.createObjectStore(DB_STORE);
-		};
-		req.onsuccess = () => resolve(req.result);
-		req.onerror = () => reject(req.error);
-	});
+	if (!statsDB) {
+		statsDB = new Promise<IDBDatabase>((resolve, reject) => {
+			const req = indexedDB.open(DB_NAME, 1);
+			req.onupgradeneeded = () => {
+				req.result.createObjectStore(DB_STORE);
+			};
+			req.onsuccess = () => {
+				// A held connection blocks an upgrade from another tab, so let go
+				// when one is requested and reopen on the next use.
+				req.result.onversionchange = () => {
+					req.result.close();
+					statsDB = null;
+				};
+				resolve(req.result);
+			};
+			req.onerror = () => reject(req.error);
+		}).catch((err) => {
+			statsDB = null;
+			throw err;
+		});
+	}
+	return statsDB;
 }
 
 async function incrementSearchCount(key: string = SEARCH_COUNT_KEY): Promise<void> {
@@ -54,7 +75,6 @@ async function incrementSearchCount(key: string = SEARCH_COUNT_KEY): Promise<voi
 			tx.oncomplete = () => resolve();
 			tx.onerror = () => reject(tx.error);
 		});
-		db.close();
 	} catch {
 		// Stats are non-critical, swallow errors
 	}
@@ -256,7 +276,6 @@ self.addEventListener("message", async (event) => {
 				req.onsuccess = () => resolve(req.result ?? 0);
 				req.onerror = () => resolve(0);
 			});
-			db.close();
 			reply(count);
 		} catch {
 			reply(0);
@@ -296,7 +315,6 @@ self.addEventListener("message", async (event) => {
 				tx.oncomplete = () => resolve();
 				tx.onerror = () => reject(tx.error);
 			});
-			db.close();
 		} catch {
 			// Non-critical; the page keeps the localStorage value and retries.
 		}
