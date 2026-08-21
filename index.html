@@ -43,6 +43,25 @@
 					else fn();
 				}
 
+				// Tell the edge redirect (functions/index.ts) whether this profile
+				// has settings it cannot see. src/libs.ts raises this cookie when
+				// settings are stored, but nothing raises it for a profile that was
+				// configured before the cookie existed, and the settings page may
+				// never load again. So every page load reconciles it. Never on the
+				// critical path: callers run this after the catalog fetch is away.
+				function syncSettingsCookie() {
+					try {
+						var custom = localStorage.getItem("custom-bangs");
+						var configured =
+							!!localStorage.getItem("default-bang") ||
+							!!(custom && custom !== "{}");
+						var secure = location.protocol === "https:" ? "; Secure" : "";
+						document.cookie = configured
+							? "unduck-settings=1; Path=/; Max-Age=31536000; SameSite=Lax" + secure
+							: "unduck-settings=; Path=/; Max-Age=0; SameSite=Lax" + secure;
+					} catch (e) {}
+				}
+
 				// Give the worker the bang data we just downloaded.
 				function seedServiceWorker(buffer) {
 					if (!("serviceWorker" in navigator)) return;
@@ -132,6 +151,7 @@
 
 				if (!isRedirect) {
 					// Landing, settings, or the worker is already in charge: show the UI.
+					syncSettingsCookie();
 					whenReady(loadApp);
 					// On a bare landing visit, warm the worker so the next search is instant.
 					if (trimmed === "" && "serviceWorker" in navigator) {
@@ -165,6 +185,8 @@
 
 				// Migrate settings + search count to the worker on the redirect path;
 				// main.js (which does this on the landing page) never loads here.
+				// The catalog request is already in flight, so this costs nothing.
+				syncSettingsCookie();
 				seedWorker();
 
 				Promise.all([dataPromise, readyPromise])
