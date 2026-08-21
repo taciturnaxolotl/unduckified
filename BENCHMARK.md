@@ -75,6 +75,33 @@ Q="%21github%20test" node bench/redirect-bench.mjs 30
 NAME_B=rebang FLASH=https://rebang.online node bench/redirect-bench.mjs 20
 ``` It runs the warm phase then the cold phase, each printing per-tool medians + CIs, the paired difference with its CI, the win rate, and the permutation p-value.
 
+## Where a warm redirect actually spends its time
+
+A warm redirect is about half a millisecond, and almost none of it is the bang
+lookup: the whole resolve path (URL parse, grammar, MPHF lookup, building the
+Response) measures 1.2 microseconds. So a warm number that looks wrong will not
+be fixed by making the lookup faster.
+
+To see the real split, read the CDP response timing of the redirect itself,
+which for a Service Worker navigation carries `workerFetchStart` and
+`workerRespondWithSettled`. The difference between them is the worker's own
+execution; everything on either side is browser plumbing you do not control.
+`bench/redirect-bench.mjs` reports the total, and those two fields tell you
+which half to look at.
+
+For the worker's own half, attach a CPU profiler to it over the debugging port:
+launch Chrome with `--remote-debugging-port`, find the `service_worker` target
+in `/json/list`, and drive `Profiler.setSamplingInterval` (20 us) plus
+`Profiler.start`/`stop` across a few hundred navigations. Aggregate self time by
+call frame and the expensive frames name themselves.
+
+One trap that profiling makes obvious: total CPU per navigation is not the
+number that matters. Work scheduled *after* the response costs nothing a user
+can feel, and an unawaited async function is not deferred, because it resumes as
+a microtask and microtasks drain before the response is handed back. A timer is
+a macrotask and cannot cut in line. That distinction was worth 24 microseconds
+of handler time here.
+
 ## Measuring bytes on the wire
 
 Two different numbers hide in this column, so keep them apart:
