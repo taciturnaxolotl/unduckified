@@ -1,6 +1,7 @@
 // Service Worker: MPHF-based redirect with zero-decode binary artifact.
 
 import { BANG_DATA_VERSION } from "../bangs/data-version.ts";
+import { type Catalog, openCatalog, resolveQuery } from "../bangs/catalog.ts";
 
 // Cache name carries the bang data's content hash, so a deploy that changes
 // the bangs invalidates client caches automatically, and a deploy that doesn't
@@ -21,20 +22,7 @@ const SEARCH_COUNT_KEY = "search-count";
 // one-time migration can never double-count across reloads or multiple tabs.
 const LS_MIGRATED_KEY = "ls-search-count-migrated";
 
-let loaded = false;
-let HEAP: Uint8Array | null = null;
-let N = 0;
-let BUCKET_COUNT = 0;
-let DISP_PTR = 0;
-let CHK_PTR = 0;
-let SID_PTR = 0;
-let PBLOB_PTR = 0;
-let SBLOB_PTR = 0;
-// Offset tables reconstructed at load from the wire's varint length streams.
-// Entry order is MPHF-slot order, so an entry index is also its slot.
-let POFF: Uint32Array | null = null;
-let SOFF: Uint32Array | null = null;
-const SID_NONE = 0xffff;
+let catalog: Catalog | null = null;
 
 // Custom bangs cache: Map<shortcut, {prefix, suffix}>
 let customBangsCache = new Map<string, { prefix: string; suffix: string | null }>();
@@ -98,62 +86,12 @@ async function loadCustomBangs() {
 	}
 }
 
-// Parse the binary header and set up section pointers over the given bytes.
-function initBangData(buf: ArrayBuffer) {
-	HEAP = new Uint8Array(buf);
-
-	let p = 0;
-	const r32 = () => {
-		const v = HEAP![p] | (HEAP![p+1]<<8) | (HEAP![p+2]<<16) | (HEAP![p+3]<<24);
-		p += 4;
-		return v >>> 0;
-	};
-
-	const magic = r32();
-	const version = r32();
-	if (magic !== 0x554e4455 || version !== 9) throw new Error("bad bangs.bin");
-
-	N = r32();
-	BUCKET_COUNT = r32();
-	const nSuffixes = r32();
-
-	// Read `count` LEB128 varint lengths and prefix-sum them into an offset
-	// table of size count+1, advancing p past the varint stream.
-	const readOffsets = (count: number): Uint32Array => {
-		const offsets = new Uint32Array(count + 1);
-		let acc = 0;
-		for (let i = 0; i < count; i++) {
-			let v = 0, shift = 0, b: number;
-			do { b = HEAP![p++]; v |= (b & 0x7f) << shift; shift += 7; } while (b & 0x80);
-			offsets[i] = acc;
-			acc += v >>> 0;
-		}
-		offsets[count] = acc;
-		return offsets;
-	};
-
-	DISP_PTR = p;
-	p += 4 * BUCKET_COUNT; // Int32 displacements
-	CHK_PTR = p;
-	p += 2 * N; // u16 verification checksum per entry
-	POFF = readOffsets(N);
-	PBLOB_PTR = p;
-	p += POFF[N];
-	SID_PTR = p;
-	p += 2 * N; // u16 suffix index per entry (0xffff = none)
-	SOFF = readOffsets(nSuffixes);
-	SBLOB_PTR = p;
-	// Nothing reads past the suffix blob.
-
-	loaded = true;
-}
-
 // Adopt bang data handed over by the page. The page-level fallback downloads
 // bangs.bin to answer the very first query, so it passes the bytes along
 // instead of making the worker fetch the same file a second time.
 async function seedBangData(buf: ArrayBuffer) {
-	if (loaded) return;
-	initBangData(buf);
+	if (catalog) return;
+	catalog = openCatalog(buf);
 	await Promise.all([loadCustomBangs(), loadDefaultBang()]);
 	// Persist so later worker starts skip the network entirely.
 	try {
@@ -185,12 +123,12 @@ async function loadBangsUncached() {
 		}
 	}
 
-	initBangData(await resp.arrayBuffer());
+	catalog = openCatalog(await resp.arrayBuffer());
 	await Promise.all([loadCustomBangs(), loadDefaultBang()]);
 }
 
 function loadBangs(): Promise<void> {
-	if (loaded) return Promise.resolve();
+	if (catalog) return Promise.resolve();
 	// Share one in-flight load so concurrent navigations don't stampede.
 	if (!bangDataPromise) {
 		bangDataPromise = loadBangsUncached().catch((err) => {
@@ -199,48 +137,6 @@ function loadBangs(): Promise<void> {
 		});
 	}
 	return bangDataPromise;
-}
-
-function getDisp(bucketId: number): number {
-	const base = DISP_PTR + bucketId * 4;
-	// Little-endian signed Int32; the `<< 24` restores the sign bit.
-	return HEAP![base] | (HEAP![base+1]<<8) | (HEAP![base+2]<<16) | (HEAP![base+3]<<24);
-}
-
-function getSid(entryIdx: number): number {
-	const base = SID_PTR + entryIdx * 2;
-	return HEAP![base] | (HEAP![base+1]<<8);
-}
-
-function getChecksum(entryIdx: number): number {
-	const base = CHK_PTR + entryIdx * 2;
-	return HEAP![base] | (HEAP![base+1]<<8);
-}
-
-function fnv1a(str: string): number {
-	let h = 0x811c9dc5;
-	const bytes = new TextEncoder().encode(str);
-	for (let i = 0; i < bytes.length; i++) {
-		h ^= bytes[i];
-		h = Math.imul(h, 0x01000193) >>> 0;
-	}
-	return h >>> 0;
-}
-
-// Slot mixing must match the packing step (packbang.ts): each displacement
-// finalizes a mixed hash so placement attempts scatter independently.
-const SLOT_MIX_A = 0x21f0aaad;
-const SLOT_MIX_B = 0x735a2d97;
-const GOLDEN = 0x9e3779b9;
-
-function mphSlot(hash: number, displacement: number): number {
-	let x = (hash + Math.imul(displacement + 1, GOLDEN)) >>> 0;
-	x ^= x >>> 16;
-	x = Math.imul(x, SLOT_MIX_A) >>> 0;
-	x ^= x >>> 15;
-	x = Math.imul(x, SLOT_MIX_B) >>> 0;
-	x ^= x >>> 15;
-	return (x >>> 0) % N;
 }
 
 function resolveCustom(trigger: string, query: string): string | null {
@@ -252,60 +148,8 @@ function resolveCustom(trigger: string, query: string): string | null {
 	return entry.prefix + encodeURIComponent(query) + (entry.suffix || "");
 }
 
-// MPHF lookup with trigger verification. Returns the entry index, or null if
-// the trigger is not actually present (guards against hash collisions / misses).
-function lookupEntry(trigger: string): number | null {
-	if (!loaded || !HEAP) return null;
-
-	const hash = fnv1a(trigger);
-	const bucketId = hash & (BUCKET_COUNT - 1);
-	const displacement = getDisp(bucketId);
-
-	// Data is stored in slot order, so the MPHF slot is the entry index.
-	const entryIdx = displacement >= 0
-		? mphSlot(hash, displacement)
-		: -(displacement + 1);
-
-	// Verify against the stored checksum (high 16 bits of the hash). Guards
-	// against an unknown trigger landing on some real entry's slot.
-	if (getChecksum(entryIdx) !== ((hash >>> 16) & 0xffff)) return null;
-	return entryIdx;
-}
-
 function bangExists(trigger: string): boolean {
-	if (customBangsCache.has(trigger)) return true;
-	return lookupEntry(trigger) !== null;
-}
-
-function resolve(trigger: string, query: string): string | null {
-	if (!loaded || !HEAP) return null;
-
-	// Check custom bangs first (user overrides take priority)
-	const customResult = resolveCustom(trigger, query);
-	if (customResult) return customResult;
-
-	const entryIdx = lookupEntry(trigger);
-	if (entryIdx === null) return null;
-
-	// Build URL: prefix (inlined per entry) + encoded query + interned suffix.
-	const pStart = PBLOB_PTR + POFF![entryIdx];
-	const pEnd = PBLOB_PTR + POFF![entryIdx + 1];
-	let url = new TextDecoder().decode(HEAP!.subarray(pStart, pEnd));
-
-	if (!query) {
-		try { return new URL(url).origin; } catch {}
-	}
-
-	url += encodeURIComponent(query);
-
-	const sid = getSid(entryIdx);
-	if (sid !== SID_NONE) {
-		const sStart = SBLOB_PTR + SOFF![sid];
-		const sEnd = SBLOB_PTR + SOFF![sid + 1];
-		url += new TextDecoder().decode(HEAP!.subarray(sStart, sEnd));
-	}
-
-	return url;
+	return customBangsCache.has(trigger) || (catalog?.has(trigger) ?? false);
 }
 
 self.addEventListener("install", () => {
@@ -365,7 +209,7 @@ self.addEventListener("message", async (event) => {
 			if (port) port.postMessage(msg);
 			else event.source?.postMessage(msg);
 		};
-		if (loaded) {
+		if (catalog) {
 			reply(true);
 		} else {
 			// Not parsed yet, but a cached copy still means no download is needed.
@@ -502,39 +346,14 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 	// Leave the settings shortcut to the page.
 	if (trimmed === "!" || trimmed === "!settings") return;
 
-	// Accept a leading bang ("!g cats"), a trailing bang ("cats !g"), and the
-	// suffix form ("cats g!"). Address-bar suggestions offer the first two, and
-	// people type the third by hand, so all three have to resolve here.
-	const leading = trimmed.match(/^!(\S+)\s*([\s\S]*)$/);
-	const trailingBang = trimmed.match(/^([\s\S]*?)\s+!(\S+)$/);
-	const trailingSuffix = trimmed.match(/^([\s\S]*?)\s*(\S+)!$/);
-
-	let bangTrigger: string | null = null;
-	let cleanQuery = trimmed;
-	if (leading) {
-		bangTrigger = leading[1].toLowerCase();
-		cleanQuery = leading[2].trim();
-	} else if (trailingBang) {
-		bangTrigger = trailingBang[2].toLowerCase();
-		cleanQuery = trailingBang[1].trim();
-	} else if (trailingSuffix) {
-		bangTrigger = trailingSuffix[2].toLowerCase();
-		cleanQuery = trailingSuffix[1].trim();
-	}
-
 	event.respondWith(
 		(async () => {
 			try {
 				await loadBangs();
-				// A query with no explicit bang still goes to the user's default.
-				// An unknown bang is stripped and the remaining text goes there too,
-				// rather than dropping the user on the homepage.
-				const explicit = bangTrigger !== null;
-				const trigger = bangTrigger ?? defaultBang;
-				let dest = resolve(trigger, cleanQuery);
-				if (!dest && explicit) {
-					dest = resolve(defaultBang, trimmed);
-				}
+				const dest = resolveQuery(catalog, trimmed, {
+					defaultTrigger: defaultBang,
+					custom: resolveCustom,
+				});
 				if (dest) {
 					incrementSearchCount(); // background, non-blocking
 					return Response.redirect(dest, 302);
