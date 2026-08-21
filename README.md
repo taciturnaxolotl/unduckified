@@ -26,8 +26,8 @@ A Service Worker intercepts the search before any page loads, so once the bang c
 
 | tool | how it redirects | warm search | worker restart | cold first search | bytes to first redirect |
 |---|---|--:|--:|--:|--:|
-| **unduckified** | Service Worker, plus an edge 302 for the first search | **~0.49 ms** | ~4.7 ms | **~70 ms** | **~0.4 KiB** |
-| [flashbang](https://github.com/ph1losof/flashbang) | Service Worker + on-demand shards | **~0.49 ms** | **~3.8 ms** | ~110-134 ms | ~4-11 KiB |
+| **unduckified** | Service Worker, plus an edge redirect for the first search | **~0.47 ms** | ~5.0 ms | **~73 ms** | **~0.8 KiB** |
+| [flashbang](https://github.com/ph1losof/flashbang) | Service Worker + on-demand shards | **~0.45 ms** | **~4.1 ms** | ~111-134 ms | ~4-11 KiB |
 | unduck (Theo's original) | page load, then JS redirect | ~33 ms | n/a | ~211 ms | ~472 KiB |
 | rebang | Cloudflare edge worker | ~7.7 ms | n/a | **~67 ms** | ~0.4 KiB |
 | DuckDuckGo | server-side redirect | ~30 ms | n/a | ~186 ms | ~5 KiB |
@@ -35,7 +35,9 @@ A Service Worker intercepts the search before any page loads, so once the bang c
 - **warm** is a live Service Worker; **restart** is one the browser has stopped and has to boot again (the normal case if you search a few times a day); **cold** is a brand-new profile that has to download everything.
 - Warm and restart are on-device and never touch the network, which is the whole point: a Service Worker tool answers in half a millisecond where an edge tool pays a round trip on *every* search.
 - Cold used to be the tradeoff, since a new profile had to download the whole catalog before it could resolve anything. It doesn't any more: the first navigation already carries the query to our edge, so it is answered there with a 302 and no body. That is a statistical tie with rebang (paired diff 1.8 ms, 95% CI [-3.2, 6.5], p=0.47) while keeping the on-device warm path.
-- Against flashbang: warm is a statistical tie (0.01 ms apart, 95% CI [-0.05, 0.02], p=0.94), restart goes to flashbang by ~1.2 ms, and cold goes to us by 25-67 ms depending on the query (p < 0.01, 34/40 paired rounds).
+- Against flashbang: warm is a statistical tie (0.01 ms apart, 95% CI [-0.01, 0.03], p=0.40), restart goes to flashbang by ~0.9 ms, and cold goes to us by ~23 ms (95% CI [8, 37], p=0.003, 34/40 paired rounds).
+- The bytes column is first contact, which is a small document that registers the Service Worker on the way past. Every later search that reaches the edge is a bare 302 at ~0.4 KiB, and once the worker is installed nothing reaches the edge at all.
+- Restart is the one path where flashbang is genuinely ahead. It restores a persisted record and can answer common bangs before its full runtime is ready, where we rebuild the lookup from the cached catalog: 688 KiB read back out of Cache Storage, which is 1.4 ms of the ~5 ms. Parsing it is free by comparison, 0.03 ms.
 - Warm was 0.03 ms behind until the search counter stopped riding the redirect. An unawaited IndexedDB write still resumes as a microtask, which drains *before* the response is handed back, so it was on the critical path despite looking asynchronous. Batching it onto a timer took the handler from 121 to 97 microseconds of execution. See [BENCHMARK.md](BENCHMARK.md) for how to measure that directly.
 - Cold numbers are dominated by your network, not by either tool. These were all measured in one sitting from one machine, so read the gaps rather than the absolutes.
 
