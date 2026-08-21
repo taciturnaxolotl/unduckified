@@ -22,20 +22,21 @@ The exception is the very first search on a new browser profile, which has no Se
 
 ## Performance
 
-A Service Worker intercepts the search before any page loads, so once the bang catalog is cached the redirect resolves on your device in **about a millisecond** with no network at all. Here are a few comparison benchmarks: median time from pressing Enter to the redirect committing, all measured the same way (see [BENCHMARK.md](BENCHMARK.md)). Absolute numbers vary a lot with your distance to each service's servers and your hardware but the ordering should be fairly stable.
+A Service Worker intercepts the search before any page loads, so once the bang catalog is cached the redirect resolves on your device in **about half a millisecond** with no network at all, and the very first search of a profile is answered at the edge instead of waiting on a catalog download. Here are a few comparison benchmarks: median time from pressing Enter to the redirect committing, all measured the same way (see [BENCHMARK.md](BENCHMARK.md)). Absolute numbers vary a lot with your distance to each service's servers and your hardware but the ordering should be fairly stable.
 
 | tool | how it redirects | warm search | worker restart | cold first search | bytes to first redirect |
 |---|---|--:|--:|--:|--:|
-| **unduckified** | Service Worker + packed binary catalog | **~0.8 ms** | ~6.7 ms | ~520 ms | ~198 KiB |
-| [flashbang](https://github.com/ph1losof/flashbang) | Service Worker + on-demand shards | **~0.8 ms** | **~6.0 ms** | ~440 ms | **~4-11 KiB** |
-| unduck (Theo's original) | page load, then JS redirect | ~60 ms | n/a | ~508 ms | ~472 KiB |
-| rebang | Cloudflare edge worker | ~15 ms | n/a | ~387 ms | **<1 KiB** |
-| DuckDuckGo | server-side redirect | ~39 ms | n/a | **~218 ms** | ~5 KiB |
+| **unduckified** | Service Worker, plus an edge 302 for the first search | **~0.5 ms** | ~4.5 ms | **~70 ms** | **~0.4 KiB** |
+| [flashbang](https://github.com/ph1losof/flashbang) | Service Worker + on-demand shards | **~0.5 ms** | **~3.9 ms** | ~119-134 ms | ~4-11 KiB |
+| unduck (Theo's original) | page load, then JS redirect | ~33 ms | n/a | ~211 ms | ~472 KiB |
+| rebang | Cloudflare edge worker | ~7.7 ms | n/a | **~67 ms** | ~0.4 KiB |
+| DuckDuckGo | server-side redirect | ~30 ms | n/a | ~186 ms | ~5 KiB |
 
 - **warm** is a live Service Worker; **restart** is one the browser has stopped and has to boot again (the normal case if you search a few times a day); **cold** is a brand-new profile that has to download everything.
-- Service Worker tools (unduckified, flashbang) resolve every search locally in about a millisecond at the cost of a one-time catalog download. Edge tools like rebang win the *first* search since the browser downloads nothing, but then pay a network round-trip on **every** search after that.
-- unduckified vs flashbang: warm and restart are close enough to call a wash (0.09 ms and 0.9 ms apart). Cold, flashbang wins by ~84 ms (95% CI [75, 93], p < 0.0001, 30/30 paired rounds) because it fetches only the shard your query needs, while unduckified downloads the whole 189 KiB catalog before it can resolve anything. That catalog is also what makes unduckified work offline for all 13,593 bangs afterwards.
-- Cold numbers are dominated by your network, not by either tool: these were measured from one machine on one connection, so read the gaps rather than the absolutes.
+- Warm and restart are on-device and never touch the network, which is the whole point: a Service Worker tool answers in half a millisecond where an edge tool pays a round trip on *every* search.
+- Cold used to be the tradeoff, since a new profile had to download the whole catalog before it could resolve anything. It doesn't any more: the first navigation already carries the query to our edge, so it is answered there with a 302 and no body. That is a statistical tie with rebang (paired diff 1.8 ms, 95% CI [-3.2, 6.5], p=0.47) while keeping the on-device warm path.
+- Against flashbang: warm is a wash (0.03 ms apart), restart goes to flashbang by 0.76 ms, and cold now goes to us by 40 ms on `!gh test` and 67 ms on `!github test` (both p < 0.0001, 27/30 and 29/30 paired rounds).
+- Cold numbers are dominated by your network, not by either tool. These were all measured in one sitting from one machine, so read the gaps rather than the absolutes.
 
 ## How is this different from Theo's version again?
 
