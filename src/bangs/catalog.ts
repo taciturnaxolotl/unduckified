@@ -194,6 +194,28 @@ export interface ResolveOptions {
 }
 
 /**
+ * Some bangs are site searches rather than destinations, and upstream spells
+ * those as a path with no host ("/search?q={{{s}}}+site:4chan.org", or Kagi's
+ * "/{{{s}}}+unix+time"). The host they are relative to is whichever engine you
+ * search with, so the terms go back through the default bang. Resolving them
+ * against our own origin instead is how they used to land on our 404 page.
+ */
+function siteSearchTerms(dest: string): string | null {
+	let url: URL;
+	try {
+		url = new URL(dest, "https://unduck.invalid");
+	} catch {
+		return null;
+	}
+	// `q` if there is one, otherwise the path itself. Both spell a space as
+	// "+", which has to go before decoding so an encoded "+" survives.
+	const terms =
+		url.searchParams.get("q") ??
+		decodeURIComponent(url.pathname.slice(1).replace(/\+/g, " "));
+	return terms.trim() || null;
+}
+
+/**
  * The whole redirect decision: parse the query, prefer a custom bang, fall back
  * to the catalog. A query with no explicit bang goes to the user's default. An
  * unknown bang is stripped and the whole text goes there too, rather than
@@ -208,7 +230,16 @@ export function resolveQuery(
 	const { trigger: typed, cleanQuery, trimmed } = parseBangQuery(query);
 	const trigger = typed ?? defaultTrigger;
 
-	const answer = (t: string, q: string) => custom?.(t, q) ?? catalog?.resolve(t, q) ?? null;
+	const direct = (t: string, q: string) => custom?.(t, q) ?? catalog?.resolve(t, q) ?? null;
+	const answer = (t: string, q: string): string | null => {
+		const dest = direct(t, q);
+		if (!dest || !dest.startsWith("/")) return dest;
+		const terms = siteSearchTerms(dest);
+		// One hop only: a default bang that is itself a site search has nowhere
+		// to send this, so let the page deal with it.
+		const onDefault = terms === null ? null : direct(defaultTrigger, terms);
+		return onDefault?.startsWith("/") ? null : onDefault;
+	};
 
 	const dest = answer(trigger, cleanQuery);
 	if (dest) return dest;
