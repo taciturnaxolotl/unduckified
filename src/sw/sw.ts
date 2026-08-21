@@ -117,26 +117,59 @@ function countSearch(event: FetchEvent): void {
 const DEFAULT_BANG_KEY = "default-bang";
 let defaultBang = "ddg";
 
-async function loadDefaultBang() {
-	try {
-		const cache = await caches.open(USER_CACHE);
-		const resp = await cache.match(DEFAULT_BANG_KEY);
-		if (resp) defaultBang = (await resp.text()) || "ddg";
-	} catch {
-		// Keep the built-in default.
+// caches.open costs ~0.2 ms and every boot did it three times before it could
+// answer anything: once for the catalog and once for each of the two settings.
+// The handles are memoized for the life of the worker, and a rejection is not,
+// so a failed open can be retried.
+let userCache: Promise<Cache> | null = null;
+function openUserCache(): Promise<Cache> {
+	if (!userCache) {
+		userCache = caches.open(USER_CACHE).catch((err) => {
+			userCache = null;
+			throw err;
+		});
 	}
+	return userCache;
 }
 
-async function loadCustomBangs() {
+let dataCache: Promise<Cache> | null = null;
+function openDataCache(): Promise<Cache> {
+	if (!dataCache) {
+		dataCache = caches.open(CACHE_NAME).catch((err) => {
+			dataCache = null;
+			throw err;
+		});
+	}
+	return dataCache;
+}
+
+// Both settings live in the same cache, so read them through one handle and
+// one pass rather than opening it twice.
+async function loadSettings() {
+	let cache: Cache;
 	try {
-		const cache = await caches.open(USER_CACHE);
-		const resp = await cache.match(CUSTOM_BANGS_KEY);
-		if (!resp) return;
-		// Data is already in {prefix, suffix} format from message handler
-		const data = await resp.json();
-		customBangsCache = new Map(Object.entries(data));
-	} catch (err) {
-		console.warn("Failed to load custom bangs:", err);
+		cache = await openUserCache();
+	} catch {
+		return; // built-in default, no custom bangs
+	}
+	const [defaultResp, customResp] = await Promise.all([
+		cache.match(DEFAULT_BANG_KEY).catch(() => undefined),
+		cache.match(CUSTOM_BANGS_KEY).catch(() => undefined),
+	]);
+	if (defaultResp) {
+		try {
+			defaultBang = (await defaultResp.text()) || "ddg";
+		} catch {
+			// Keep the built-in default.
+		}
+	}
+	if (customResp) {
+		try {
+			// Data is already in {prefix, suffix} format from message handler
+			customBangsCache = new Map(Object.entries(await customResp.json()));
+		} catch (err) {
+			console.warn("Failed to load custom bangs:", err);
+		}
 	}
 }
 
@@ -146,10 +179,10 @@ async function loadCustomBangs() {
 async function seedBangData(buf: ArrayBuffer) {
 	if (catalog) return;
 	catalog = openCatalog(buf);
-	await Promise.all([loadCustomBangs(), loadDefaultBang()]);
+	await loadSettings();
 	// Persist so later worker starts skip the network entirely.
 	try {
-		const cache = await caches.open(CACHE_NAME);
+		const cache = await openDataCache();
 		await cache.put(BANGS_BIN, new Response(buf.slice(0), {
 			headers: { "Content-Type": "application/octet-stream" },
 		}));
@@ -164,7 +197,7 @@ let bangDataPromise: Promise<void> | null = null;
 // Never assumes install succeeded, so a failed or skipped precache is
 // recoverable instead of wedging the worker permanently.
 async function loadBangsUncached() {
-	const cache = await caches.open(CACHE_NAME);
+	const cache = await openDataCache();
 
 	let resp = await cache.match(BANGS_BIN);
 	if (!resp) {
@@ -178,7 +211,7 @@ async function loadBangsUncached() {
 	}
 
 	catalog = openCatalog(await resp.arrayBuffer());
-	await Promise.all([loadCustomBangs(), loadDefaultBang()]);
+	await loadSettings();
 }
 
 function loadBangs(): Promise<void> {
@@ -235,7 +268,7 @@ self.addEventListener("message", async (event) => {
 		}
 		customBangsCache = new Map(Object.entries(processedBangs));
 		// Persist to Cache API for SW restarts
-		caches.open(USER_CACHE).then((cache) => {
+		openUserCache().then((cache) => {
 			const response = new Response(JSON.stringify(processedBangs), {
 				headers: { "Content-Type": "application/json" },
 			});
@@ -248,7 +281,7 @@ self.addEventListener("message", async (event) => {
 		if (next) {
 			defaultBang = next;
 			try {
-				const cache = await caches.open(USER_CACHE);
+				const cache = await openUserCache();
 				await cache.put(DEFAULT_BANG_KEY, new Response(next));
 			} catch {
 				// In-memory value still applies for this session.
@@ -268,7 +301,7 @@ self.addEventListener("message", async (event) => {
 		} else {
 			// Not parsed yet, but a cached copy still means no download is needed.
 			try {
-				const cache = await caches.open(CACHE_NAME);
+				const cache = await openDataCache();
 				reply(Boolean(await cache.match(BANGS_BIN)));
 			} catch {
 				reply(false);
