@@ -8,9 +8,17 @@
 // the navigation arrives here as `/?q=!gh test`.
 //
 // So when we can answer it, we answer it. Anything we cannot answer falls
-// through to the page, which resolves it exactly as it does today. The worker
-// installs on that same first visit either way, so this runs once per profile
-// and then never again.
+// through to the page, which resolves it exactly as it does today.
+//
+// A bare 302 would be the whole story, except that a browser which never loads
+// a document from this origin never registers the Service Worker either. Someone
+// who adds unduck as their search engine and never visits the site would stay on
+// this path forever: an edge round trip per search, no offline, none of the
+// half-millisecond warm redirects that are the point of the thing. So the first
+// contact from a profile gets a small document that registers the worker and
+// then goes where the user was going, and everything after it gets the 302. The
+// cookie that tells them apart expires, so a profile whose worker is later
+// evicted bootstraps again instead of being stranded.
 //
 // What we cannot answer is anything that depends on settings. Custom bangs and
 // a custom default provider live in localStorage, which is invisible from here,
@@ -24,6 +32,10 @@ import { CATALOG_B64 } from "../src/bangs/catalog-embed.ts";
 const SETTINGS_COOKIE = /(?:^|;\s*)unduck-settings=1(?:\s*;|$)/;
 // Matches the client's fallback when nothing has been configured.
 const DEFAULT_TRIGGER = "ddg";
+// Raised by the bootstrap document below once it has registered the worker.
+// Short enough that losing a worker also means bootstrapping again soon.
+const BOOT_COOKIE = /(?:^|;\s*)unduck-boot=1(?:\s*;|$)/;
+const BOOT_MAX_AGE = 7 * 24 * 60 * 60;
 
 // Decoding ~700 KiB costs a few milliseconds, so it happens once per isolate
 // and only when a request actually needs a redirect. A landing-page visit
@@ -51,8 +63,9 @@ export async function onRequestGet(context: {
 		return context.next();
 	}
 
+	const cookies = context.request.headers.get("cookie") ?? "";
 	// This user has settings we cannot see. Their client knows better.
-	if (SETTINGS_COOKIE.test(context.request.headers.get("cookie") ?? "")) {
+	if (SETTINGS_COOKIE.test(cookies)) {
 		return context.next();
 	}
 
@@ -72,10 +85,46 @@ export async function onRequestGet(context: {
 	}
 	if (!dest) return context.next();
 
-	// A search is personal and the destination depends on a cookie, so this
-	// response belongs to one request and no cache should ever repeat it.
-	return new Response(null, {
-		status: 302,
-		headers: { Location: dest, "Cache-Control": "private, no-store" },
+	// A search is personal and the destination depends on a cookie, so these
+	// responses belong to one request and no cache should ever repeat them.
+	const priv = "private, no-store";
+
+	if (BOOT_COOKIE.test(cookies)) {
+		return new Response(null, {
+			status: 302,
+			headers: { Location: dest, "Cache-Control": priv },
+		});
+	}
+
+	// First contact: register the worker on the way past. No catalog is fetched
+	// here — the destination is already known, so this costs a parse, not a
+	// download. The background matches the app so there is no flash of white on
+	// the way through, and noscript still gets the user where they were going.
+	return new Response(bootstrap(dest), {
+		status: 200,
+		headers: {
+			"Content-Type": "text/html; charset=utf-8",
+			"Cache-Control": priv,
+			"Set-Cookie": `unduck-boot=1; Path=/; Max-Age=${BOOT_MAX_AGE}; SameSite=Lax; Secure`,
+		},
 	});
+}
+
+const escapeAttr = (s: string) =>
+	s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+function bootstrap(dest: string): string {
+	return `<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Redirecting…</title>
+<style>:root{background:#fff}@media(prefers-color-scheme:dark){:root{background:#121212}}</style>
+<script>
+(function(){
+	if ("serviceWorker" in navigator) {
+		navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).catch(function(){});
+	}
+	location.replace(${JSON.stringify(dest)});
+})();
+</script>
+<noscript><meta http-equiv="refresh" content="0;url=${escapeAttr(dest)}"></noscript>
+</head><body></body></html>`;
 }
