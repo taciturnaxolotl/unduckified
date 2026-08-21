@@ -6,12 +6,13 @@ You can measure this yourself with [`bench/redirect-bench.mjs`](bench/redirect-b
 
 ## What we measure, and why
 
-Three things matter to a user pressing Enter in the address bar:
+Four things matter to a user pressing Enter in the address bar:
 
 1. **Warm redirect latency**: once the Service Worker is
    installed how long till it redirects. This is most of what a user experiences.
-2. **Cold redirect latency**: a brand-new profile's very first search which has to download the code and bang catalog.
-3. **Bytes on the wire**: what is transfered to your browser (compressed)
+2. **Restart redirect latency**: the worker is installed but the browser has stopped it, so it has to boot before it can answer. This is the honest steady state if you search a few times a day rather than a few times a minute.
+3. **Cold redirect latency**: a brand-new profile's very first search which has to download the code and bang catalog.
+4. **Bytes on the wire**: what is transfered to your browser (compressed)
 
 Everything is timed address bar to redirect and stops at the request to the destination rather than its response since we are measuring the tool's overhead rather than how fast external sites are.
 
@@ -26,8 +27,9 @@ Using Playwright with headless Chrome and a raw CDP session, we read
 The sample is `t1 - t0`. The script measures **both states the same way**, so
 they're directly comparable — the only difference is the browser context:
 
-- **Cold**: a brand-new context per sample: no HTTP cache, no Service Worker, no IndexedDB.
+- **Cold**: a brand-new context per sample: no HTTP cache, no Service Worker, no IndexedDB. This is the only state the edge redirect (`functions/index.ts`) answers, so a cold sample times one round trip rather than a page load followed by a catalog download.
 - **Warm**: a context whose Service Worker is already installed and controlling,reused across samples. The script primes it first (visit the origin root, then waiting until `navigator.serviceWorker.controller` is set) and double checks the service worker took control.
+- **Restart**: the same primed context, but CDP `ServiceWorker.stopWorker` kills the worker before every sample so it has to start again. The CDP session has to be page-scoped; a browser-level one cannot see the workers inside a Playwright context, and stopping nothing would quietly hand you warm numbers again.
 
 ## Pairing
 
@@ -62,13 +64,25 @@ All three are required to agree.
 npm i -D playwright            # or: bun add -d playwright
 npx playwright install chromium
 node bench/redirect-bench.mjs  # optional arg: number of paired rounds (default 60)
+node bench/restart-bench.mjs   # the stopped-worker state
+node bench/bytes-bench.mjs     # cold-path bytes, per tool
 ```
 
-Edit the `TOOLS` map and `DEST_HOST` at the top of the script to compare other tools or another builtin bang. It runs the warm phase then the cold phase, each printing per-tool medians + CIs, the paired difference with its CI, the win rate, and the permutation p-value.
+`Q`, `UNDUCK`, `FLASH`, `NAME_B` and `DEST_HOST` point the scripts at other deployments, another builtin bang, or another tool entirely:
+
+```bash
+Q="%21github%20test" node bench/redirect-bench.mjs 30
+NAME_B=rebang FLASH=https://rebang.online node bench/redirect-bench.mjs 20
+``` It runs the warm phase then the cold phase, each printing per-tool medians + CIs, the paired difference with its CI, the win rate, and the permutation p-value.
 
 ## Measuring bytes on the wire
 
-Latency needs a browser however payload doesn't! Wire size is measured with `curl` reporting the exact size.
+Two different numbers hide in this column, so keep them apart:
+
+- **Cold-path bytes** are what the browser must download before the redirect can fire. `bench/bytes-bench.mjs` sums CDP `encodedDataLength` for every request that starts before the first request to the destination. unduckified pays its whole catalog here, the same 197.6 KiB whatever you search for, because the lookup needs the catalog. A tool that shards its catalog pays only for the shard the query routes to, so its number moves with the query.
+- **Total offline footprint** is everything a tool eventually caches. It does not block any redirect, and for unduckified it is the same 197.6 KiB, which is why one column used to be able to carry both.
+
+A single file's wire size needs no browser at all:
 
 ```bash
 # compressed transfer size

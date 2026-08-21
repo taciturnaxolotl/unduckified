@@ -18,21 +18,24 @@ DuckDuckGo does their redirects server side. Depending on how fast your internet
 
 This is solved by doing all of the work client side. Once you've went to https://s.dunkirk.sh once, the JS is all cached and will never need to be downloaded again. Your device does the redirects, not unduck or any other server.
 
+The exception is the very first search on a new browser profile, which has no Service Worker yet. That one navigation already carries your query to the edge in order to ask for the page, so it gets answered there with a redirect instead of a page plus a 189 KiB catalog download. The worker installs during that same visit and takes over from the second search onward. If you have custom bangs or a custom default provider, the edge steps aside and your browser resolves even that first search, since your settings never leave your device.
+
 ## Performance
 
 A Service Worker intercepts the search before any page loads, so once the bang catalog is cached the redirect resolves on your device in **about a millisecond** with no network at all. Here are a few comparison benchmarks: median time from pressing Enter to the redirect committing, all measured the same way (see [BENCHMARK.md](BENCHMARK.md)). Absolute numbers vary a lot with your distance to each service's servers and your hardware but the ordering should be fairly stable.
 
-| tool | how it redirects | warm search | cold first search | bytes on the redirect |
-|---|---|--:|--:|--:|
-| **unduckified** | Service Worker + packed binary catalog | **~1 ms** | ~215 ms | **~200 KiB** |
-| [flashbang](https://github.com/ph1losof/flashbang) | Service Worker + MPHF catalog | ~1 ms | ~245 ms | ~285 KiB |
-| unduck (Theo's original) | page load, then JS redirect | ~165 ms | ~435 ms | ~485 KiB |
-| rebang | Cloudflare edge worker | ~45 ms | **~170 ms** | ~13 KiB |
-| DuckDuckGo | server-side redirect | ~65 ms | ~345 ms | ~2 KiB |
+| tool | how it redirects | warm search | worker restart | cold first search | bytes to first redirect |
+|---|---|--:|--:|--:|--:|
+| **unduckified** | Service Worker + packed binary catalog | **~0.8 ms** | ~6.7 ms | ~520 ms | ~198 KiB |
+| [flashbang](https://github.com/ph1losof/flashbang) | Service Worker + on-demand shards | **~0.8 ms** | **~6.0 ms** | ~440 ms | **~4-11 KiB** |
+| unduck (Theo's original) | page load, then JS redirect | ~60 ms | n/a | ~508 ms | ~472 KiB |
+| rebang | Cloudflare edge worker | ~15 ms | n/a | ~387 ms | **<1 KiB** |
+| DuckDuckGo | server-side redirect | ~39 ms | n/a | **~218 ms** | ~5 KiB |
 
-- **warm** is after the Service Worker is installed; **cold** is a brand-new profile that has to redownload everything.
+- **warm** is a live Service Worker; **restart** is one the browser has stopped and has to boot again (the normal case if you search a few times a day); **cold** is a brand-new profile that has to download everything.
 - Service Worker tools (unduckified, flashbang) resolve every search locally in about a millisecond at the cost of a one-time catalog download. Edge tools like rebang win the *first* search since the browser downloads nothing, but then pay a network round-trip on **every** search after that.
-- unduckified vs flashbang warm is a statistical tie (~1 ms both); cold, unduckified wins by ~30 ms across a paired run (p < 0.001).
+- unduckified vs flashbang: warm and restart are close enough to call a wash (0.09 ms and 0.9 ms apart). Cold, flashbang wins by ~84 ms (95% CI [75, 93], p < 0.0001, 30/30 paired rounds) because it fetches only the shard your query needs, while unduckified downloads the whole 189 KiB catalog before it can resolve anything. That catalog is also what makes unduckified work offline for all 13,593 bangs afterwards.
+- Cold numbers are dominated by your network, not by either tool: these were measured from one machine on one connection, so read the gaps rather than the absolutes.
 
 ## How is this different from Theo's version again?
 

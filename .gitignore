@@ -25,4 +25,5 @@ dist-ssr
 bangs.bin
 data-version.ts
 suggest-data.ts
+catalog-embed.ts
 .wrangler

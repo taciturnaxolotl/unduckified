@@ -11,7 +11,9 @@
 //
 // So it runs at the edge instead. The tradeoff is real and worth stating: while
 // suggestions are enabled, the partial text typed in the address bar reaches
-// this function. Redirects are unaffected and still happen entirely on device.
+// this function. Redirects happen on device from the second search of a profile
+// onward; the first one is answered by index.ts, which sees the same navigation
+// the browser was already sending here to ask for the page.
 // Nothing here is logged or stored, and the response carries `no-store`, but
 // the request does leave the machine. Removing the suggestions URL from the
 // search engine configuration stops it.
