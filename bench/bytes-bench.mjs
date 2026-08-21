@@ -4,6 +4,11 @@
 // which is not the same as a tool's total offline footprint — a tool that loads
 // its catalog in shards pays only for the shard the query needs.
 //
+// A server-side redirect needs care: the hop keeps the same CDP requestId as
+// the destination it points at, so its loadingFinished total would bill the
+// destination's page to the tool. The redirect response carries its own size,
+// which is what gets counted instead.
+//
 // Run: node bench/bytes-bench.mjs     (same env knobs as redirect-bench.mjs)
 import { chromium } from "playwright";
 
@@ -21,16 +26,30 @@ async function measure(browser, url) {
 	await client.send("Network.enable");
 	const started = new Map(); // requestId -> url
 	const bytes = new Map(); // requestId -> encodedDataLength
+	const sealed = new Set(); // ids whose size came from a redirect hop
 	let stop = false;
 	const done = new Promise((resolve) => {
 		client.on("Network.requestWillBeSent", (e) => {
 			let host;
 			try { host = new URL(e.request.url).host; } catch { return; }
+			// A server-side redirect keeps the same requestId across the hop, so
+			// its loadingFinished total would include the destination's page.
+			// The redirect response carries its own size; take that and stop.
+			if (e.redirectResponse && started.has(e.requestId)) {
+				bytes.set(e.requestId, e.redirectResponse.encodedDataLength);
+				sealed.add(e.requestId);
+				if (host === DEST_HOST) { stop = true; resolve(); return; }
+				started.set(`${e.requestId}:${e.request.url}`, e.request.url);
+				return;
+			}
 			if (host === DEST_HOST) { stop = true; resolve(); return; }
 			if (!stop) started.set(e.requestId, e.request.url);
 		});
 		client.on("Network.loadingFinished", (e) => {
-			if (started.has(e.requestId)) bytes.set(e.requestId, e.encodedDataLength);
+			// A sealed id already had its size taken from a redirect hop.
+			if (started.has(e.requestId) && !sealed.has(e.requestId)) {
+				bytes.set(e.requestId, e.encodedDataLength);
+			}
 		});
 	});
 	page.goto(url, { waitUntil: "commit" }).catch(() => {});
