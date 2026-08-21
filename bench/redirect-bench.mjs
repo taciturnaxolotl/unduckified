@@ -23,15 +23,19 @@
 //
 // Requires Playwright:  npm i -D playwright   (then: npx playwright install chromium)
 // Run:                  node bench/redirect-bench.mjs [rounds]
+// Env:                  Q, UNDUCK, FLASH, NAME_B, DEST_HOST — point it at other
+//                       deployments, another builtin bang, or another tool
+//                       (e.g. NAME_B=rebang FLASH=https://rebang.online).
 import { chromium } from "playwright";
 
 // The tools to compare, each pointed at the same builtin bang, and the
-// destination origin that bang resolves to. Edit these to benchmark others.
+// destination origin that bang resolves to.
+const Q = process.env.Q || "%21gh%20test";
 const TOOLS = {
-	unduckified: "https://nitro-boost.unduck-m6m.pages.dev/?q=%21gh%20test",
-	flashbang: "https://flashbang.tech/?q=%21gh%20test",
+	unduckified: (process.env.UNDUCK || "https://s.dunkirk.sh") + "/?q=" + Q,
+	[process.env.NAME_B || "flashbang"]: (process.env.FLASH || "https://flashbang.tech") + "/?q=" + Q,
 };
-const DEST_HOST = "github.com";
+const DEST_HOST = process.env.DEST_HOST || "github.com";
 const ROUNDS = Number(process.argv[2] || 60);
 const WARMUP = 3; // discarded: first hits pay cold DNS/TLS that later ones don't
 const PER_SAMPLE_TIMEOUT_MS = 15_000;
