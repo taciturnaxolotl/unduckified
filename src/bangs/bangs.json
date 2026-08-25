@@ -5394,9 +5394,9 @@
   },
   {
     "s": "Intel Processor Specification",
-    "d": "ark.intel.com",
+    "d": "www.intel.com",
     "t": "ark",
-    "u": "https://ark.intel.com/search?q={{{s}}}",
+    "u": "https://www.intel.com/content/www/us/en/search.html#cf-tabfilter=Products&q={{{s}}}",
     "c": "Tech",
     "sc": "Companies"
   },
@@ -16064,7 +16064,7 @@
     "c": "Entertainment",
     "sc": "Forum"
   },
-  {  
+  {
     "s": "Canadian Public Transit Discussion Board Wiki",
     "d": "cptdb.ca",
     "ad": "cptdb.ca/wiki/index.php/Main_Page",
@@ -18183,9 +18183,6 @@
     "s": "DuckDuckGo Community",
     "d": "duck.co",
     "t": "dc",
-    "ts": [
-      "forum"
-    ],
     "u": "https://duck.co/forum/search?q={{{s}}}",
     "c": "Online Services",
     "sc": "Search (DDG)"
@@ -19292,7 +19289,7 @@
     "s": "Le Dénicheur",
     "d": "ledenicheur.fr",
     "t": "denicheur",
-    "u": "https://ledenicheur.fr/#rparams=ss={{{s}}}",
+    "u": "https://ledenicheur.fr/search?query={{{s}}}",
     "c": "Shopping",
     "sc": "Online (deals)"
   },
@@ -21373,9 +21370,9 @@
   },
   {
     "s": "Dota 2 Wiki",
-    "d": "dota2.gamepedia.com",
+    "d": "liquipedia.net",
     "t": "dota",
-    "u": "https://dota2.gamepedia.com/index.php?search={{{s}}}",
+    "u": "https://liquipedia.net/dota2/index.php?search={{{s}}}",
     "c": "Entertainment",
     "sc": "Games (specific)"
   },
@@ -26865,7 +26862,7 @@
     "ts": [
       "fg"
     ],
-    "u": "https://www.fangraphs.com/players.aspx?lastname={{{s}}}",
+    "u": "https://www.fangraphs.com/search?q={{{s}}}",
     "c": "Entertainment",
     "sc": "Sports"
   },
@@ -32254,6 +32251,17 @@
       "ghcode"
     ],
     "u": "https://github.com/search?q={{{s}}}&type=Code",
+    "c": "Tech",
+    "sc": "Programming"
+  },
+  {
+    "s": "GitHub Pull Requests",
+    "d": "github.com",
+    "t": "ghpr",
+    "ts": [
+      "ghpull"
+    ],
+    "u": "https://github.com/search?q={{{s}}}&type=pullrequests",
     "c": "Tech",
     "sc": "Programming"
   },
@@ -62393,10 +62401,21 @@
     "sc": "Specialty"
   },
   {
+    "s": "Prisjagt",
+    "d": "www.prisjagt.dk",
+    "t": "pjdk",
+    "ts": [
+      "prisjagt"
+    ],
+    "u": "https://www.prisjagt.dk/search?query={{{s}}}",
+    "c": "Shopping",
+    "sc": "Online (deals)"
+  },
+  {
     "s": "Prisjakt (Norway)",
     "d": "www.prisjakt.no",
     "t": "pjno",
-    "u": "https://www.prisjakt.no/search?search={{{s}}}",
+    "u": "https://www.prisjakt.no/search?query={{{s}}}",
     "c": "Shopping",
     "sc": "Online (deals)"
   },
@@ -62408,7 +62427,7 @@
       "prisjakt",
       "pris"
     ],
-    "u": "https://www.prisjakt.nu/search?search={{{s}}}",
+    "u": "https://www.prisjakt.nu/search?query={{{s}}}",
     "c": "Shopping",
     "sc": "Online (deals)"
   },
@@ -64060,7 +64079,10 @@
     "s": "pricespy.co.nz",
     "d": "pricespy.co.nz",
     "t": "pricespy",
-    "u": "https://pricespy.co.nz/search?search={{{s}}}",
+    "ts": [
+      "psnz"
+    ],
+    "u": "https://pricespy.co.nz/search?query={{{s}}}",
     "c": "Shopping",
     "sc": "Online (deals)"
   },
@@ -64580,14 +64602,6 @@
     "sc": "Online"
   },
   {
-    "s": "PriceSpy",
-    "d": "pricespy.co.nz",
-    "t": "psnz",
-    "u": "https://pricespy.co.nz/search?q={{{s}}}",
-    "c": "Shopping",
-    "sc": "Online"
-  },
-  {
     "s": "Psoriasis-Netz",
     "d": "www.psoriasis-netz.de",
     "t": "pso",
@@ -64615,7 +64629,7 @@
     "s": "pricespyuk",
     "d": "pricespy.co.uk",
     "t": "psuk",
-    "u": "https://pricespy.co.uk/search?q={{{s}}}",
+    "u": "https://pricespy.co.uk/search?query={{{s}}}",
     "c": "Shopping",
     "sc": "Online (deals)"
   },
@@ -71391,13 +71405,13 @@
   },
   {
     "s": "Shikimori",
-    "d": "shikimori.org",
+    "d": "shikimori.io",
     "t": "shikimori",
     "ts": [
       "shiki",
       "shm"
     ],
-    "u": "https://shikimori.org/animes?search={{{s}}}",
+    "u": "https://shikimori.io/animes?search={{{s}}}",
     "c": "Entertainment",
     "sc": "Movies"
   },
@@ -79420,9 +79434,9 @@
   },
   {
     "s": "Toronto Public Library",
-    "d": "www.torontopubliclibrary.ca",
+    "d": "tpl.bibliocommons.com",
     "t": "tpl",
-    "u": "https://www.torontopubliclibrary.ca/search.jsp?Ntt={{{s}}}",
+    "u": "https://tpl.bibliocommons.com/v2/search?query={{{s}}}&searchType=smart",
     "c": "Research",
     "sc": "Local"
   },
@@ -93435,16 +93449,20 @@
     ]
   },
   {
-    "s": "Kagi Universal Summarizer (Key Moments)",
+    "s": "Kagi Universal Summarizer (Bullet Points)",
     "d": "kagi.com",
-    "t": "sumt",
+    "t": "sumb",
     "ts": [
       "sumk",
       "sumkey",
       "summarizekey",
-      "summarisekey"
+      "summarisekey",
+      "sumt",
+      "sumbullet",
+      "summarizebullet",
+      "summarisebullet"
     ],
-    "u": "https://kagi.com/summarizer?url={{{s}}}&summary=takeaway",
+    "u": "https://kagi.com/summarizer?url={{{s}}}&summary=keypoints",
     "fmt": [
       "url_encode_placeholder"
     ]
@@ -93454,6 +93472,20 @@
     "d": "kagi.com",
     "t": "summ",
     "u": "https://kagi.com/summarizer?url={{{s}}}&summary=summary",
+    "fmt": [
+      "url_encode_placeholder"
+    ]
+  },
+  {
+    "s": "Kagi Universal Summarizer (ELI5)",
+    "d": "kagi.com",
+    "t": "sume",
+    "ts": [
+      "sumeli5",
+      "summarizeeli5",
+      "summariseeli5"
+    ],
+    "u": "https://kagi.com/summarizer?url={{{s}}}&summary=eli5",
     "fmt": [
       "url_encode_placeholder"
     ]
@@ -93524,7 +93556,7 @@
     "u": "https://wiki.resonite.com/index.php?search={{{s}}}",
     "c": "Online Services"
   },
-  {  
+  {
     "s": "Orion Feedback (Discussions)",
     "d": "orionfeedback.org",
     "ad": "orionfeedback.org/d",
