@@ -1,5 +1,8 @@
 // Service Worker: MPHF-based redirect with zero-decode binary artifact.
 
+/// <reference lib="webworker" />
+declare const self: ServiceWorkerGlobalScope;
+
 import { BANG_DATA_VERSION } from "../bangs/data-version.ts";
 import { type Catalog, openCatalog, resolveQuery } from "../bangs/catalog.ts";
 
@@ -116,10 +119,6 @@ function countSearch(event: FetchEvent): void {
 
 const DEFAULT_BANG_KEY = "default-bang";
 let defaultBang = "ddg";
-// The edge raises this cookie whenever a profile stores a custom bang or a
-// custom default. Its absence means nothing can override a builtin, so the
-// redirect can skip the settings cache entirely.
-const SETTINGS_COOKIE = /(?:^|;\s*)unduck-settings=1(?:\s*;|$)/;
 
 // caches.open costs ~0.2 ms and every boot did it three times before it could
 // answer anything: once for the catalog and once for each of the two settings.
@@ -246,8 +245,8 @@ function loadCatalog(): Promise<void> {
 	return bangDataPromise;
 }
 
-// Catalog and settings together, overlapped. Used where both must be ready,
-// such as answering whether an arbitrary bang (possibly a custom one) exists.
+// Catalog and settings together, started at the same time so a restart waits
+// for the slower of the two rather than their sum.
 function loadBangs(): Promise<void> {
 	return Promise.all([loadCatalog(), loadSettingsOnce()]).then(() => {});
 }
@@ -435,21 +434,9 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event: FetchEvent) => {
-	const url = new URL(event.request.url);
-
-	// `url.pathname` is a getter that re-serializes on every read, which costs
-	// far more than the comparisons below. Read it once.
-	const path = url.pathname;
-
-	// Address-bar suggestions (OpenSearch). Served locally so the query never
-	// leaves the device.
-	if (path === "/suggest" && url.origin === self.location.origin) {
-		event.respondWith(handleSuggest(url));
-		return;
-	}
-
 	if (event.request.mode !== "navigate") return;
 
+	const url = new URL(event.request.url);
 	const q = url.searchParams.get("q");
 	if (q === null || q.trim() === "") return;
 
@@ -460,21 +447,12 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 	event.respondWith(
 		(async () => {
 			try {
-				// A profile with no custom bangs or custom default carries no
-				// settings cookie. Nothing can override a builtin then, so resolve
-				// straight from the catalog and never read the settings cache on
-				// the critical path. When settings are needed, their read overlaps
-				// the catalog read rather than following it. Same call the edge makes.
-				const hasSettings = SETTINGS_COOKIE.test(
-					event.request.headers.get("cookie") ?? "",
-				);
-				const ready = loadCatalog();
-				const settings = hasSettings ? loadSettingsOnce() : null;
-				await ready;
-				if (settings) await settings;
+				// Settings are read every time. A worker never sees the cookie the
+				// edge uses to skip them: cookies are attached after it answers.
+				await loadBangs();
 				const dest = resolveQuery(catalog, trimmed, {
-					defaultTrigger: hasSettings ? defaultBang : "ddg",
-					custom: hasSettings ? resolveCustom : undefined,
+					defaultTrigger: defaultBang,
+					custom: resolveCustom,
 				});
 				if (dest) {
 					countSearch(event); // batched, and never before the response

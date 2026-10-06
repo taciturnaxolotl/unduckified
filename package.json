@@ -8,8 +8,8 @@
     "build": "bun run src/bangs/packbang.ts && bunx --bun vite build && bun run src/build-workers.ts",
     "preview": "bunx --bun vite preview",
     "ranks": "bun run src/bangs/fetch-ranks.ts",
-    "check": "bun run src/bangs/test-bangs.ts",
-    "typecheck": "bunx tsc --noEmit"
+    "check": "node test/sw-settings.mjs",
+    "typecheck": "bunx tsc --noEmit && bunx tsc -p tsconfig.sw.json --noEmit"
   },
   "devDependencies": {
     "typescript": "~5.7.3",

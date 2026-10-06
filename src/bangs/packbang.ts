@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from "fs";
 import { createHash } from "crypto";
 
-type Bang = { d: string; ad?: string; s: string; u: string; ts?: string[] };
+type Bang = { t?: string; d: string; ad?: string; s: string; u: string; ts?: string[] };
 const rawBangs: Bang[] = JSON.parse(readFileSync("src/bangs/bangs.json", "utf-8"));
 
 // Load custom bangs
@@ -315,8 +315,9 @@ for (const [, bang] of entries) {
 	entryPids.push(pid);
 	let sid = -1;
 	if (suffix !== null) {
-		sid = suffixMap.get(suffix);
-		if (sid === undefined) { sid = suffixes.length; suffixMap.set(suffix, sid); suffixes.push(suffix); }
+		const existing = suffixMap.get(suffix);
+		if (existing === undefined) { sid = suffixes.length; suffixMap.set(suffix, sid); suffixes.push(suffix); }
+		else sid = existing;
 	}
 	entrySids.push(sid);
 }
