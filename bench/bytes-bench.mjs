@@ -4,12 +4,22 @@
 // which is not the same as a tool's total offline footprint — a tool that loads
 // its catalog in shards pays only for the shard the query needs.
 //
-// A server-side redirect needs care: the hop keeps the same CDP requestId as
-// the destination it points at, so its loadingFinished total would bill the
-// destination's page to the tool. The redirect response carries its own size,
-// which is what gets counted instead.
+// Two things make the raw CDP total lie, and both are corrected here.
+//
+// A server-side redirect keeps the same requestId across the hop, so its
+// loadingFinished total would bill the destination's page to the tool. The
+// redirect response carries its own size, which is what gets counted instead.
+//
+// A resource advertised in an HTTP 103 Early Hints response is served from the
+// preload cache, and Chrome reports encodedDataLength 0 for that hit while still
+// delivering a decoded body. Anything still in flight when the redirect fires is
+// lost the same way. Summing encodedDataLength therefore scores those modules as
+// free and a b>0 filter drops them, undercounting any tool that preloads its cold
+// resolver. We recover the real wire size with an independent brotli refetch and
+// mark it [refetch:br].
 //
 // Run: node bench/bytes-bench.mjs     (same env knobs as redirect-bench.mjs)
+import https from "node:https";
 import { chromium } from "playwright";
 
 const Q = process.env.Q || "%21gh%20test";
@@ -18,6 +28,22 @@ const TOOLS = {
 	flashbang: (process.env.FLASH || "https://flashbang.tech") + "/?q=" + Q,
 };
 const DEST_HOST = process.env.DEST_HOST || "github.com";
+
+// Compressed transfer size of a single resource, measured off its own request
+// so a preload-cache hit (encodedDataLength 0 in CDP) is still accounted for.
+// node:https does not decode the body, so summing raw chunks is the wire size.
+function wireSize(url) {
+	return new Promise((resolve) => {
+		const req = https.get(url, { headers: { "accept-encoding": "br, gzip" } }, (res) => {
+			let n = 0;
+			res.on("data", (c) => { n += c.length; });
+			res.on("end", () => resolve(n));
+			res.on("error", () => resolve(0));
+		});
+		req.on("error", () => resolve(0));
+		req.setTimeout(10_000, () => { req.destroy(); resolve(0); });
+	});
+}
 
 async function measure(browser, url) {
 	const ctx = await browser.newContext();
@@ -39,7 +65,6 @@ async function measure(browser, url) {
 				bytes.set(e.requestId, e.redirectResponse.encodedDataLength);
 				sealed.add(e.requestId);
 				if (host === DEST_HOST) { stop = true; resolve(); return; }
-				started.set(`${e.requestId}:${e.request.url}`, e.request.url);
 				return;
 			}
 			if (host === DEST_HOST) { stop = true; resolve(); return; }
@@ -57,9 +82,21 @@ async function measure(browser, url) {
 	await new Promise((r) => setTimeout(r, 400)); // let in-flight loadingFinished land
 	await page.close();
 	await ctx.close();
-	const rows = [...started]
-		.map(([id, u]) => [u, bytes.get(id) ?? 0])
-		.filter(([, b]) => b > 0);
+
+	// Every request the browser made before the redirect, deduped by URL. A zero
+	// means the browser never billed it — a preload-cache hit or one still in
+	// flight at stop — so recover its wire size with an independent refetch.
+	const rows = [];
+	const seen = new Set();
+	for (const [, u] of started) {
+		if (seen.has(u)) continue;
+		seen.add(u);
+		let b = 0;
+		for (const [id, iu] of started) if (iu === u) b = Math.max(b, bytes.get(id) ?? 0);
+		let label = u;
+		if (b === 0) { b = await wireSize(u); label = `${u}  [refetch:br]`; }
+		if (b > 0) rows.push([label, b]);
+	}
 	const total = rows.reduce((s, [, b]) => s + b, 0);
 	return { total, rows };
 }
