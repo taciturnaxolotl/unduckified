@@ -116,6 +116,10 @@ function countSearch(event: FetchEvent): void {
 
 const DEFAULT_BANG_KEY = "default-bang";
 let defaultBang = "ddg";
+// The edge raises this cookie whenever a profile stores a custom bang or a
+// custom default. Its absence means nothing can override a builtin, so the
+// redirect can skip the settings cache entirely.
+const SETTINGS_COOKIE = /(?:^|;\s*)unduck-settings=1(?:\s*;|$)/;
 
 // caches.open costs ~0.2 ms and every boot did it three times before it could
 // answer anything: once for the catalog and once for each of the two settings.
@@ -173,13 +177,28 @@ async function loadSettings() {
 	}
 }
 
+let settingsPromise: Promise<void> | null = null;
+// Load settings once per worker and share the result. Kept separate from the
+// catalog load so the two can overlap, and so a redirect that needs no settings
+// never starts it at all.
+function loadSettingsOnce(): Promise<void> {
+	if (!settingsPromise) {
+		settingsPromise = loadSettings().catch((err) => {
+			settingsPromise = null; // allow a retry on the next use
+			throw err;
+		});
+	}
+	return settingsPromise;
+}
+
 // Adopt bang data handed over by the page. The page-level fallback downloads
 // bangs.bin to answer the very first query, so it passes the bytes along
 // instead of making the worker fetch the same file a second time.
 async function seedBangData(buf: ArrayBuffer) {
 	if (catalog) return;
 	catalog = openCatalog(buf);
-	await loadSettings();
+	// Settings read runs alongside the persist below rather than before it.
+	const settings = loadSettingsOnce();
 	// Persist so later worker starts skip the network entirely.
 	try {
 		const cache = await openDataCache();
@@ -189,14 +208,16 @@ async function seedBangData(buf: ArrayBuffer) {
 	} catch {
 		// Cache writes are best-effort; the in-memory copy still works.
 	}
+	await settings;
 }
 
 let bangDataPromise: Promise<void> | null = null;
 
-// Load bang data: cache first, network on miss, then populate the cache.
+// Load the catalog: cache first, network on miss, then populate the cache.
 // Never assumes install succeeded, so a failed or skipped precache is
-// recoverable instead of wedging the worker permanently.
-async function loadBangsUncached() {
+// recoverable instead of wedging the worker permanently. Settings are loaded
+// separately so they can overlap this read or be skipped when unneeded.
+async function loadCatalogUncached() {
 	const cache = await openDataCache();
 
 	let resp = await cache.match(BANGS_BIN);
@@ -211,19 +232,24 @@ async function loadBangsUncached() {
 	}
 
 	catalog = openCatalog(await resp.arrayBuffer());
-	await loadSettings();
 }
 
-function loadBangs(): Promise<void> {
+function loadCatalog(): Promise<void> {
 	if (catalog) return Promise.resolve();
 	// Share one in-flight load so concurrent navigations don't stampede.
 	if (!bangDataPromise) {
-		bangDataPromise = loadBangsUncached().catch((err) => {
+		bangDataPromise = loadCatalogUncached().catch((err) => {
 			bangDataPromise = null; // allow a retry on the next request
 			throw err;
 		});
 	}
 	return bangDataPromise;
+}
+
+// Catalog and settings together, overlapped. Used where both must be ready,
+// such as answering whether an arbitrary bang (possibly a custom one) exists.
+function loadBangs(): Promise<void> {
+	return Promise.all([loadCatalog(), loadSettingsOnce()]).then(() => {});
 }
 
 function resolveCustom(trigger: string, query: string): string | null {
@@ -434,10 +460,21 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 	event.respondWith(
 		(async () => {
 			try {
-				await loadBangs();
+				// A profile with no custom bangs or custom default carries no
+				// settings cookie. Nothing can override a builtin then, so resolve
+				// straight from the catalog and never read the settings cache on
+				// the critical path. When settings are needed, their read overlaps
+				// the catalog read rather than following it. Same call the edge makes.
+				const hasSettings = SETTINGS_COOKIE.test(
+					event.request.headers.get("cookie") ?? "",
+				);
+				const ready = loadCatalog();
+				const settings = hasSettings ? loadSettingsOnce() : null;
+				await ready;
+				if (settings) await settings;
 				const dest = resolveQuery(catalog, trimmed, {
-					defaultTrigger: defaultBang,
-					custom: resolveCustom,
+					defaultTrigger: hasSettings ? defaultBang : "ddg",
+					custom: hasSettings ? resolveCustom : undefined,
 				});
 				if (dest) {
 					countSearch(event); // batched, and never before the response
